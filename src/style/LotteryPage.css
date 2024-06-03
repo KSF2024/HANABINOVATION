@@ -1,0 +1,35 @@
+#LotteryEntry{
+    text-align: center;
+    position: relative;
+    top: 73px;
+}
+#UserName{
+    top: 117px;
+    position: relative;
+}
+#MailAddress{
+    top: 120px;
+    position: relative;
+}
+#PhoneNumber{
+    top: 123px;
+    position: relative;
+}
+#Old{
+    top: 126px;
+    position: relative;
+}
+#SchoolName{
+    top: 129px;
+    position: relative;
+}
+#Grade{
+    top: 132px;
+    position: relative;
+}
+#SubmitButton{
+    top: 172px;
+    position: relative;
+    background-color: #098FF0;
+    color: #FFFFFF
+}

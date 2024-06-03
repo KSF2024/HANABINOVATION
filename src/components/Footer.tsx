@@ -31,7 +31,6 @@ const Footer = () => {
       <CustomBottomNavigationAction label="花火大会" value="/hanabi"  icon={<img src={HanabiIcon} alt="Hanabi" style={{ width: 24, height: 24 }} />} /> 
       <CustomBottomNavigationAction label="マップ" value="/map" icon={<MapIcon />} />
       <CustomBottomNavigationAction label="QR読取" value="/qr" icon={<QrCode2Icon />} />
-      <CustomBottomNavigationAction label="抽選応募" value="/lottery" icon={<AdsClickIcon />} />
     </CustomBottomNavigation>
   );
 };
