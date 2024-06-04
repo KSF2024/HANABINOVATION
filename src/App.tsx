@@ -16,6 +16,7 @@ export default function App(){
                 <Route path="/map" element={<MapPage/>} />
                 <Route path="/scan-qr" element={<QRPage/>}/>
                 <Route path="/enter-lottery" element={<LotteryPage/>}/>
+                <Route path="/*" element={<div>パスエラー</div>}/>
             </Routes>
         </BrowserRouter>
     )
