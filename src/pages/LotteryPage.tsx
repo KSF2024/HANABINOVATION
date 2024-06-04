@@ -19,26 +19,31 @@ export default function LotteryPage(){
     return (
         <Container
             maxWidth="sm"
-            sx={{ pt: 5 }}
+            sx={{pt: 3}}
             style={{ height: "100%" }}
         >
-            <Typography variant="h4">抽選応募</Typography>
             <Box
                 component="form"
                 onSubmit={postFormData}
-                sx={{mt: 1}}
                 style={{
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "center",
-                    height: "50%"
+                    height: "100%"
                 }}
             >
+                <Typography
+                    variant="h4"
+                    style={{ textAlign: "center" }}
+                >
+                    抽選応募
+                </Typography>
                 <Stack
                     spacing={3}
                     style={{
                         // maxHeight: "100%",
-                        maxHeight: "30%",
+                        flexGrow: 1,
+                        maxHeight: "70%",
                         overflowY: "auto"
                     }}
                 >
@@ -97,7 +102,7 @@ export default function LotteryPage(){
                     type="submit"
                     color="primary"
                     variant="contained"
-                    sx={{mt: 3}}
+                    sx={{ mt: 3, mb: 3 }}
                 >
                     応募
                 </Button>

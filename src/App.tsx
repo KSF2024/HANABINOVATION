@@ -17,7 +17,8 @@ export default function App(){
                 }}
             >
                 <div style={{
-                    flexGrow: 1
+                    flexGrow: 1,
+                    maxHeight: "calc(100% - 42px)"
                 }}>
                     <Routes>
                         <Route path="/"/>
