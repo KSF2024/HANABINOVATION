@@ -1,86 +1,107 @@
-import React, { useState } from 'react';
-import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-import '../style/LotteryPage.css';
-import { Icon } from '@mui/material';
+import { useState } from "react";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import { Box, Button, Container, Icon, Stack, TextField, Typography } from "@mui/material";
 
-const LotteryPage = () => {
-  const [ UserName, setUserName] = useState('');
-  const [ MailAddress, setMailAddress] = useState('');
-  const [ PhoneNumber, setPhoneNumber] = useState('');
-  const [ Old, setOld] = useState('');
-  const [ SchoolName, setSchoolName] = useState('');
-  const [ Grade, setGrade] = useState('');
+export default function LotteryPage(){
+    const [userName, setUserName] = useState("");
+    const [mailAddress, setMailAddress] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [old, setOld] = useState("");
+    const [schoolName, setSchoolName] = useState("");
+    const [grade, setGrade] = useState("");
 
-  const handleUserNameChange = ( event ) =>{
-    setUserName(event.target.value)
-  }
+    // フォームの入力情報をサーバーに送信する関数
+    function postFormData(){
+        // TODO フォーム送信処理の実装
+        alert("フォームを送信しました");
+    }
 
-const  handleMailAddressChange= ( event ) =>{
-    setMailAddress(event.target.value)
-  }
-
-  const  handlePhoneNumberChange= ( event ) =>{
-    setPhoneNumber(event.target.value)
-  }
-
-  const  handleOldChange= ( event ) =>{
-    setOld(event.target.value)
-  }
-
-  const  handleSchoolNameChange= ( event ) =>{
-    setSchoolName(event.target.value)
-  }
-
-  const  handleGradeChange= ( event ) =>{
-    setGrade(event.target.value)
-  }
-
-  return <div>
-  
-  <div id='LotteryEntry'>
-  抽選応募
-  <br/>
-  </div>
-    
-    <div id='UserName'>
-      ユーザー名(必須)
-      <br/>
-    <input value={UserName} onChange={handleUserNameChange} required />
-    </div>
-
-    <div id='MailAddress'>
-      メールアドレス(必須)
-      <br/>
-      <input value={MailAddress} onChange={handleMailAddressChange} required />
-    </div>
-
-    <div id='PhoneNumber'>
-      電話番号(任意)
-      <br/>
-      <input value={PhoneNumber} onChange={handlePhoneNumberChange} />
-    </div>
-
-      <div id='Old'>
-      年齢(任意)
-      <br/>
-      <input value={Old} onChange={handleOldChange} />
-    </div>
-
-    <div id='SchoolName'>
-      学校名(任意)
-      <br/>
-      <input value={SchoolName} onChange={handleSchoolNameChange} />
-    </div>
-
-    <div id='Grade'>
-      学年(任意)
-      <br/>
-      <input value={Grade} onChange={handleGradeChange} />
-    </div>
-
-  <input type='submit' value='応募' id='SubmitButton'/>
-  </div>
-};
-
-  
-export default LotteryPage;
+    return (
+        <Container
+            maxWidth="sm"
+            sx={{ pt: 5 }}
+            style={{ height: "100%" }}
+        >
+            <Typography variant="h4">抽選応募</Typography>
+            <Box
+                component="form"
+                onSubmit={postFormData}
+                sx={{mt: 1}}
+                style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    height: "50%"
+                }}
+            >
+                <Stack
+                    spacing={3}
+                    style={{
+                        // maxHeight: "100%",
+                        maxHeight: "30%",
+                        overflowY: "auto"
+                    }}
+                >
+                    <TextField
+                        required
+                        variant="standard"
+                        label="ユーザー名"
+                        value={userName}
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                            setUserName(event.target.value);
+                        }}
+                    />
+                    <TextField
+                        required
+                        variant="standard"
+                        label="メールアドレス"
+                        value={mailAddress}
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                            setMailAddress(event.target.value);
+                        }}
+                    />
+                    <TextField
+                        variant="standard"
+                        label="電話番号"
+                        value={phoneNumber}
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                            setPhoneNumber(event.target.value);
+                        }}
+                    />
+                    <TextField
+                        variant="standard"
+                        label="年齢"
+                        value={old}
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                            setOld(event.target.value);
+                        }}
+                    />
+                    <TextField
+                        variant="standard"
+                        label="学校名"
+                        value={schoolName}
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                            setSchoolName(event.target.value);
+                        }}
+                    />
+                    <TextField
+                        variant="standard"
+                        label="学年"
+                        value={grade}
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                            setGrade(event.target.value);
+                        }}
+                    />
+                </Stack>
+                <Button
+                    type="submit"
+                    color="primary"
+                    variant="contained"
+                    sx={{mt: 3}}
+                >
+                    応募
+                </Button>
+            </Box>
+        </Container>
+    )
+}
