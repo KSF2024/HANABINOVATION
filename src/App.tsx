@@ -1,5 +1,4 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Footer from "./components/Footer";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import PhotoPage from "./pages/PhotoPage";
 import HanabiPage from "./pages/HanabiPage";
 import MapPage from "./pages/MapPage";
@@ -8,7 +7,7 @@ import LotteryPage from "./pages/LotteryPage";
 
 export default function App(){
     return (
-        <Router>
+        <BrowserRouter>
             <Routes>
                 <Route path="/"/>
                 <Route path="/:boothId/create-firework"/>
@@ -18,6 +17,6 @@ export default function App(){
                 <Route path="/scan-qr" element={<QRPage/>}/>
                 <Route path="/enter-lottery" element={<LotteryPage/>}/>
             </Routes>
-        </Router>
+        </BrowserRouter>
     )
 }

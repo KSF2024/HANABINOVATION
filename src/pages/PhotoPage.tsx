@@ -2,9 +2,12 @@ import Camera from "../components/Camera";
 
 export default function PhotoPage(){
     return (
-        <>
-            camera
+        <div
+            style={{
+                overflow: "hidden"
+            }}
+        >
             <Camera/>
-        </>
+        </div>
     )
 }

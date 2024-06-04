@@ -1,7 +1,5 @@
 import { useState } from "react";
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import { Box, Button, Container, Icon, Stack, TextField, Typography } from "@mui/material";
-import Footer from "../components/Footer";
+import { Box, Button, Container, Stack, TextField, Typography } from "@mui/material";
 import FooterPage from "../components/FooterPage";
 
 export default function LotteryPage(){
