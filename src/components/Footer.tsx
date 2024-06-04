@@ -24,6 +24,9 @@ export default function Footer(){
             sx={{
                 backgroundColor: "#098FF0" // フッターの背景色
             }}
+            style={{
+                height: "4rem"
+            }}
         >
             <CustomBottomNavigationAction
                 value="/001/capture-firework" // TODO ブースIDの指定

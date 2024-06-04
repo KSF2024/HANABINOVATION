@@ -1,5 +1,10 @@
+import Camera from "../components/Camera";
+
 export default function PhotoPage(){
     return (
-        <div>再撮影</div>
+        <>
+            camera
+            <Camera/>
+        </>
     )
 }
