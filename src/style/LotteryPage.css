@@ -5,31 +5,53 @@
 }
 #UserName{
     top: 117px;
+    left: 66px;
     position: relative;
 }
 #MailAddress{
     top: 120px;
+    left: 66px;
     position: relative;
 }
 #PhoneNumber{
     top: 123px;
+    left: 66px;
     position: relative;
 }
 #Old{
     top: 126px;
+    left: 66px;
     position: relative;
 }
 #SchoolName{
     top: 129px;
+    left: 66px;
     position: relative;
 }
 #Grade{
     top: 132px;
+    left: 66px;
     position: relative;
 }
 #SubmitButton{
+    width: 71px;
+    height: 49px;
     top: 172px;
+    left: 162px;
     position: relative;
     background-color: #098FF0;
-    color: #FFFFFF
+    color: #FFFFFF;
+    border-color: #098FF0;
+}
+#Submitlog{
+    top: 246px;
+    left: 52px;
+    width: 289px;
+    height: 150px;
+    position: absolute;
+    background-color: #FFFFFF;
+    color: black;
+    border: solid;
+    border-width: 1px;
+    border-color: #000000'
 }
