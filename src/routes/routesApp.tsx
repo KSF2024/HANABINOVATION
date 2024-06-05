@@ -1,7 +1,5 @@
-// React Router 本体をインポート
-import { Route, createBrowserRouter, createRoutesFromElements } from "react-router-dom"
-// ルーティングページをインポート
-import App from "./../App"
+import { Route, createBrowserRouter, createRoutesFromElements } from "react-router-dom"; // React Router 本体をインポート
+import App from "./../App"; // ルーティングページをインポート
 
 // ルーティングテーブルを定義
 const routesParam = createBrowserRouter(
@@ -10,4 +8,4 @@ const routesParam = createBrowserRouter(
     )
 );
 
-export default routesParam
+export default routesParam;

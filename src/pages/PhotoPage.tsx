@@ -1,6 +1,13 @@
-import React from "react";
+import Camera from "../components/Camera";
 
-const PhotoPage = () =>{
-    return <div>再撮影</div>
+export default function PhotoPage(){
+    return (
+        <div
+            style={{
+                overflow: "hidden"
+            }}
+        >
+            <Camera/>
+        </div>
+    )
 }
-export default PhotoPage;
