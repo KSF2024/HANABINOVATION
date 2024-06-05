@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { CameraContext } from '../providers/CameraProvider';
+import { CameraContext } from '../temp/CameraProvider';
 
 // カメラの映像を表示するコンポーネント
 export default function Camera(){
