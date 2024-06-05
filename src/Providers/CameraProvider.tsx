@@ -188,5 +188,5 @@ export function CameraProvider({children}: {children: ReactNode}){
         >
             {children}
         </CameraContext.Provider>
-    );
+    )
 }
