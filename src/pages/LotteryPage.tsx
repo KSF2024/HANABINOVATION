@@ -103,7 +103,7 @@ export default function LotteryPage(){
                         type="submit"
                         color="primary"
                         variant="contained"
-                        sx={{ mt: 3, mb: 3 }}
+                        sx={{ mt: 3, mb: 3, mr: 7, ml: 7 }}
                     >
                         応募
                     </Button>
