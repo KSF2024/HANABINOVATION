@@ -4,7 +4,7 @@ export default function FooterPage({ children }: {children: React.ReactNode}){
     return (
         <div
             style={{
-                height: "100vh",
+                height: "100dvh",
                 display: "flex",
                 flexDirection: "column"
             }}
@@ -12,7 +12,8 @@ export default function FooterPage({ children }: {children: React.ReactNode}){
             <div
                 style={{
                     flexGrow: 1,
-                    maxHeight: "calc(100% - 4rem)"
+                    maxHeight: "calc(100dvh - 4rem)",
+                    margin: 0
                 }}>
                     {children}
                     <Footer/>
