@@ -33,7 +33,7 @@ export function FireworksProvider({children}: {children: ReactNode}){
     const [sparksObj, setSparksObj] = useState<{[id: string]: Spark[]}>({}); // 花火の火花(アニメーション用)
     const [fireworksSizeObj, setFireworksSizeObj] = useState<{[id: string]: {width: number, height: number}}>({}); // 花火の幅
     const [launchAngle, setLaunchAngle] = useState<number>(0); // 花火の打ち上げ角度 (デフォルト0度)
-    const [fireworksPositionObj, setFireworksPositionObj] = useState<{[id: string]: {goalX: number, goalY: number}}>({}); // 花火が打ち上がる位置
+    const [fireworksPositionObj, setFireworksPositionObj] = useState<{[id: string]: {gapX: number, gaplY: number}}>({}); // 花火が打ち上がる位置
     const [sparksColorObj, setSparksColorObj] = useState<{[id: string]: string}>({}); // 火花の色
 
     // アニメーションの設定情報
@@ -78,7 +78,7 @@ export function FireworksProvider({children}: {children: ReactNode}){
                 // 元の画像の比率を保持したまま横幅を300pxに設定
                 const originalWidth = img.width;
                 const originalHeight = img.height;
-                const newWidth = 300;
+                const newWidth = Math.min(window.innerWidth, window.innerHeight) * 0.7;
                 const newHeight = (originalHeight * newWidth) / originalWidth;
 
                 // canvasの大きさを新しい大きさに合わせる
@@ -97,6 +97,7 @@ export function FireworksProvider({children}: {children: ReactNode}){
                     width: newWidth,
                     height: newHeight
                 };
+                console.log(result)
                 resolve(result);
             };
             img.src = image;
@@ -476,11 +477,7 @@ export function FireworksProvider({children}: {children: ReactNode}){
             initialY = canvasRef.current.height / 2;
             initialX = canvasRef.current.width / 2;
             if(Object.keys(imageDataObj).length > 1){
-                if(Object.keys(imageDataObj).findIndex(value => value === id) === 0){
-                    initialX = canvasRef.current.width * 0.25;
-                }else if(Object.keys(imageDataObj).findIndex(value => value === id) === 1){
-                    initialX = canvasRef.current.width * 0.75;
-                }
+                // TODO 花火が複数あるときの位置決め
             }
         }
 

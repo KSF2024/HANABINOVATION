@@ -6,8 +6,8 @@ export default function CaptureFireworkCanvas(){
     return (
         <canvas
             ref={canvasRef}
-            width={500}
-            height={500}
+            width={window.innerWidth}
+            height={window.innerHeight}
             style={{
                 position: "absolute",
                 zIndex: "9"
