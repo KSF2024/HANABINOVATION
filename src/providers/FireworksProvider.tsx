@@ -33,8 +33,7 @@ export function FireworksProvider({children}: {children: ReactNode}){
     const [sparksObj, setSparksObj] = useState<{[id: string]: Spark[]}>({}); // 花火の火花(アニメーション用)
     const [fireworksSizeObj, setFireworksSizeObj] = useState<{[id: string]: {width: number, height: number}}>({}); // 花火の幅
     const [launchAngle, setLaunchAngle] = useState<number>(0); // 花火の打ち上げ角度 (デフォルト0度)
-    const [fireworksPositionObj, setFireworksPositionObj] = useState<{[id: string]: {gapX: number, gaplY: number}}>({}); // 花火が打ち上がる位置
-    const [sparksColorObj, setSparksColorObj] = useState<{[id: string]: string}>({}); // 火花の色
+    const [fireworksPositionObj, setFireworksPositionObj] = useState<{[id: string]: {gapX: number, gapY: number}}>({}); // 花火が打ち上がる位置
 
     // アニメーションの設定情報
     const [fireworksAnimationFrameIdObj, setFireworksAnimationFrameIdObj] = useState<{[id: string]: number}>({}); // 花火アニメーション用ID
@@ -292,7 +291,7 @@ export function FireworksProvider({children}: {children: ReactNode}){
             const newSparks: Spark[] = prevSparks[id].map(spark => {
                 // 火花の最終位置を計算する
                 const fireworkSize = fireworksSizeObj[id];
-                const maxDistance: number = (Math.max(fireworkSize.width, fireworkSize.height) / 2) + 50;
+                const maxDistance: number = (Math.max(fireworkSize.width, fireworkSize.height) / 2) * 1.1;
                 const goalDistance: number = maxDistance * ((spark.movementType - 1) ? 1 : outerDifference); // 火花の最終位置から中心点の距離
 
                 // 火花の動きを停止させるかどうかを計算する
