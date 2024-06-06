@@ -33,6 +33,7 @@ export function FireworksProvider({children}: {children: ReactNode}){
     const starsRef = useRef<{[id: string]: Star[]}>({}); // 花火の星(アニメーション完了後の位置)
     const [starsObj, setStarsObj] = useState<{[id: string]: Star[]}>({}); // 花火の星(アニメーション用)
     const [sparksObj, setSparksObj] = useState<{[id: string]: Spark[]}>({}); // 花火の火花(アニメーション用)
+    const [risingStarsObj, setRisingStarsObj] = useState<{[id: string]: Star[]}>({}); // 打ちあがる際の花火の星(アニメーション用)
     const [fireworksSizeObj, setFireworksSizeObj] = useState<{[id: string]: {width: number, height: number}}>({}); // 花火の幅
     const [launchAngle, setLaunchAngle] = useState<number>(0); // 花火の打ち上げ角度 (デフォルト0度)
     const [fireworksPosition, setFireworksPosition] = useState<{gapX: number, gapY: number}>({gapX: 0, gapY: 0}); // 花火が打ち上がる位置
@@ -400,6 +401,8 @@ export function FireworksProvider({children}: {children: ReactNode}){
             setSparksAnimationFrameIdObj(prev => ({...prev, [id]: newAnimationFrameId}));
         }
     }
+
+    /* 花火の軌道用関数定義 */
 
     /* 花火&火花用共通関数定義 */
     // 花火と火花が消えていくアニメーション
