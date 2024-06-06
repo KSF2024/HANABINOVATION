@@ -33,6 +33,7 @@ const theme = createTheme({
 
 export default function PhotoPage(){
     const { boothId } = useParams();
+
     const {
         setBoothId
     } = useContext(DataContext);

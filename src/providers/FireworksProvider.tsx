@@ -9,12 +9,14 @@ import { ulid } from "ulidx";
 type FireworksContent = {
     canvasRef: React.RefObject<HTMLCanvasElement>;
     initializeImageSrc(): void;
+    toggleFireworksPosition(): void;
 };
 
 /* Provider */
 const initialData: FireworksContent = {
     canvasRef: {} as React.RefObject<HTMLCanvasElement>,
-    initializeImageSrc: () => {}
+    initializeImageSrc: () => {},
+    toggleFireworksPosition: () => {}
 };
 
 export const FireworksContext = createContext<FireworksContent>(initialData);
@@ -33,7 +35,8 @@ export function FireworksProvider({children}: {children: ReactNode}){
     const [sparksObj, setSparksObj] = useState<{[id: string]: Spark[]}>({}); // 花火の火花(アニメーション用)
     const [fireworksSizeObj, setFireworksSizeObj] = useState<{[id: string]: {width: number, height: number}}>({}); // 花火の幅
     const [launchAngle, setLaunchAngle] = useState<number>(0); // 花火の打ち上げ角度 (デフォルト0度)
-    const [fireworksPositionObj, setFireworksPositionObj] = useState<{[id: string]: {gapX: number, gapY: number}}>({}); // 花火が打ち上がる位置
+    const [fireworksPosition, setFireworksPosition] = useState<{gapX: number, gapY: number}>({gapX: 0, gapY: 0}); // 花火が打ち上がる位置
+    const [positionToggle, setPositionToggle] = useState<boolean>(false); // 花火が打ちあがる位置をトグルで切り替えるためのstate
 
     // アニメーションの設定情報
     const [fireworksAnimationFrameIdObj, setFireworksAnimationFrameIdObj] = useState<{[id: string]: number}>({}); // 花火アニメーション用ID
@@ -115,7 +118,6 @@ export function FireworksProvider({children}: {children: ReactNode}){
 
     // 花火を爆発させるアニメーション
     function burstFireworks(id: string, initialX: number, initialY: number){
-        // console.log("burstFireworks"+"\n"+id);
         if(!starsRef.current[id]) return;
         const renderingStars: Star[] = starsRef.current[id]; // 花火の完成予想図
         const speed: number = 10;
@@ -466,15 +468,14 @@ export function FireworksProvider({children}: {children: ReactNode}){
 
         // imageDataから花火の星を作成する
         const newStars: Star[] = generateStars(imageData, launchAngle);
-        // console.log({[id]: newStars})
         starsRef.current[id] = newStars;
 
         // 花火を打ち上げる中心点を求める
         let initialX: number =  0;
         let initialY: number =  0;
         if(canvasRef.current){
-            initialY = canvasRef.current.height / 2;
-            initialX = canvasRef.current.width / 2;
+            initialY = canvasRef.current.height / 3 + (fireworksPosition.gapY || 0);
+            initialX = canvasRef.current.width / 2 + (fireworksPosition.gapX || 0);
             if(Object.keys(imageDataObj).length > 1){
                 // TODO 花火が複数あるときの位置決め
             }
@@ -502,6 +503,48 @@ export function FireworksProvider({children}: {children: ReactNode}){
         isFinishedSparksAnimationObj.current[id] = false;
     }
 
+    /* 花火撮影機能用の処理 */
+    // 花火の位置と角度をランダムに変更する関数
+    function randomizeFireworksPosition(){
+        // 花火の位置をランダムに変更する
+        const windowSize: number = Math.min(window.innerWidth, window.innerHeight);
+        const maxFluctuation: number = windowSize * 0.1;
+        const maxGapX: number = maxFluctuation;
+        const maxGapY: number = window.innerHeight * (1/3 * 0.3);
+        const newGapX: number = getRandomRange(maxGapX);
+        const newGapY: number = getRandomRange(maxGapY);
+        setFireworksPosition({gapX: newGapX, gapY: newGapY});
+
+        // 花火の角度をランダムに変更する
+        const newAngle: number = Math.random() * 20 * getSign(newGapX);
+        setLaunchAngle(newAngle);
+
+        // -n～nの範囲からランダムな値を取得する関数
+        function getRandomRange(value: number){
+            return Math.random() * (value * 2 + 1) - value;
+        }
+
+        // 与えられた数が正なら1、負なら-1、ゼロなら1を返す関数
+        function getSign(value: number) {
+            return Math.sign(value) || 1;
+        }
+    }
+
+    // 花火の位置と角度を初期化する関数
+    function initializeFireworksPosition(){
+        setFireworksPosition({gapX: 0, gapY: 0});
+        setLaunchAngle(0);
+    }
+
+    // 花火の位置を正位置とランダムでトグルする関数
+    function toggleFireworksPosition(){
+        if(positionToggle){
+            initializeFireworksPosition();
+        }else{
+            randomizeFireworksPosition();
+        }
+        setPositionToggle(prev => !prev);
+    }
 
     /* useEffect */
     // fireworksIdをそれぞれ生成し、画像データからimageDataを取得する
@@ -583,7 +626,8 @@ export function FireworksProvider({children}: {children: ReactNode}){
         <FireworksContext.Provider
             value={{
                 canvasRef,
-                initializeImageSrc
+                initializeImageSrc,
+                toggleFireworksPosition
             }}
         >
             {children}
