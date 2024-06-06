@@ -16,9 +16,9 @@ import image5_3 from "./../images/河原医療大学校/3.png";
 import image6_1 from "./../images/河原医療福祉専門学校/1.png";
 import image6_2 from "./../images/河原医療福祉専門学校/2.png";
 import image6_3 from "./../images/河原医療福祉専門学校/3.png";
-import image7_1 from "./../images/河原ビューティモード専門学校/1.png";
-import image7_2 from "./../images/河原ビューティモード専門学校/2.png";
-import image7_3 from "./../images/河原ビューティモード専門学校/3.png";
+import image7_1 from "./../images/河原ビューティーモード専門学校/1.png";
+import image7_2 from "./../images/河原ビューティーモード専門学校/2.png";
+import image7_3 from "./../images/河原ビューティーモード専門学校/3.png";
 import image8_1 from "./../images/河原デザイン・アート専門学校/1.png";
 import image8_2 from "./../images/河原デザイン・アート専門学校/2.png";
 import image8_3 from "./../images/河原デザイン・アート専門学校/3.png";
@@ -110,3 +110,31 @@ export const schoolData: { [boothId: string]: SchoolInfo } = {
         positionY: 0
     }
 };
+
+// ブースIDのリスト
+const boothIdList: string[] = Object.keys(schoolData);
+
+// 正しいブースIDかどうかを確かめる関数
+export function validateBoothId(boothId: string): boolean{
+    return boothIdList.includes(boothId);
+}
+
+// 画像データのパスを取得する関数
+export function getImageSrc(boothId: string, fireworkType: 0 | 1 | 2 | 3, fireworkDesign: Blob | null): string | null{
+    let result: string = "";
+
+    // 例外処理を行う
+    if(!boothId) return null;
+    if(!validateBoothId(boothId)) return null;
+
+    // 画像データへのパスを取得する
+    if(fireworkType === 0){
+        if(!fireworkDesign) return null;
+        result = URL.createObjectURL(fireworkDesign);
+    }else{
+        const fireworkTypeIndex: 0 | 1 | 2 = (fireworkType - 1) as (0 | 1 | 2);
+        result = schoolData[boothId].fireworksImages[fireworkTypeIndex];
+    }
+
+    return result;
+}
