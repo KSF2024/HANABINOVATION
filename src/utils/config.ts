@@ -138,3 +138,9 @@ export function getImageSrc(boothId: string, fireworkType: 0 | 1 | 2 | 3, firewo
 
     return result;
 }
+
+// ブースIDを指定して、各専門学校のテーマカラーを取得する関数
+export function getBoothColor(boothId: string): string | null{
+    if(!validateBoothId(boothId)) return null;
+    return schoolData[boothId].color;
+}

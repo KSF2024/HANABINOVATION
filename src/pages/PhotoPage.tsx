@@ -4,6 +4,7 @@ import ButtonArea from "../components/ButtonArea";
 import { useContext, useEffect, useState } from "react";
 import { DataContext } from "../providers/DataProvider";
 import { useParams } from "react-router-dom";
+import CaptureFireworkCanvas from "../components/CaptureFireworkCanvas";
 
 /* 定数定義 */
 export const ICON_SIZE: string = "5rem"; // ボタンの大きさ
@@ -44,10 +45,12 @@ export default function PhotoPage(){
         <>
             <div
                 style={{
-                    overflow: "hidden"
+                    overflow: "hidden",
+                    zIndex: "0"
                 }}
             >
                 <Camera/>
+                <CaptureFireworkCanvas/>
             </div>
             <ThemeProvider theme={theme}>
                 <ButtonArea theme={theme}/>

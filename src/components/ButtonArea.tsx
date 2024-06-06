@@ -9,6 +9,7 @@ import CameraRear from '@mui/icons-material/CameraRear';
 import CameraFront from '@mui/icons-material/CameraFront';
 import Cameraswitch from '@mui/icons-material/Cameraswitch';
 import { ICON_SIZE, ICON_COLOR, BUTTON_MARGIN } from "./../pages/PhotoPage";
+import { FireworksContext } from "../providers/FireworksProvider";
 
 // ボタン類のコンポーネント
 export default function ButtonArea({theme}: {theme: Theme}){
@@ -25,6 +26,8 @@ export default function ButtonArea({theme}: {theme: Theme}){
 
     // 画面幅がmd以上かどうか
     const isMdScreen = useMediaQuery(() => theme.breakpoints.up("md")); // md以上
+
+    const { initializeImageSrc } = useContext(FireworksContext);
 
     /* 関数定義 */
     // 撮影ボタンを押したときの処理
@@ -68,6 +71,7 @@ export default function ButtonArea({theme}: {theme: Theme}){
                 justifyContent: isMdScreen ? "center" : "space-evenly",
                 position: "absolute",
                 bottom: "1rem",
+                zIndex: "10"
             }}
         >
             <IconButton
@@ -94,7 +98,10 @@ export default function ButtonArea({theme}: {theme: Theme}){
                 }}
                 aria-label="capture-display"
                 color="primary"
-                onClick={handleTakePhotoButton}
+                onClick={() => {
+                    initializeImageSrc();
+                    // handleTakePhotoButton();
+                }}
             >
                 <DoubleCircleIcon
                     width={ICON_SIZE}
