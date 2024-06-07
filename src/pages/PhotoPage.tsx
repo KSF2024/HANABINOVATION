@@ -42,7 +42,13 @@ export default function PhotoPage(){
     }, [boothId]);
 
     return (
-        <>
+        <div
+            style={{
+                backgroundColor: "black",
+                width: "100vw",
+                height: "100dvh"
+            }}
+        >
             <div
                 style={{
                     overflow: "hidden",
@@ -55,6 +61,6 @@ export default function PhotoPage(){
             <ThemeProvider theme={theme}>
                 <ButtonArea theme={theme}/>
             </ThemeProvider>
-        </>
+        </div>
     )
 }
