@@ -30,7 +30,8 @@ export default function ButtonArea({theme}: {theme: Theme}){
 
     const {
         initializeImageSrc,
-        toggleFireworksPosition
+        toggleFireworksPosition,
+        setFireworkPhase
     } = useContext(FireworksContext);
 
     const {
@@ -113,7 +114,7 @@ export default function ButtonArea({theme}: {theme: Theme}){
                 color="primary"
                 onClick={() => {
                     // TODO 撮影処理の実装
-                    
+                    setFireworkPhase(prev => (prev + 1) % 4)
                     // handleTakePhotoButton();
                 }}
             >

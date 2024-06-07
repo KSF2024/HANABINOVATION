@@ -451,6 +451,13 @@ export function FireworksProvider({children}: {children: ReactNode}){
         }
     }
 
+    // 花火を消滅させるアニメーションを開始する
+    function startFadeAnimation(){
+        const newAnimationFrameId: number = requestAnimationFrame(() => fadeFireworksAndSparks());
+        setFireworkAnimationFrameId(newAnimationFrameId);
+        isFinishedFireworkAnimation.current = false;
+    }
+
     /* useEffect用関数定義 */
     // 画像データを読み込み、花火を爆発させるアニメーションを開始する
     function startBurstAnimation(imageData: ImageData){
@@ -561,7 +568,20 @@ export function FireworksProvider({children}: {children: ReactNode}){
 
     // 花火IDの用意とimageDataの取得が出来たら、花火の星を作成して、花火アニメーションを開始する
     useEffect(() => {
-        if(imageData) startBurstAnimation(imageData);
+        if(!imageData) return;
+        console.log({fireworkPhase})
+        switch(fireworkPhase){
+            case 3:
+                startFadeAnimation();
+                break;
+            case 2:
+                startBurstAnimation(imageData);
+                break;
+            case 0:
+            default:
+                // TODO 半透明の花火の表示処理
+                break;
+        }
 
         // アンマウント時にアニメーションを停止
         return () => {
@@ -570,7 +590,7 @@ export function FireworksProvider({children}: {children: ReactNode}){
             if(sparksAnimationFrameId) cancelAnimationFrame(sparksAnimationFrameId);
             isFinishedSparksAnimation.current = true;
         };
-    }, [imageData]);
+    }, [imageData, fireworkPhase]);
 
     // starsやsparksが変更される度、再度キャンバスに描画する
     useEffect(() => {
