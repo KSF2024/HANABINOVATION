@@ -27,7 +27,10 @@ export default function ButtonArea({theme}: {theme: Theme}){
     // 画面幅がmd以上かどうか
     const isMdScreen = useMediaQuery(() => theme.breakpoints.up("md")); // md以上
 
-    const { initializeImageSrc } = useContext(FireworksContext);
+    const {
+        initializeImageSrc,
+        toggleFireworksPosition
+    } = useContext(FireworksContext);
 
     /* 関数定義 */
     // 撮影ボタンを押したときの処理
@@ -82,7 +85,7 @@ export default function ButtonArea({theme}: {theme: Theme}){
                 color="primary"
                 onClick={() =>{
                     if(isTakingPhoto.current) return; // 撮影ボタンの処理中なら、処理をやめる
-                    console.log("花火の向き変更");
+                    toggleFireworksPosition();
                 }}
             >
                 <CachedIcon
@@ -99,6 +102,7 @@ export default function ButtonArea({theme}: {theme: Theme}){
                 aria-label="capture-display"
                 color="primary"
                 onClick={() => {
+                    // TODO 撮影処理の実装
                     initializeImageSrc();
                     // handleTakePhotoButton();
                 }}
