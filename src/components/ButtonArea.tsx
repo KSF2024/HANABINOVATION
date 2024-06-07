@@ -1,4 +1,4 @@
-import { useContext, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { CameraContext } from "./../providers/CameraProvider";
 import DoubleCircleIcon from "./DoubleCircleIcon";
 import { Theme } from '@mui/material/styles';
@@ -9,7 +9,8 @@ import CameraRear from '@mui/icons-material/CameraRear';
 import CameraFront from '@mui/icons-material/CameraFront';
 import Cameraswitch from '@mui/icons-material/Cameraswitch';
 import { ICON_SIZE, ICON_COLOR, BUTTON_MARGIN } from "./../pages/PhotoPage";
-import { FireworksContext } from "../providers/FireworksProvider";
+import { FireworksContext } from "../providers/FireworkProvider";
+import { DataContext } from "../providers/DataProvider";
 
 // ボタン類のコンポーネント
 export default function ButtonArea({theme}: {theme: Theme}){
@@ -31,6 +32,10 @@ export default function ButtonArea({theme}: {theme: Theme}){
         initializeImageSrc,
         toggleFireworksPosition
     } = useContext(FireworksContext);
+
+    const {
+        boothId
+    } = useContext(DataContext);
 
     /* 関数定義 */
     // 撮影ボタンを押したときの処理
@@ -64,6 +69,11 @@ export default function ButtonArea({theme}: {theme: Theme}){
     function sendFireworksData(): void{
         console.log("花火データ送信");
     }
+
+    // boothIdが読み込めたら、画像データを読み込む
+    useEffect(() => {
+        if(boothId) initializeImageSrc();
+    }, [boothId]);
 
 
     return (
@@ -103,7 +113,7 @@ export default function ButtonArea({theme}: {theme: Theme}){
                 color="primary"
                 onClick={() => {
                     // TODO 撮影処理の実装
-                    initializeImageSrc();
+                    
                     // handleTakePhotoButton();
                 }}
             >

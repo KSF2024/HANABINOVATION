@@ -1,6 +1,6 @@
 import { CameraProvider } from "./CameraProvider";
 import { DataProvider } from "./DataProvider";
-import { FireworksProvider } from "./FireworksProvider";
+import { FireworksProvider } from "./FireworkProvider";
 
 export function Providers({ children }: {children: React.ReactNode}){
     return (

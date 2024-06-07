@@ -10,13 +10,17 @@ type FireworksContent = {
     canvasRef: React.RefObject<HTMLCanvasElement>;
     initializeImageSrc(): void;
     toggleFireworksPosition(): void;
+    fireworkPhase: number;
+    setFireworkPhase: React.Dispatch<React.SetStateAction<number>>;
 };
 
 /* Provider */
 const initialData: FireworksContent = {
     canvasRef: {} as React.RefObject<HTMLCanvasElement>,
     initializeImageSrc: () => {},
-    toggleFireworksPosition: () => {}
+    toggleFireworksPosition: () => {},
+    fireworkPhase: 0,
+    setFireworkPhase: {} as any
 };
 
 export const FireworksContext = createContext<FireworksContent>(initialData);
@@ -25,25 +29,28 @@ export const FireworksContext = createContext<FireworksContent>(initialData);
 export function FireworksProvider({children}: {children: ReactNode}){
     /* state等 */
     // 画像とcanvasの設定情報
-    const [imageSrc, setImageSrc]= useState<string[]>([]);
-    const [imageDataObj, setImageDataObj] = useState<{[id: string]: ImageData}>({}); // 読み込む画像データ
+    const [imageSrc, setImageSrc]= useState<string | null>(null);
+    const [imageData, setImageData] = useState<ImageData | null>(null); // 読み込む画像データ
     const canvasRef = useRef<HTMLCanvasElement>(null); // アニメーション用Canvas要素の参照
 
+    // 花火データ
+    const starsRef = useRef<Star[]>([]); // 花火の星(アニメーション完了後の位置)
+    const [stars, setStars] = useState<Star[]>([]); // 花火の星(アニメーション用)
+    const [sparks, setSparks] = useState<Spark[]>([]); // 花火の火花(アニメーション用)
+    const [risingStars, setRisingStars] = useState<Star[]>([]); // 打ちあがる際の花火の星(アニメーション用)
+
     // 花火の設定情報
-    const starsRef = useRef<{[id: string]: Star[]}>({}); // 花火の星(アニメーション完了後の位置)
-    const [starsObj, setStarsObj] = useState<{[id: string]: Star[]}>({}); // 花火の星(アニメーション用)
-    const [sparksObj, setSparksObj] = useState<{[id: string]: Spark[]}>({}); // 花火の火花(アニメーション用)
-    const [risingStarsObj, setRisingStarsObj] = useState<{[id: string]: Star[]}>({}); // 打ちあがる際の花火の星(アニメーション用)
-    const [fireworksSizeObj, setFireworksSizeObj] = useState<{[id: string]: {width: number, height: number}}>({}); // 花火の幅
+    const [fireworkPhase, setFireworkPhase] = useState<number>(0); // 花火アニメーションの段階(0: 半透明, 1: 打ち上げ, 2: 爆発, 3: 消滅)
+    const [fireworkSize, setFireworkSize] = useState<{width: number, height: number}>({width: 0, height: 0}); // 花火の幅
     const [launchAngle, setLaunchAngle] = useState<number>(0); // 花火の打ち上げ角度 (デフォルト0度)
-    const [fireworksPosition, setFireworksPosition] = useState<{gapX: number, gapY: number}>({gapX: 0, gapY: 0}); // 花火が打ち上がる位置
+    const [fireworkPosition, setFireworkPosition] = useState<{gapX: number, gapY: number}>({gapX: 0, gapY: 0}); // 花火が打ち上がる位置
     const [positionToggle, setPositionToggle] = useState<boolean>(false); // 花火が打ちあがる位置をトグルで切り替えるためのstate
 
     // アニメーションの設定情報
-    const [fireworksAnimationFrameIdObj, setFireworksAnimationFrameIdObj] = useState<{[id: string]: number}>({}); // 花火アニメーション用ID
-    const isFinishedFireworksAnimationObj = useRef<{[id: string]: boolean}>({}); // 花火アニメーションが終了したかどうか
-    const [sparksAnimationFrameIdObj, setSparksAnimationFrameIdObj] = useState<{[id: string]: number}>({}); // 火花アニメーション用ID
-    const isFinishedSparksAnimationObj = useRef<{[id: string]: boolean}>({}); // 火花アニメーションが終了したかどうか
+    const [fireworkAnimationFrameId, setFireworkAnimationFrameId] = useState<number | null>(null); // 花火アニメーション用ID
+    const isFinishedFireworkAnimation = useRef<boolean>(true); // 花火アニメーションが終了したかどうか
+    const [sparksAnimationFrameId, setSparksAnimationFrameId] = useState<number | null>(null); // 火花アニメーション用ID
+    const isFinishedSparksAnimation = useRef<boolean>(true); // 火花アニメーションが終了したかどうか
 
     const {
         boothId,
@@ -118,17 +125,16 @@ export function FireworksProvider({children}: {children: ReactNode}){
     }
 
     // 花火を爆発させるアニメーション
-    function burstFireworks(id: string, initialX: number, initialY: number){
-        if(!starsRef.current[id]) return;
-        const renderingStars: Star[] = starsRef.current[id]; // 花火の完成予想図
+    function burstFireworks(initialX: number, initialY: number){
+        const renderingStars: Star[] = starsRef.current; // 花火の完成予想図
         const speed: number = 10;
 
-        setStarsObj(prevStars => {
+        setStars(prevStars => {
             // 新しいスターの位置を計算して更新
-            const updatedStars = prevStars[id].map((star, index) => {
+            const updatedStars = prevStars.map((star, index) => {
                 const renderingStar: Star = renderingStars[index];
-                const renderingX: number = renderingStar.x - fireworksSizeObj[id].width / 2 + initialX;
-                const renderingY: number = renderingStar.y - fireworksSizeObj[id].height / 2 + initialY;
+                const renderingX: number = renderingStar.x - fireworkSize.width / 2 + initialX;
+                const renderingY: number = renderingStar.y - fireworkSize.height / 2 + initialY;
 
                 /* ここを改変することで、花火のモーションを変更できる */
                 const dx: number = (renderingX - star.x) / speed;
@@ -140,31 +146,28 @@ export function FireworksProvider({children}: {children: ReactNode}){
             });
 
             // 加速度が0に近づいたら、アニメーションを停止する
-            isFinishedFireworksAnimationObj.current[id] = prevStars[id].every((star, index) => {
+            isFinishedFireworkAnimation.current = prevStars.every((star, index) => {
                 const renderingStar: Star = renderingStars[index];
-                const renderingX: number = renderingStar.x - fireworksSizeObj[id].width / 2 + initialX;
-                const renderingY: number = renderingStar.y - fireworksSizeObj[id].height / 2 + initialY;
+                const renderingX: number = renderingStar.x - fireworkSize.width / 2 + initialX;
+                const renderingY: number = renderingStar.y - fireworkSize.height / 2 + initialY;
                 const dx: number = (renderingX - star.x) / speed;
                 const dy: number = (renderingY - star.y) / speed;
                 return (Math.abs(dx) < 1 && Math.abs(dy) < 1);
             })
 
-            const result = {...prevStars, [id]: updatedStars};
+            const result = updatedStars;
             return result;
         });
 
-        if(isFinishedFireworksAnimationObj.current[id]){
+        if(isFinishedFireworkAnimation.current){
             console.log("animation stopped")
             // 花火のアニメーションが終了したら、アニメーションを停止する
-            setFireworksAnimationFrameIdObj(prev => {
-                const {removedId: id, ...newAnimationFrameId} = prev;
-                return newAnimationFrameId;
-            });
+            setFireworkAnimationFrameId(null);
             return;
         }else{
             // 次のフレームを要求
-            const newAnimationFrameId = requestAnimationFrame(() => burstFireworks(id, initialX, initialY));
-            setFireworksAnimationFrameIdObj(prev => ({...prev, [id]: newAnimationFrameId}));
+            const newAnimationFrameId = requestAnimationFrame(() => burstFireworks(initialX, initialY));
+            setFireworkAnimationFrameId(newAnimationFrameId);
         }
     }
 
@@ -289,11 +292,10 @@ export function FireworksProvider({children}: {children: ReactNode}){
         const speed: number = 10;
         const outerDifference: number = 0.75; // 外火花と内火花の距離の差の倍率
 
-        setSparksObj(prevSparks => {
+        setSparks(prevSparks => {
             const afterImageSparks: Spark[] = []; // 火花の残像
-            const newSparks: Spark[] = prevSparks[id].map(spark => {
+            const newSparks: Spark[] = prevSparks.map(spark => {
                 // 火花の最終位置を計算する
-                const fireworkSize = fireworksSizeObj[id];
                 const maxDistance: number = (Math.max(fireworkSize.width, fireworkSize.height) / 2) * 1.1;
                 const goalDistance: number = maxDistance * ((spark.movementType - 1) ? 1 : outerDifference); // 火花の最終位置から中心点の距離
 
@@ -304,7 +306,7 @@ export function FireworksProvider({children}: {children: ReactNode}){
                 if((spark.movementType === 0) || (prevDistance >= goalDistance)){
                     if(spark.movementType === 2){
                         // 外側の火花が目標位置に達した場合、アニメーションを終了させる
-                        isFinishedSparksAnimationObj.current[id] = true;
+                        isFinishedSparksAnimation.current = true;
                     }
 
                     // 火花が残像扱い(0: 停止)の場合、あるいは火花が目標位置に達した場合、火花を停止させる
@@ -387,18 +389,15 @@ export function FireworksProvider({children}: {children: ReactNode}){
             return {...prevSparks, [id]: [...newSparks, ...afterImageSparks]};
         });
 
-        if(isFinishedSparksAnimationObj.current[id]){
+        if(isFinishedSparksAnimation.current){
             console.log("sparks animation stopped")
             // 花火のアニメーションが終了したら、アニメーションを停止する
-            setSparksAnimationFrameIdObj(prev => {
-                const {removedId: id, ...newAnimationFrameId} = prev;
-                return newAnimationFrameId;
-            });
+            setSparksAnimationFrameId(null);
             return;
         }else{
             // 次のフレームを要求
-            const newAnimationFrameId = requestAnimationFrame(() => burstSparks(id, initialX, initialY));
-            setSparksAnimationFrameIdObj(prev => ({...prev, [id]: newAnimationFrameId}));
+            const newAnimationFrameId: number = requestAnimationFrame(() => burstSparks(id, initialX, initialY));
+            setSparksAnimationFrameId(newAnimationFrameId);
         }
     }
 
@@ -407,17 +406,17 @@ export function FireworksProvider({children}: {children: ReactNode}){
     /* 花火&火花用共通関数定義 */
     // 花火と火花が消えていくアニメーション
     function fadeFireworksAndSparks(id: string){
-        if(!starsRef.current[id]) return;
+        if(!starsRef.current) return;
         const speed: number = 10;
 
-        setStarsObj((prevStars) => {
+        setStars((prevStars) => {
             // 新しい花火の星の透明度を計算して更新
-            const updatedStars = prevStars[id].map((star) => {
+            const updatedStars = prevStars.map((star) => {
                 const newAlpha: number = Math.max(Math.round(star.color.alpha - speed), 0); // 透明度が負にならないようにする
                 return {...star, color: {...star.color, alpha: newAlpha}};
             });
 
-            isFinishedFireworksAnimationObj.current[id] = prevStars[id].every((star) => {
+            isFinishedFireworkAnimation.current = prevStars.every((star) => {
                 // 全ての花火の星の透明度が0以下になったらアニメーションを停止
                 return star.color.alpha <= 0;
             })
@@ -426,14 +425,14 @@ export function FireworksProvider({children}: {children: ReactNode}){
             return result;
         });
 
-        setSparksObj((prevSparks) => {
+        setSparks((prevSparks) => {
             // 新しい火花の透明度を計算して更新
-            const updatedStars = prevSparks[id].map((spark) => {
+            const updatedStars = prevSparks.map((spark) => {
                 const newAlpha: number = Math.max(Math.round(spark.alpha - speed), 0); // 透明度が負にならないようにする
                 return {...spark, alpha: newAlpha};
             });
 
-            isFinishedSparksAnimationObj.current[id] = prevSparks[id].every((sparks) => {
+            isFinishedSparksAnimation.current = prevSparks.every((sparks) => {
                 // 全ての火花の透明度が0以下になったらアニメーションを停止
                 return sparks.alpha <= 0;
             })
@@ -442,17 +441,14 @@ export function FireworksProvider({children}: {children: ReactNode}){
             return result;
         });
 
-        if(isFinishedFireworksAnimationObj.current[id]){
+        if(isFinishedFireworkAnimation.current){
             // 花火のアニメーションが終了したら、アニメーションを停止する
-            setFireworksAnimationFrameIdObj(prev => {
-                const {removedId: id, ...newAnimationFrameId} = prev;
-                return newAnimationFrameId;
-            });
+            setFireworkAnimationFrameId(null);
             return;
         }else{
             // 次のフレームを要求
             const newAnimationFrameId: number = requestAnimationFrame(() => fadeFireworksAndSparks(id));
-            setFireworksAnimationFrameIdObj(prev => ({...prev, [id]: newAnimationFrameId}));
+            setFireworkAnimationFrameId(newAnimationFrameId);
         }
     }
 
@@ -460,50 +456,47 @@ export function FireworksProvider({children}: {children: ReactNode}){
     // 画像データを読み込み、花火を爆発させるアニメーションを開始する
     function startBurstAnimation(id: string, imageData: ImageData){
         // 前回の花火打ち上げアニメーションを消去し、初期化する
-        if(fireworksAnimationFrameIdObj[id]){
-            cancelAnimationFrame(fireworksAnimationFrameIdObj[id]);
-            isFinishedFireworksAnimationObj.current[id] = true;
+        if(fireworkAnimationFrameId){
+            cancelAnimationFrame(fireworkAnimationFrameId);
+            isFinishedFireworkAnimation.current = true;
         }
-        if(sparksAnimationFrameIdObj[id]){
-            cancelAnimationFrame(sparksAnimationFrameIdObj[id]);
-            isFinishedSparksAnimationObj.current[id] = true;
+        if(sparksAnimationFrameId){
+            cancelAnimationFrame(sparksAnimationFrameId);
+            isFinishedSparksAnimation.current = true;
         }
 
         // imageDataから花火の星を作成する
         const newStars: Star[] = generateStars(imageData, launchAngle);
-        starsRef.current[id] = newStars;
+        starsRef.current = newStars;
 
         // 花火を打ち上げる中心点を求める
         let initialX: number =  0;
         let initialY: number =  0;
         if(canvasRef.current){
-            initialY = canvasRef.current.height / 3 + (fireworksPosition.gapY || 0);
-            initialX = canvasRef.current.width / 2 + (fireworksPosition.gapX || 0);
-            if(Object.keys(imageDataObj).length > 1){
-                // TODO 花火が複数あるときの位置決め
-            }
+            initialY = canvasRef.current.height / 3 + (fireworkPosition.gapY || 0);
+            initialX = canvasRef.current.width / 2 + (fireworkPosition.gapX || 0);
         }
 
         // 花火データを初期化(中心点に集める)し、stateに保存する
         const initializedStars: Star[] = initializeStars(newStars, initialX, initialY);
-        setStarsObj(prev => ({ ...prev, [id]: initializedStars }));
+        setStars(initializedStars);
 
         // 火花データを作成し、stateに保存する
         if(!boothId) return;
         const sparksColor: string | null = getBoothColor(boothId);
         if(!sparksColor) return;
         const newSparks: Spark[] = generateSparks(sparksType, sparksColor, initialX, initialY);
-        setSparksObj(prev => ({...prev, [id]: newSparks}));
+        setSparks(newSparks);
 
         // 花火アニメーションを開始
-        const newFireworksAnimationFrameId: number = requestAnimationFrame(() => burstFireworks(id, initialX, initialY));
-        setFireworksAnimationFrameIdObj(prev => ({...prev, [id]: newFireworksAnimationFrameId}));
-        isFinishedFireworksAnimationObj.current[id] = false;
+        const newFireworksAnimationFrameId: number = requestAnimationFrame(() => burstFireworks(initialX, initialY));
+        setFireworkAnimationFrameId(newFireworksAnimationFrameId);
+        isFinishedFireworkAnimation.current = false;
 
         // 火花アニメーションを開始
         const newSparksAnimationFrameId: number = requestAnimationFrame(() => burstSparks(id, initialX, initialY));
-        setSparksAnimationFrameIdObj(prev => ({...prev, [id]: newSparksAnimationFrameId}));
-        isFinishedSparksAnimationObj.current[id] = false;
+        setSparksAnimationFrameId(newSparksAnimationFrameId);
+        isFinishedSparksAnimation.current = false;
     }
 
     /* 花火撮影機能用の処理 */
@@ -516,7 +509,7 @@ export function FireworksProvider({children}: {children: ReactNode}){
         const maxGapY: number = window.innerHeight * (1/3 * 0.3);
         const newGapX: number = getRandomRange(maxGapX);
         const newGapY: number = getRandomRange(maxGapY);
-        setFireworksPosition({gapX: newGapX, gapY: newGapY});
+        setFireworkPosition({gapX: newGapX, gapY: newGapY});
 
         // 花火の角度をランダムに変更する
         const newAngle: number = Math.random() * 20 * getSign(newGapX);
@@ -535,7 +528,7 @@ export function FireworksProvider({children}: {children: ReactNode}){
 
     // 花火の位置と角度を初期化する関数
     function initializeFireworksPosition(){
-        setFireworksPosition({gapX: 0, gapY: 0});
+        setFireworkPosition({gapX: 0, gapY: 0});
         setLaunchAngle(0);
     }
 
@@ -563,12 +556,11 @@ export function FireworksProvider({children}: {children: ReactNode}){
                 newImageDataObj[id] = imageData;
                 newFireworkSizeObj[id] = {width, height};
             });
-            setImageDataObj(newImageDataObj);
-            setFireworksSizeObj(newFireworkSizeObj);
+            setImageData(newImageData);
+            setFireworksSize(newFireworkSizeObj);
         })();
-        // console.log({imageSrc})
         return () => {
-            setImageDataObj({});
+            setImageData(null);
         }
     }, [imageSrc]);
 
@@ -576,10 +568,8 @@ export function FireworksProvider({children}: {children: ReactNode}){
     useEffect(() => {
         (async () => {
             for(const id of Object.keys(imageDataObj)){
-                // console.log(id)
                 if(imageDataObj[id]){
                     startBurstAnimation(id, imageDataObj[id]);
-                    await new Promise(resolve => setTimeout(resolve, 250));
                 }
             }
         })();
@@ -630,7 +620,9 @@ export function FireworksProvider({children}: {children: ReactNode}){
             value={{
                 canvasRef,
                 initializeImageSrc,
-                toggleFireworksPosition
+                toggleFireworksPosition,
+                fireworkPhase,
+                setFireworkPhase
             }}
         >
             {children}
