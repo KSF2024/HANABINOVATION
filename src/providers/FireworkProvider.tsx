@@ -38,7 +38,7 @@ export function FireworksProvider({children}: {children: ReactNode}){
     const starsRef = useRef<Star[]>([]); // 花火の星(アニメーション完了後の位置)
     const [stars, setStars] = useState<Star[]>([]); // 花火の星(アニメーション用)
     const [sparks, setSparks] = useState<Spark[]>([]); // 花火の火花(アニメーション用)
-    const [risingStars, setRisingStars] = useState<Star[]>([]); // 打ちあがる際の花火の星(アニメーション用)
+    const [risingStars, setRisingStars] = useState<{capitalStar: Star, afterImageStar: Star[]}>({capitalStar: {} as Star, afterImageStar: []}); // 打ちあがる際の花火の星(アニメーション用)
 
     // 花火の設定情報
     const [fireworkPhase, setFireworkPhase] = useState<number>(0); // 花火アニメーションの段階(0: 半透明, 1: 打ち上げ, 2: 爆発, 3: 撮影待機)
@@ -626,6 +626,38 @@ export function FireworksProvider({children}: {children: ReactNode}){
 
 
     /* useEffect用関数定義 */
+    // 花火が打ち上がるアニメーションを開始する
+    function startRiseAnimation(){
+        // 前回の花火打ち上げアニメーションを消去し、初期化する
+        if(fireworkAnimationFrameId){
+            cancelAnimationFrame(fireworkAnimationFrameId);
+            isFinishedFireworkAnimation.current = true;
+        }
+
+        // 花火を打ち上げる中心点を求める
+        let initialX: number =  0;
+        let initialY: number =  0;
+        if(canvasRef.current){
+            initialY = canvasRef.current.height / 3 + (fireworkPosition.gapY || 0);
+            initialX = canvasRef.current.width / 2 + (fireworkPosition.gapX || 0);
+        }
+
+        // 打ち上げ用の花火の色を取得する
+        if(!boothId) return;
+        const sparksColor: string | null = getBoothColor(boothId);
+        if(!sparksColor) return;
+
+        // 打ち上げ用の花火の星を作成する
+        const capitalStar: Star = {
+            color: hexToRgba(sparksColor, 255),
+            x: initialX,
+            y: initialY,
+            radius: 5
+        };
+
+        setRisingStars({capitalStar, afterImageStar: []});
+    }
+
     // 画像データを読み込み、花火を爆発させるアニメーションを開始する
     function startBurstAnimation(imageData: ImageData){
         // 前回の花火打ち上げアニメーションを消去し、初期化する
