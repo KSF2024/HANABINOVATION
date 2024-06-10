@@ -1,5 +1,6 @@
 import { Typography, Button, Box } from "@mui/material";
 import FooterPage from "./FooterPage";
+import { LOTTERY_EVENTS } from "../utils/config";
 
 export default function LotteryConfirmationPage(){
     return (
@@ -49,13 +50,11 @@ export default function LotteryConfirmationPage(){
                         抽選会
                     </Typography>
 
-                    <Typography sx={{fontSize: "26px", fontWeight: "bold"}}>
-                        7/13(土) 14:00～
-                    </Typography>
-
-                    <Typography sx={{fontSize: "26px", fontWeight: "bold", padding: "9px"}}>
-                        7/14(日) 14:00～
-                    </Typography>
+                    {LOTTERY_EVENTS.map(eventDate => (
+                        <Typography sx={{fontSize: "26px", fontWeight: "bold", padding: "9px"}}>
+                            {eventDate}
+                        </Typography>
+                    ))}
 
                     <Typography sx={{fontSize: "30px", fontWeight: "bold"}}>
                         プロジェクター投影会
