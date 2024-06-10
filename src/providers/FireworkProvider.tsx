@@ -59,6 +59,7 @@ export function FireworksProvider({children}: {children: ReactNode}){
         fireworkDesign
     } = useContext(DataContext);
 
+
     /* 関数定義 */
     // 花火撮影画面用に、画像データを初期化する関数
     function initializeImageSrc(): void{
@@ -69,7 +70,7 @@ export function FireworksProvider({children}: {children: ReactNode}){
         setImageSrc(newImageSrc);
     }
 
-    
+
     /* 花火(Star)用関数定義 */
     // 画像からImageDataを作成する関数
     async function getImageData(image: string): Promise<ImageInfo>{
@@ -114,8 +115,9 @@ export function FireworksProvider({children}: {children: ReactNode}){
     }
 
     // starデータからキャンバスに点を描画する関数
-    function drawStar(ctx: CanvasRenderingContext2D, star: Star) {
-        const color: string = `rgba(${[star.color.red, star.color.green, star.color.blue, star.color.alpha / 255]})`;
+    function drawStar(ctx: CanvasRenderingContext2D, star: Star, alpha?: number){
+        const starAlpha: number = (alpha) ? Math.min(star.color.alpha, alpha): star.color.alpha;
+        const color: string = `rgba(${[star.color.red, star.color.green, star.color.blue, starAlpha / 255]})`;
         ctx.fillStyle = color;
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
@@ -160,6 +162,17 @@ export function FireworksProvider({children}: {children: ReactNode}){
 
         if(isFinishedFireworkAnimation.current){
             console.log("animation stopped")
+            // アニメーションが停止したら、スターの位置を最終位置に修正する
+            setStars(prevStars => {
+                // スターの最終位置を計算して更新
+                const updatedStars = prevStars.map((star, index) => {
+                    const renderingStar: Star = renderingStars[index];
+                    const renderingX: number = renderingStar.x - fireworkSize.width / 2 + initialX;
+                    const renderingY: number = renderingStar.y - fireworkSize.height / 2 + initialY;
+                    return {...star, x: renderingX, y: renderingY};
+                });
+                return updatedStars;
+            });
             // 花火のアニメーションが終了したら、アニメーションを停止する
             setFireworkAnimationFrameId(null);
             return;
@@ -400,7 +413,33 @@ export function FireworksProvider({children}: {children: ReactNode}){
         }
     }
 
+
     /* 花火の軌道用関数定義 */
+
+
+    /* 花火&火花初期表示用関数定義 */
+    // 花火を初期表示する
+    function previewFireworks(ctx: CanvasRenderingContext2D, imageData: ImageData){
+        const alpha: number = 150; // 初期表示花火の透明度
+
+        // imageDataから花火の星を作成する
+        const newStars: Star[] = generateStars(imageData, launchAngle);
+
+        // 花火を打ち上げる中心点を求める
+        let initialX: number =  0;
+        let initialY: number =  0;
+        if(canvasRef.current){
+            initialY = canvasRef.current.height / 3 + (fireworkPosition.gapY || 0);
+            initialX = canvasRef.current.width / 2 + (fireworkPosition.gapX || 0);
+        }
+
+        newStars.forEach((star) => {
+            star.x += -fireworkSize.width / 2 + initialX;
+            star.y += -fireworkSize.height / 2 + initialY;
+            drawStar(ctx, star, alpha);
+        })
+    }
+
 
     /* 花火&火花用共通関数定義 */
     // 花火と火花が消えていくアニメーション
@@ -457,6 +496,7 @@ export function FireworksProvider({children}: {children: ReactNode}){
         setFireworkAnimationFrameId(newAnimationFrameId);
         isFinishedFireworkAnimation.current = false;
     }
+
 
     /* useEffect用関数定義 */
     // 画像データを読み込み、花火を爆発させるアニメーションを開始する
@@ -548,6 +588,7 @@ export function FireworksProvider({children}: {children: ReactNode}){
         setPositionToggle(prev => !prev);
     }
 
+
     /* useEffect */
     // fireworksIdをそれぞれ生成し、画像データからimageDataを取得する
     useEffect(() => {
@@ -571,15 +612,14 @@ export function FireworksProvider({children}: {children: ReactNode}){
         if(!imageData) return;
         console.log({fireworkPhase})
         switch(fireworkPhase){
-            case 3:
-                startFadeAnimation();
-                break;
             case 2:
                 startBurstAnimation(imageData);
                 break;
+            case 1:
+                break;
             case 0:
             default:
-                // TODO 半透明の花火の表示処理
+                // 半透明の花火の表示処理は別の箇所で行う
                 break;
         }
 
@@ -613,6 +653,18 @@ export function FireworksProvider({children}: {children: ReactNode}){
             drawStar(ctx, star);
         }
     }, [stars, sparks]);
+
+    // 花火の初期表示を行う
+    useEffect(() => {
+        if(fireworkPhase !== 0) return;
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if(!imageData) return;
+        previewFireworks(ctx, imageData);
+    }, [imageData, fireworkPhase, launchAngle]);
 
     return (
         <FireworksContext.Provider
