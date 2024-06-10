@@ -3,6 +3,7 @@ import { ImageInfo, Spark, Star, generateStars } from '../utils/hanabi';
 import { DataContext } from './DataProvider';
 import { getBoothColor, getImageSrc } from '../utils/config';
 import { ulid } from "ulidx";
+import { hexToRgba } from '../utils/modules';
 
 /* 型定義 */
 // contextに渡すデータの型
@@ -40,7 +41,7 @@ export function FireworksProvider({children}: {children: ReactNode}){
     const [risingStars, setRisingStars] = useState<Star[]>([]); // 打ちあがる際の花火の星(アニメーション用)
 
     // 花火の設定情報
-    const [fireworkPhase, setFireworkPhase] = useState<number>(0); // 花火アニメーションの段階(0: 半透明, 1: 打ち上げ, 2: 爆発, 3: 消滅)
+    const [fireworkPhase, setFireworkPhase] = useState<number>(0); // 花火アニメーションの段階(0: 半透明, 1: 打ち上げ, 2: 爆発, 3: 撮影待機)
     const [fireworkSize, setFireworkSize] = useState<{width: number, height: number}>({width: 0, height: 0}); // 花火の幅
     const [launchAngle, setLaunchAngle] = useState<number>(0); // 花火の打ち上げ角度 (デフォルト0度)
     const [fireworkPosition, setFireworkPosition] = useState<{gapX: number, gapY: number}>({gapX: 0, gapY: 0}); // 花火が打ち上がる位置
@@ -193,11 +194,12 @@ export function FireworksProvider({children}: {children: ReactNode}){
 
     /* 花火(Spark)用関数定義 */
     // 火花データを生成する関数
-    function generateSparks(sparkType: number, color: string, initialX: number, initialY: number): Spark[]{
+    function generateSparks(sparkType: number, colorCode: string, initialX: number, initialY: number): Spark[]{
         const result: Spark[] = [];
 
         const amount: number = 30; // 火花の数
         const standardRadius: number = 5; // 火花の大きさ
+        const color = hexToRgba(colorCode, 255);
 
         // 火花データを生成する
         switch(sparkType){
@@ -218,7 +220,6 @@ export function FireworksProvider({children}: {children: ReactNode}){
                 const direction: number = ((360 / amount) * i) / Math.PI; // 火花の向き(ラジアン)
                 const newOuterSpark: Spark = {
                     color,
-                    alpha: 255,
                     x: initialX,
                     y: initialY,
                     standardRadius,
@@ -229,7 +230,6 @@ export function FireworksProvider({children}: {children: ReactNode}){
                 };
                 const newInnerSpark: Spark = {
                     color,
-                    alpha: 255,
                     x: initialX,
                     y: initialY,
                     standardRadius,
@@ -250,7 +250,6 @@ export function FireworksProvider({children}: {children: ReactNode}){
                 const direction: number = ((360 / amount) * i) / Math.PI; // 火花の向き(ラジアン)
                 const newSpark: Spark = {
                     color,
-                    alpha: 255,
                     x: initialX,
                     y: initialY,
                     standardRadius: standardRadius * 0.5,
@@ -271,7 +270,6 @@ export function FireworksProvider({children}: {children: ReactNode}){
                 const direction: number = ((360 / amount) * i) / Math.PI; // 火花の向き(ラジアン)
                 const newSpark: Spark = {
                     color,
-                    alpha: 255,
                     x: initialX,
                     y: initialY,
                     standardRadius,
@@ -290,9 +288,9 @@ export function FireworksProvider({children}: {children: ReactNode}){
     }
 
     // sparkデータからキャンバスに点を描画する関数
-    function drawSpark(ctx: CanvasRenderingContext2D, spark: Spark) {
-        ctx.fillStyle = spark.color;
-        ctx.globalAlpha = spark.alpha / 255;
+    function drawSpark(ctx: CanvasRenderingContext2D, spark: Spark, alpha?: number){
+        const sparkAlpha: number = (alpha || spark.color.alpha) / 255;
+        ctx.fillStyle = `rgba(${spark.color.red},${spark.color.green},${spark.color.blue},${sparkAlpha})`;
         ctx.beginPath();
         ctx.arc(spark.x, spark.y, spark.radius, 0, Math.PI * 2);
         ctx.fill();
@@ -440,6 +438,135 @@ export function FireworksProvider({children}: {children: ReactNode}){
         })
     }
 
+    // 火花を初期表示する
+    function previewSparks(ctx: CanvasRenderingContext2D){
+        if(!boothId) return;
+        const sparksColor: string | null = getBoothColor(boothId);
+        if(!sparksColor) return;
+
+        const alpha: number = 50; // 初期表示火花の透明度
+
+        // 火花を打ち上げる中心点を求める
+        let initialX: number =  0;
+        let initialY: number =  0;
+        if(canvasRef.current){
+            initialY = canvasRef.current.height / 3 + (fireworkPosition.gapY || 0);
+            initialX = canvasRef.current.width / 2 + (fireworkPosition.gapX || 0);
+        }
+
+        // 火花データを生成する
+        const generatedSparks: Spark[] = generateSparks(sparksType, sparksColor, initialX, initialY);
+        const finalSparks: Spark[] = getFinalSparks();
+
+        finalSparks.forEach(spark => {
+            drawSpark(ctx, spark, alpha);
+        })
+
+        // 火花の最終位置を取得する関数
+        function getFinalSparks(): Spark[]{
+            const speed: number = 10;
+            const outerDifference: number = 0.75; // 外火花と内火花の距離の差の倍率
+            let result: Spark[] = [...generatedSparks];
+            let isNotFinished: boolean = true; // 火花の最終位置の取得が済んでいないか
+            while(isNotFinished){
+                const afterImageSparks: Spark[] = []; // 火花の残像
+                const newSparks = result.map(spark => {
+                    // 火花の最終位置を計算する
+                    const maxDistance: number = (Math.max(fireworkSize.width, fireworkSize.height) / 2) * 1.1;
+                    const goalDistance: number = maxDistance * ((spark.movementType - 1) ? 1 : outerDifference); // 火花の最終位置から中心点の距離
+
+                    // 火花の動きを停止させるかどうかを計算する
+                    const prevDistanceX: number = Math.abs(initialX - spark.x); // 中心点からの横距離
+                    const prevDistanceY: number = Math.abs(initialY - spark.y); // 中心点からの縦距離
+                    const prevDistance: number = Math.sqrt(Math.pow(prevDistanceX, 2) + Math.pow(prevDistanceY, 2)); // 中心点からの距離
+                    if((spark.movementType === 0) || (prevDistance >= goalDistance)){
+                        if(spark.movementType === 2){
+                            // 外側の火花が目標位置に達した場合、最終位置の取得を終了させる
+                            isNotFinished = false;
+                        }
+
+                        // 火花が残像扱い(0: 停止)の場合、あるいは火花が目標位置に達した場合、火花を停止させる
+                        return {...spark};
+                    }
+
+                    // 新しい火花の位置を計算する
+                    const dx: number = Math.cos(spark.direction + launchAngle) * speed;
+                    const dy: number = Math.sin(spark.direction + launchAngle) * speed;
+                    let newX: number = spark.x + dx;
+                    let newY: number = spark.y + dy;
+
+                    // 新しい火花の位置が最終位置を超えているなら、最終位置にグリッドする
+                    const newDistance: number = Math.sqrt(Math.pow(initialX - newX, 2) + Math.pow((initialY - newY), 2)); // 中心点からの距離
+                    if(newDistance >= goalDistance){
+                        const goalX: number = initialX + Math.cos(spark.direction) * goalDistance;
+                        const goalY: number = initialY + Math.sin(spark.direction) * goalDistance;
+                        newX = goalX;
+                        newY = goalY;
+                    }
+
+                    if(spark.sparkType === 1){
+                        // 線型火花の残像を追加する
+                        const innerDistance: number = goalDistance * outerDifference; // 内側の距離
+                        if(prevDistance > goalDistance * outerDifference){
+                            // 残像火花の太さを算出する関数
+                            function calculateRadius(distance: number): number{
+                                const distanceAchievement: number =  (distance - innerDistance) / (goalDistance - innerDistance); // 火花の目標位置への達成度
+                                const radiusMagnification: number = -4 * distanceAchievement * (distanceAchievement - 1) // 火花の太さの倍率
+                                const newRadius: number = spark.standardRadius * radiusMagnification;
+                                return newRadius;
+                            }
+
+                            let afterImageLength: number = 0;
+                            while(speed >= afterImageLength){
+                                const newDistance: number = prevDistance + afterImageLength;
+                                const newRadius: number = Math.max(calculateRadius(newDistance), spark.standardRadius * 0.5);
+                                if(newRadius <= 0) break;
+                                const newDx: number = Math.cos(spark.direction + launchAngle) * afterImageLength;
+                                const newDy: number = Math.sin(spark.direction + launchAngle) * afterImageLength;
+                                let newX: number = spark.x + newDx;
+                                let newY: number = spark.y + newDy;
+                                const newAfterImageSpark: Spark = {...spark, movementType: 0, x: newX, y: newY, radius: newRadius};
+                                afterImageSparks.push(newAfterImageSpark);
+                                afterImageLength += newRadius;
+                            }
+                        }
+                    }else if(spark.sparkType === 2){
+                        // 雫型火花を残像を追加する
+                        const innerDistance: number = goalDistance * outerDifference; // 内側の距離
+                        if(prevDistance > goalDistance * outerDifference){
+                            // 残像火花の太さを算出する関数
+                            function calculateRadius(distance: number): number{
+                                const distanceAchievement: number =  (distance - innerDistance) / (goalDistance - innerDistance); // 火花の目標位置への達成度
+                                const radiusMagnification: number = distanceAchievement // 火花の太さの倍率
+                                const newRadius: number = spark.standardRadius * radiusMagnification;
+                                return newRadius;
+                            }
+    
+                            let afterImageLength: number = 0;
+                            while(speed >= afterImageLength){
+                                const newDistance: number = prevDistance + afterImageLength;
+                                const newRadius: number = Math.max(calculateRadius(newDistance), spark.standardRadius * 0.2);
+                                if(newRadius <= 0) break;
+                                const newDx: number = Math.cos(spark.direction + launchAngle) * afterImageLength;
+                                const newDy: number = Math.sin(spark.direction + launchAngle) * afterImageLength;
+                                let newX: number = spark.x + newDx;
+                                let newY: number = spark.y + newDy;
+                                const newAfterImageSpark: Spark = {...spark, movementType: 0, x: newX, y: newY, radius: newRadius};
+                                afterImageSparks.push(newAfterImageSpark);
+                                afterImageLength += newRadius;
+                            }
+                        }
+                    }
+
+                    const newRadius: number = (spark.sparkType === 0) ? spark.radius : 0;
+                    const newSpark: Spark = {...spark, x: newX, y: newY, radius: newRadius};
+                    return newSpark;
+                });
+                result = [...newSparks, ...afterImageSparks];
+            }
+            return result;
+        }
+    }
 
     /* 花火&火花用共通関数定義 */
     // 花火と火花が消えていくアニメーション
@@ -466,13 +593,13 @@ export function FireworksProvider({children}: {children: ReactNode}){
         setSparks((prevSparks) => {
             // 新しい火花の透明度を計算して更新
             const updatedStars = prevSparks.map((spark) => {
-                const newAlpha: number = Math.max(Math.round(spark.alpha - speed), 0); // 透明度が負にならないようにする
+                const newAlpha: number = Math.max(Math.round(spark.color.alpha - speed), 0); // 透明度が負にならないようにする
                 return {...spark, alpha: newAlpha};
             });
 
             isFinishedSparksAnimation.current = prevSparks.every((sparks) => {
                 // 全ての火花の透明度が0以下になったらアニメーションを停止
-                return sparks.alpha <= 0;
+                return sparks.color.alpha <= 0;
             })
 
             const result = updatedStars;
@@ -580,6 +707,8 @@ export function FireworksProvider({children}: {children: ReactNode}){
 
     // 花火の位置を正位置とランダムでトグルする関数
     function toggleFireworksPosition(){
+        if(fireworkPhase !== 0) return; // アニメーション中は位置を変更しない
+
         if(positionToggle){
             initializeFireworksPosition();
         }else{
@@ -656,14 +785,16 @@ export function FireworksProvider({children}: {children: ReactNode}){
 
     // 花火の初期表示を行う
     useEffect(() => {
-        if(fireworkPhase !== 0) return;
-        const canvas = canvasRef.current;
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        if(!imageData) return;
-        previewFireworks(ctx, imageData);
+        if(fireworkPhase === 0){
+            const canvas = canvasRef.current;
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            if (!ctx) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if(!imageData) return;
+            previewSparks(ctx);
+            previewFireworks(ctx, imageData);
+        }
     }, [imageData, fireworkPhase, launchAngle]);
 
     return (

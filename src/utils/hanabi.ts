@@ -1,10 +1,12 @@
+export type Color = {
+    red: number;
+    green: number;
+    blue: number;
+    alpha: number;
+}
+
 export type Star = {
-    color: {
-        red: number
-        green: number
-        blue: number
-        alpha: number
-    }
+    color: Color;
     x: number
     y: number
     radius: number
@@ -20,8 +22,7 @@ export type ImageInfo = {
 
 // 火花データの型
 export type Spark = {
-    color: string;
-    alpha: number;
+    color: Color;
     x: number;
     y: number;
     standardRadius: number;
