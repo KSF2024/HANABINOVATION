@@ -38,7 +38,7 @@ type SchoolInfo = {
 }
 
 // 各学校の設定データ
-export const schoolData: { [boothId: string]: SchoolInfo } = {
+export const SCHOOL_DATA: { [boothId: string]: SchoolInfo } = {
     "HF5W2T": {
         schoolName: "河原電子ビジネス専門学校",
         color: "#00FFFF",
@@ -112,11 +112,11 @@ export const schoolData: { [boothId: string]: SchoolInfo } = {
 };
 
 // ブースIDのリスト
-const boothIdList: string[] = Object.keys(schoolData);
+const BOOTH_ID_LIST: string[] = Object.keys(SCHOOL_DATA);
 
 // 正しいブースIDかどうかを確かめる関数
 export function validateBoothId(boothId: string): boolean{
-    return boothIdList.includes(boothId);
+    return BOOTH_ID_LIST.includes(boothId);
 }
 
 // 画像データのパスを取得する関数
@@ -133,7 +133,7 @@ export function getImageSrc(boothId: string, fireworkType: 0 | 1 | 2 | 3, firewo
         result = URL.createObjectURL(fireworkDesign);
     }else{
         const fireworkTypeIndex: 0 | 1 | 2 = (fireworkType - 1) as (0 | 1 | 2);
-        result = schoolData[boothId].fireworksImages[fireworkTypeIndex];
+        result = SCHOOL_DATA[boothId].fireworksImages[fireworkTypeIndex];
     }
 
     return result;
@@ -142,5 +142,5 @@ export function getImageSrc(boothId: string, fireworkType: 0 | 1 | 2 | 3, firewo
 // ブースIDを指定して、各専門学校のテーマカラーを取得する関数
 export function getBoothColor(boothId: string): string | null{
     if(!validateBoothId(boothId)) return null;
-    return schoolData[boothId].color;
+    return SCHOOL_DATA[boothId].color;
 }
