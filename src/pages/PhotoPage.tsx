@@ -1,6 +1,10 @@
 import { ThemeProvider, createTheme } from "@mui/material";
 import Camera from "../components/Camera";
 import ButtonArea from "../components/ButtonArea";
+import { useContext, useEffect, useState } from "react";
+import { DataContext } from "../providers/DataProvider";
+import { useParams } from "react-router-dom";
+import CaptureFireworkCanvas from "../components/CaptureFireworkCanvas";
 
 /* 定数定義 */
 export const ICON_SIZE: string = "5rem"; // ボタンの大きさ
@@ -28,18 +32,36 @@ const theme = createTheme({
 });
 
 export default function PhotoPage(){
+    const { boothId } = useParams();
+
+    const {
+        setBoothId
+    } = useContext(DataContext);
+
+    useEffect(() => {
+        if(boothId) setBoothId(boothId);
+    }, [boothId]);
+
     return (
-        <>
+        <div
+            style={{
+                backgroundColor: "black",
+                width: "100vw",
+                height: "100dvh"
+            }}
+        >
             <div
                 style={{
-                    overflow: "hidden"
+                    overflow: "hidden",
+                    zIndex: "0"
                 }}
             >
                 <Camera/>
+                <CaptureFireworkCanvas/>
             </div>
             <ThemeProvider theme={theme}>
                 <ButtonArea theme={theme}/>
             </ThemeProvider>
-        </>
+        </div>
     )
 }

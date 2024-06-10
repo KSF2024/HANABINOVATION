@@ -1,4 +1,4 @@
-import { useContext, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { CameraContext } from "./../providers/CameraProvider";
 import DoubleCircleIcon from "./DoubleCircleIcon";
 import { Theme } from '@mui/material/styles';
@@ -9,6 +9,8 @@ import CameraRear from '@mui/icons-material/CameraRear';
 import CameraFront from '@mui/icons-material/CameraFront';
 import Cameraswitch from '@mui/icons-material/Cameraswitch';
 import { ICON_SIZE, ICON_COLOR, BUTTON_MARGIN } from "./../pages/PhotoPage";
+import { FireworksContext } from "../providers/FireworkProvider";
+import { DataContext } from "../providers/DataProvider";
 
 // ボタン類のコンポーネント
 export default function ButtonArea({theme}: {theme: Theme}){
@@ -25,6 +27,16 @@ export default function ButtonArea({theme}: {theme: Theme}){
 
     // 画面幅がmd以上かどうか
     const isMdScreen = useMediaQuery(() => theme.breakpoints.up("md")); // md以上
+
+    const {
+        initializeImageSrc,
+        toggleFireworksPosition,
+        setFireworkPhase
+    } = useContext(FireworksContext);
+
+    const {
+        boothId
+    } = useContext(DataContext);
 
     /* 関数定義 */
     // 撮影ボタンを押したときの処理
@@ -59,6 +71,11 @@ export default function ButtonArea({theme}: {theme: Theme}){
         console.log("花火データ送信");
     }
 
+    // boothIdが読み込めたら、画像データを読み込む
+    useEffect(() => {
+        if(boothId) initializeImageSrc();
+    }, [boothId]);
+
 
     return (
         <div
@@ -68,6 +85,7 @@ export default function ButtonArea({theme}: {theme: Theme}){
                 justifyContent: isMdScreen ? "center" : "space-evenly",
                 position: "absolute",
                 bottom: "1rem",
+                zIndex: "10"
             }}
         >
             <IconButton
@@ -78,7 +96,7 @@ export default function ButtonArea({theme}: {theme: Theme}){
                 color="primary"
                 onClick={() =>{
                     if(isTakingPhoto.current) return; // 撮影ボタンの処理中なら、処理をやめる
-                    console.log("花火の向き変更");
+                    toggleFireworksPosition();
                 }}
             >
                 <CachedIcon
@@ -94,7 +112,11 @@ export default function ButtonArea({theme}: {theme: Theme}){
                 }}
                 aria-label="capture-display"
                 color="primary"
-                onClick={handleTakePhotoButton}
+                onClick={() => {
+                    // TODO 撮影処理の実装
+                    setFireworkPhase(prev => (prev + 1) % 4)
+                    // handleTakePhotoButton();
+                }}
             >
                 <DoubleCircleIcon
                     width={ICON_SIZE}
