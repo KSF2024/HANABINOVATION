@@ -167,7 +167,6 @@ export function FireworksProvider({children}: {children: ReactNode}){
         });
 
         if(isFinishedFireworkAnimation.current){
-            console.log("animation stopped")
             // アニメーションが停止したら、スターの位置を最終位置に修正する
             setStars(prevStars => {
                 // スターの最終位置を計算して更新
@@ -424,30 +423,26 @@ export function FireworksProvider({children}: {children: ReactNode}){
             const capitalStar = {...prevStars}.capitalStar;
 
             // 花火の目標位置への達成率を求める
-            const distanceAchievement: number = getDistanceAchievement(capitalStar.x, capitalStar.y, prevStars.goalPositions.x, prevStars.goalPositions.y);
+            const goalX: number = prevStars.goalPositions.x;
+            const goalY: number = prevStars.goalPositions.y;
+            const distanceAchievement: number = getDistanceAchievement(capitalStar.x, capitalStar.y, goalX, goalY);
 
             // 花火の速度を求める
             const defaultSpeed: number = 10;
             const minSpeed: number = 1;
             const speed: number = Math.max(defaultSpeed * distanceAchievement, minSpeed);
-            // console.log(speed, distanceAchievement)
 
             // 花火の移動距離を求める
-            console.log({radian, launchAngle})
             const dx: number = speed * Math.cos(radian);
             const dy: number = speed * Math.sin(radian);
-            // const dx: number = 0;
-            // const dy: number = 0;
-
-            console.log({dx, dy})
 
             // 花火を移動させる
             capitalStar.x += dx;
             capitalStar.y += dy;
 
             // 花火が目標位置を超えたなら、目標位置にグリッドさせる
-            if(capitalStar.x >= prevStars.goalPositions.x) capitalStar.x = prevStars.goalPositions.x;
-            if(capitalStar.y <= prevStars.goalPositions.y) capitalStar.y = prevStars.goalPositions.y;
+            capitalStar.x = initialX < goalX ? Math.min(capitalStar.x, goalX) : Math.max(capitalStar.x, goalX);
+            if(capitalStar.y <= goalY) capitalStar.y = goalY;
             return {...prevStars, capitalStar};
         })
 
@@ -709,7 +704,7 @@ export function FireworksProvider({children}: {children: ReactNode}){
         const goalPositions = { x: initialX, y: initialY };
 
         // 花火を打ち上げる始点を求める
-        const angleDegrees: number = (270 - launchAngle) % 360; // 花火を打ち上げる角度
+        const angleDegrees: number = (270 + launchAngle) % 360; // 花火を打ち上げる角度
         const canvasHeight: number = canvasRef.current?.height || 0;
         const { x, y } = findIntersection(goalPositions, angleDegrees, canvasHeight);
 
@@ -868,7 +863,6 @@ export function FireworksProvider({children}: {children: ReactNode}){
 
     // starsやsparksが変更される度、再度キャンバスに描画する
     useEffect(() => {
-        console.log("redraw caused");
         // Canvasコンテキストを取得
         const canvas = canvasRef.current;
         if (!canvas) return;
@@ -911,7 +905,7 @@ export function FireworksProvider({children}: {children: ReactNode}){
 
             const { initialX, initialY } = getInitialPosition();
             const goalPositions = { x: initialX, y: initialY };
-            const angleDegrees: number = (270 - launchAngle) % 360; // 花火を打ち上げる角度
+            const angleDegrees: number = (270 + launchAngle) % 360; // 花火を打ち上げる角度
             const canvasHeight: number = canvasRef.current?.height || 0;
             const { x, y } = findIntersection(goalPositions, angleDegrees, canvasHeight);
             drawStar(ctx, {

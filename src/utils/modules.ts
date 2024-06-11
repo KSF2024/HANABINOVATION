@@ -25,31 +25,17 @@ export function hexToRgba(hex: string, alpha: number): Color{
     return { red, green, blue, alpha };
 }
 
-// 指定した条件に基づいてX軸またはY軸と交わる点を計算する関数
+// 指定した条件に基づいてY軸と交わる点を計算する関数
 export function findIntersection(start: Point, angleDegrees: number, height: number): Point {
     const angleRadians = (angleDegrees * Math.PI) / 180;
     const slope = Math.tan(angleRadians);
 
-    // 方程式: y = slope * (x - start.x) + start.y
-    // 軸A (x = 0) と交わる点
-    const yAxisIntersectionY = slope * (0 - start.x) + start.y;
-    const yAxisIntersection: Point = { x: 0, y: yAxisIntersectionY };
-
     // 方程式: height = slope * (x - start.x) + start.y
-    // 軸B (y = height) と交わる点
+    // 軸 (y = height) と交わる点
     const xAxisIntersectionX = (height - start.y) / slope + start.x;
     const xAxisIntersection: Point = { x: xAxisIntersectionX, y: height };
 
-    // 点startから各交点までの距離を計算
-    const distanceToYAxisIntersection = Math.sqrt(
-        Math.pow(start.x - yAxisIntersection.x, 2) + Math.pow(start.y - yAxisIntersection.y, 2)
-    );
-    const distanceToXAxisIntersection = Math.sqrt(
-        Math.pow(start.x - xAxisIntersection.x, 2) + Math.pow(start.y - xAxisIntersection.y, 2)
-    );
-
-    // 近い方の交点を返す
-    return distanceToYAxisIntersection < distanceToXAxisIntersection ? yAxisIntersection : xAxisIntersection;
+    return xAxisIntersection;
 }
 
 // 二点間の距離を計算する関数
