@@ -709,7 +709,7 @@ export function FireworksProvider({children}: {children: ReactNode}){
         const goalPositions = { x: initialX, y: initialY };
 
         // 花火を打ち上げる始点を求める
-        const angleDegrees: number = (launchAngle + 270) % 360; // 花火を打ち上げる角度
+        const angleDegrees: number = (270 - launchAngle) % 360; // 花火を打ち上げる角度
         const canvasHeight: number = canvasRef.current?.height || 0;
         const { x, y } = findIntersection(goalPositions, angleDegrees, canvasHeight);
 
@@ -908,6 +908,22 @@ export function FireworksProvider({children}: {children: ReactNode}){
             if(!imageData) return;
             previewSparks(ctx);
             previewFireworks(ctx, imageData);
+
+            const { initialX, initialY } = getInitialPosition();
+            const goalPositions = { x: initialX, y: initialY };
+            const angleDegrees: number = (270 - launchAngle) % 360; // 花火を打ち上げる角度
+            const canvasHeight: number = canvasRef.current?.height || 0;
+            const { x, y } = findIntersection(goalPositions, angleDegrees, canvasHeight);
+            drawStar(ctx, {
+                color: {
+                    red: 255,
+                    green: 0,
+                    blue: 0,
+                    alpha: 255
+                },
+                x, y,
+                radius: 5
+            })
         }
     }, [imageData, fireworkPhase, launchAngle]);
 
