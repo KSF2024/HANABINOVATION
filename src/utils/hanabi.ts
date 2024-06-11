@@ -1,36 +1,4 @@
-export type Color = {
-    red: number;
-    green: number;
-    blue: number;
-    alpha: number;
-}
-
-export type Star = {
-    color: Color;
-    x: number
-    y: number
-    radius: number
-}
-
-// 画像データの型
-export type ImageInfo = {
-    id: string;
-    imageData: ImageData;
-    width: number;
-    height: number;
-}
-
-// 火花データの型
-export type Spark = {
-    color: Color;
-    x: number;
-    y: number;
-    standardRadius: number;
-    radius: number;
-    direction: number;
-    movementType: 0 | 1 | 2; // 火花の動き(0: 停止, 1: 内丸, 2: 外丸)
-    sparkType: 0 | 1 | 2; // 火花の形(0: 丸型, 1: 線型, 2: 雫型)
-}
+import { Star } from "./types";
 
 export function generateStars(imageData: ImageData, angle: number = 0, interval: number = 10, radius: number = 5): Star[]{
     const stars: Star[] = [];
