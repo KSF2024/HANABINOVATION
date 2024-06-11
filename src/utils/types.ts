@@ -40,9 +40,16 @@ export type Spark = {
     sparkType: 0 | 1 | 2; // 火花の形(0: 丸型, 1: 線型, 2: 雫型)
 }
 
+// 打ち上げ用花火の残像データの型
+export type RisingAfterImage = {
+    star: Star;
+    radian: number;
+    speed: number;
+}
+
 // 打ち上げ用花火データの型
 export type RisingStars = {
     capitalStar: Star,
-    afterImageStars: Star[],
+    afterImageStars: RisingAfterImage[],
     goalPositions: Point
 }

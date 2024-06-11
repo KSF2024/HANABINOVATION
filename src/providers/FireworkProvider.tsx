@@ -1,11 +1,10 @@
 import { createContext, ReactNode, useState, useEffect, useRef, useContext } from 'react';
-import { ImageInfo, RisingStars, Spark, Star } from '../utils/types';
+import { ImageInfo, RisingAfterImage, RisingStars, Spark, Star } from '../utils/types';
 import { generateStars } from '../utils/hanabi';
 import { DataContext } from './DataProvider';
 import { getBoothColor, getImageSrc } from '../utils/config';
 import { ulid } from "ulidx";
 import { calculateDistance, findIntersection, hexToRgba } from '../utils/modules';
-import e from 'cors';
 
 /* 型定義 */
 // contextに渡すデータの型
@@ -421,9 +420,11 @@ export function FireworksProvider({children}: {children: ReactNode}){
         const defaultSpeed: number = 10; // 花火の基本速度
         const minSpeed: number = 1; // 花火の最低速度
         const fadeSpeed: number = 10; // 花火が消える速度
+        const afterImageMaxAngle: number = 30; // 残像の最大角度
 
         setRisingStars(prevStars => {
             const capitalStar = {...prevStars}.capitalStar;
+            const afterImageStars = [];
 
             // 花火の目標位置への達成率を求める
             const goalX: number = prevStars.goalPositions.x;
@@ -433,7 +434,7 @@ export function FireworksProvider({children}: {children: ReactNode}){
             // 花火の速度を求める
             const speed: number = Math.max(defaultSpeed * distanceAchievement, minSpeed);
 
-            if(distanceAchievement <= 0){
+            if(distanceAchievement <= 0.01){
                 // 花火が停止し、打ち上げが完了したら、透明度を下げていく
                 capitalStar.color.alpha -= fadeSpeed;
 
@@ -452,9 +453,49 @@ export function FireworksProvider({children}: {children: ReactNode}){
                 // 花火が目標位置を超えたなら、目標位置にグリッドさせる
                 capitalStar.x = initialX < goalX ? Math.min(capitalStar.x, goalX) : Math.max(capitalStar.x, goalX);
                 if(capitalStar.y <= goalY) capitalStar.y = goalY;
+
+                // 花火の残像の生成処理を行う
+                // 花火の残像の角度を求める
+                const afterImageAngle: number = Math.random() * afterImageMaxAngle * 2 - afterImageMaxAngle;
+                const afterImageRadian: number = (90 + afterImageAngle) % 360 / 180 * Math.PI;
+
+                // 花火の残像を生成する
+                const newAfterImage: RisingAfterImage = {
+                    star: { ...capitalStar, color: {...capitalStar.color} },
+                    speed: defaultSpeed,
+                    radian: afterImageRadian
+                }
+
+                // 生成した花火の残像を追加する
+                afterImageStars.push(newAfterImage);
+
+                // 花火の残像の移動処理を行う
+                prevStars.afterImageStars.forEach(risingAfterImage => {
+                    // 花火の残像の透明度を下げる
+                    risingAfterImage.star.color.alpha -= fadeSpeed;
+
+                    if(risingAfterImage.star.color.alpha > 0){
+                        // 花火の残像の大きさを小さくする
+                        risingAfterImage.star.radius *= 0.9;
+
+                        // 花火の残像の移動速度を小さくする
+                        risingAfterImage.speed *= 0.9;
+
+                        // 花火の残像の移動距離を求める
+                        const dx: number = risingAfterImage.speed * Math.cos(risingAfterImage.radian);
+                        const dy: number = risingAfterImage.speed * Math.sin(risingAfterImage.radian);
+
+                        // 花火の残像を移動させる
+                        risingAfterImage.star.x += dx;
+                        risingAfterImage.star.y += dy;
+
+                        // 透明度が残っている場合、花火の残像データを保持する
+                        afterImageStars.push(risingAfterImage);
+                    }
+                })
             }
 
-            return {...prevStars, capitalStar};
+            return {...prevStars, capitalStar, afterImageStars};
         })
 
         if(isFinishedFireworkAnimation.current){
@@ -887,9 +928,10 @@ export function FireworksProvider({children}: {children: ReactNode}){
         // 打ち上げ用花火を描画する
         if(fireworkPhase === 1){
             drawStar(ctx, risingStars.capitalStar);
-            risingStars.afterImageStars.forEach(star => {
-                drawStar(ctx, star);
+            risingStars.afterImageStars.forEach(afterImage => {
+                drawStar(ctx, afterImage.star);
             });
+            console.log(risingStars.afterImageStars)
         }else{
             // 爆発用火花を描画する
             for(const spark of sparks){
