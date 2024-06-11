@@ -419,12 +419,12 @@ export function FireworksProvider({children}: {children: ReactNode}){
     function raiseFireworks(initialX: number, initialY: number, radian: number){
         const defaultSpeed: number = 10; // 花火の基本速度
         const minSpeed: number = 1; // 花火の最低速度
-        const fadeSpeed: number = 10; // 花火が消える速度
-        const afterImageMaxAngle: number = 30; // 残像の最大角度
+        const fadeSpeed: number = 3; // 花火が消える速度
+        const afterImageMaxAngle: number = 10; // 残像の最大角度
 
         setRisingStars(prevStars => {
             const capitalStar = {...prevStars}.capitalStar;
-            const afterImageStars = [];
+            const afterImageStars: RisingAfterImage[] = [];
 
             // 花火の目標位置への達成率を求める
             const goalX: number = prevStars.goalPositions.x;
@@ -439,7 +439,11 @@ export function FireworksProvider({children}: {children: ReactNode}){
                 capitalStar.color.alpha -= fadeSpeed;
 
                 // 打ち上げ用花火本体の透明度が0になったら、アニメーションを終了する
-                if(capitalStar.color.alpha <= 0) isFinishedFireworkAnimation.current = true;
+                if(capitalStar.color.alpha <= 0){
+                    isFinishedFireworkAnimation.current = true;
+                    setFireworkPhase(2); // 花火の爆発処理に移る
+                    return {...prevStars, afterImageStars: []};
+                }
             }else{
                 // 花火が頂点に達していない場合、花火の打ち上げ処理を行う
                 // 花火の移動距離を求める
@@ -453,47 +457,47 @@ export function FireworksProvider({children}: {children: ReactNode}){
                 // 花火が目標位置を超えたなら、目標位置にグリッドさせる
                 capitalStar.x = initialX < goalX ? Math.min(capitalStar.x, goalX) : Math.max(capitalStar.x, goalX);
                 if(capitalStar.y <= goalY) capitalStar.y = goalY;
-
-                // 花火の残像の生成処理を行う
-                // 花火の残像の角度を求める
-                const afterImageAngle: number = Math.random() * afterImageMaxAngle * 2 - afterImageMaxAngle;
-                const afterImageRadian: number = (90 + afterImageAngle) % 360 / 180 * Math.PI;
-
-                // 花火の残像を生成する
-                const newAfterImage: RisingAfterImage = {
-                    star: { ...capitalStar, color: {...capitalStar.color} },
-                    speed: defaultSpeed,
-                    radian: afterImageRadian
-                }
-
-                // 生成した花火の残像を追加する
-                afterImageStars.push(newAfterImage);
-
-                // 花火の残像の移動処理を行う
-                prevStars.afterImageStars.forEach(risingAfterImage => {
-                    // 花火の残像の透明度を下げる
-                    risingAfterImage.star.color.alpha -= fadeSpeed;
-
-                    if(risingAfterImage.star.color.alpha > 0){
-                        // 花火の残像の大きさを小さくする
-                        risingAfterImage.star.radius *= 0.9;
-
-                        // 花火の残像の移動速度を小さくする
-                        risingAfterImage.speed *= 0.9;
-
-                        // 花火の残像の移動距離を求める
-                        const dx: number = risingAfterImage.speed * Math.cos(risingAfterImage.radian);
-                        const dy: number = risingAfterImage.speed * Math.sin(risingAfterImage.radian);
-
-                        // 花火の残像を移動させる
-                        risingAfterImage.star.x += dx;
-                        risingAfterImage.star.y += dy;
-
-                        // 透明度が残っている場合、花火の残像データを保持する
-                        afterImageStars.push(risingAfterImage);
-                    }
-                })
             }
+
+            // 花火の残像の生成処理を行う
+            // 花火の残像の角度を求める
+            const afterImageAngle: number = Math.random() * afterImageMaxAngle * 2 - afterImageMaxAngle;
+            const afterImageRadian: number = (90 + afterImageAngle) % 360 / 180 * Math.PI;
+
+            // 花火の残像を生成する
+            const newAfterImage: RisingAfterImage = {
+                star: { ...capitalStar, color: {...capitalStar.color} },
+                speed: defaultSpeed / 10,
+                radian: afterImageRadian
+            }
+
+            // 生成した花火の残像を追加する
+            afterImageStars.push(newAfterImage);
+
+            // 花火の残像の移動処理を行う
+            prevStars.afterImageStars.forEach(risingAfterImage => {
+                // 花火の残像の透明度を下げる
+                risingAfterImage.star.color.alpha -= fadeSpeed;
+
+                if(risingAfterImage.star.color.alpha > 0){
+                    // 花火の残像の大きさを小さくする
+                    risingAfterImage.star.radius *= 0.99;
+
+                    // 花火の残像の移動速度を小さくする
+                    risingAfterImage.speed *= 0.99;
+
+                    // 花火の残像の移動距離を求める
+                    const dx: number = risingAfterImage.speed * Math.cos(risingAfterImage.radian);
+                    const dy: number = risingAfterImage.speed * Math.sin(risingAfterImage.radian);
+
+                    // 花火の残像を移動させる
+                    risingAfterImage.star.x += dx;
+                    risingAfterImage.star.y += dy;
+
+                    // 透明度が残っている場合、花火の残像データを保持する
+                    afterImageStars.push(risingAfterImage);
+                }
+            })
 
             return {...prevStars, capitalStar, afterImageStars};
         })
@@ -931,7 +935,6 @@ export function FireworksProvider({children}: {children: ReactNode}){
             risingStars.afterImageStars.forEach(afterImage => {
                 drawStar(ctx, afterImage.star);
             });
-            console.log(risingStars.afterImageStars)
         }else{
             // 爆発用火花を描画する
             for(const spark of sparks){
