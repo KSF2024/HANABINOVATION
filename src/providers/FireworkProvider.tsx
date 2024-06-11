@@ -430,11 +430,16 @@ export function FireworksProvider({children}: {children: ReactNode}){
             const defaultSpeed: number = 10;
             const minSpeed: number = 1;
             const speed: number = Math.max(defaultSpeed * distanceAchievement, minSpeed);
-            console.log(speed, distanceAchievement)
+            // console.log(speed, distanceAchievement)
 
             // 花火の移動距離を求める
-            const dx: number = speed * Math.sin(radian);
-            const dy: number = speed * Math.cos(radian);
+            console.log({radian, launchAngle})
+            const dx: number = speed * Math.cos(radian);
+            const dy: number = speed * Math.sin(radian);
+            // const dx: number = 0;
+            // const dy: number = 0;
+
+            console.log({dx, dy})
 
             // 花火を移動させる
             capitalStar.x += dx;
@@ -709,7 +714,7 @@ export function FireworksProvider({children}: {children: ReactNode}){
         const { x, y } = findIntersection(goalPositions, angleDegrees, canvasHeight);
 
         // 花火を打ち上げる角度(ラジアン)を求める
-        const radian: number = (launchAngle + 270) % 360 / 360 * Math.PI;
+        const radian: number = (270 + launchAngle) % 360 / 180 * Math.PI;
 
         // 打ち上げ用の花火の星を作成する
         const capitalStar: Star = { color, x, y, radius: 5 };
