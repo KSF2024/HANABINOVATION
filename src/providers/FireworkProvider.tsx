@@ -5,6 +5,7 @@ import { DataContext } from './DataProvider';
 import { getBoothColor, getImageSrc } from '../utils/config';
 import { ulid } from "ulidx";
 import { calculateDistance, findIntersection, hexToRgba } from '../utils/modules';
+import e from 'cors';
 
 /* 型定義 */
 // contextに渡すデータの型
@@ -419,6 +420,10 @@ export function FireworksProvider({children}: {children: ReactNode}){
     /* 花火の軌道用関数定義 */
     // 花火を打ち上げるアニメーション
     function raiseFireworks(initialX: number, initialY: number, radian: number){
+        const defaultSpeed: number = 10; // 花火の基本速度
+        const minSpeed: number = 1; // 花火の最低速度
+        const fadeSpeed: number = 30; // 花火が消える速度
+
         setRisingStars(prevStars => {
             const capitalStar = {...prevStars}.capitalStar;
 
@@ -428,21 +433,29 @@ export function FireworksProvider({children}: {children: ReactNode}){
             const distanceAchievement: number = getDistanceAchievement(capitalStar.x, capitalStar.y, goalX, goalY);
 
             // 花火の速度を求める
-            const defaultSpeed: number = 10;
-            const minSpeed: number = 1;
             const speed: number = Math.max(defaultSpeed * distanceAchievement, minSpeed);
 
-            // 花火の移動距離を求める
-            const dx: number = speed * Math.cos(radian);
-            const dy: number = speed * Math.sin(radian);
+            if(distanceAchievement <= 0){
+                // 花火が停止し、打ち上げが完了したら、透明度を下げていく
+                capitalStar.color.alpha -= fadeSpeed;
 
-            // 花火を移動させる
-            capitalStar.x += dx;
-            capitalStar.y += dy;
+                // 打ち上げ用花火本体の透明度が0になったら、アニメーションを終了する
+                if(capitalStar.color.alpha <= 0) isFinishedFireworkAnimation.current = true;
+            }else{
+                // 花火が頂点に達していない場合、花火の打ち上げ処理を行う
+                // 花火の移動距離を求める
+                const dx: number = speed * Math.cos(radian);
+                const dy: number = speed * Math.sin(radian);
 
-            // 花火が目標位置を超えたなら、目標位置にグリッドさせる
-            capitalStar.x = initialX < goalX ? Math.min(capitalStar.x, goalX) : Math.max(capitalStar.x, goalX);
-            if(capitalStar.y <= goalY) capitalStar.y = goalY;
+                // 花火を移動させる
+                capitalStar.x += dx;
+                capitalStar.y += dy;
+
+                // 花火が目標位置を超えたなら、目標位置にグリッドさせる
+                capitalStar.x = initialX < goalX ? Math.min(capitalStar.x, goalX) : Math.max(capitalStar.x, goalX);
+                if(capitalStar.y <= goalY) capitalStar.y = goalY;
+            }
+
             return {...prevStars, capitalStar};
         })
 
@@ -902,22 +915,6 @@ export function FireworksProvider({children}: {children: ReactNode}){
             if(!imageData) return;
             previewSparks(ctx);
             previewFireworks(ctx, imageData);
-
-            const { initialX, initialY } = getInitialPosition();
-            const goalPositions = { x: initialX, y: initialY };
-            const angleDegrees: number = (270 + launchAngle) % 360; // 花火を打ち上げる角度
-            const canvasHeight: number = canvasRef.current?.height || 0;
-            const { x, y } = findIntersection(goalPositions, angleDegrees, canvasHeight);
-            drawStar(ctx, {
-                color: {
-                    red: 255,
-                    green: 0,
-                    blue: 0,
-                    alpha: 255
-                },
-                x, y,
-                radius: 5
-            })
         }
     }, [imageData, fireworkPhase, launchAngle]);
 
