@@ -114,7 +114,7 @@ export default function ButtonArea({theme}: {theme: Theme}){
                 color="primary"
                 onClick={() => {
                     // TODO 撮影処理の実装
-                    setFireworkPhase(prev => (prev + 1) % 3)
+                    setFireworkPhase(prev => (prev === 0) ? 1 : 0)
                     // handleTakePhotoButton();
                 }}
             >

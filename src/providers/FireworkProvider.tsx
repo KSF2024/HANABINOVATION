@@ -4,7 +4,7 @@ import { generateStars } from '../utils/hanabi';
 import { DataContext } from './DataProvider';
 import { getBoothColor, getImageSrc } from '../utils/config';
 import { ulid } from "ulidx";
-import { calculateDistance, findIntersection, hexToRgba } from '../utils/modules';
+import { calculateDistance, findIntersection, hexToRgba, sleep } from '../utils/modules';
 
 /* 型定義 */
 // contextに渡すデータの型
@@ -333,13 +333,13 @@ export function FireworksProvider({children}: {children: ReactNode}){
                 let newY: number = spark.y + dy;
 
                 // 新しい火花の位置が最終位置を超えているなら、最終位置にグリッドする
-                const newDistance: number = Math.sqrt(Math.pow(initialX - newX, 2) + Math.pow((initialY - newY), 2)); // 中心点からの距離
-                if(newDistance >= goalDistance){
-                    const goalX: number = initialX + Math.cos(spark.direction) * goalDistance;
-                    const goalY: number = initialY + Math.sin(spark.direction) * goalDistance;
-                    newX = goalX;
-                    newY = goalY;
-                }
+                // const newDistance: number = Math.sqrt(Math.pow(initialX - newX, 2) + Math.pow((initialY - newY), 2)); // 中心点からの距離
+                // if(newDistance >= goalDistance){
+                //     const goalX: number = initialX + Math.cos(spark.direction) * goalDistance;
+                //     const goalY: number = initialY + Math.sin(spark.direction) * goalDistance;
+                //     newX = goalX;
+                //     newY = goalY;
+                // }
 
                 if(spark.sparkType === 1){
                     // 線型火花の残像を追加する
@@ -441,7 +441,8 @@ export function FireworksProvider({children}: {children: ReactNode}){
                 // 打ち上げ用花火本体の透明度が0になったら、アニメーションを終了する
                 if(capitalStar.color.alpha <= 0){
                     isFinishedFireworkAnimation.current = true;
-                    setFireworkPhase(2); // 花火の爆発処理に移る
+                    
+                    sleep(10).then(() => setFireworkPhase(2)); // 少し待機し、花火の爆発処理に移る
                     return {...prevStars, afterImageStars: []};
                 }
             }else{
@@ -597,13 +598,13 @@ export function FireworksProvider({children}: {children: ReactNode}){
                     let newY: number = spark.y + dy;
 
                     // 新しい火花の位置が最終位置を超えているなら、最終位置にグリッドする
-                    const newDistance: number = Math.sqrt(Math.pow(initialX - newX, 2) + Math.pow((initialY - newY), 2)); // 中心点からの距離
-                    if(newDistance >= goalDistance){
-                        const goalX: number = initialX + Math.cos(spark.direction) * goalDistance;
-                        const goalY: number = initialY + Math.sin(spark.direction) * goalDistance;
-                        newX = goalX;
-                        newY = goalY;
-                    }
+                    // const newDistance: number = Math.sqrt(Math.pow(initialX - newX, 2) + Math.pow((initialY - newY), 2)); // 中心点からの距離
+                    // if(newDistance >= goalDistance){
+                    //     const goalX: number = initialX + Math.cos(spark.direction) * goalDistance;
+                    //     const goalY: number = initialY + Math.sin(spark.direction) * goalDistance;
+                    //     newX = goalX;
+                    //     newY = goalY;
+                    // }
 
                     if(spark.sparkType === 1){
                         // 線型火花の残像を追加する

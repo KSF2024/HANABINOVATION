@@ -44,3 +44,5 @@ export function calculateDistance(x1: number, y1: number, x2: number, y2: number
     const deltaY = y2 - y1;
     return Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 }
+
+export const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms));
