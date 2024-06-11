@@ -114,7 +114,6 @@ export function FireworksProvider({children}: {children: ReactNode}){
                     width: newWidth,
                     height: newHeight
                 };
-                console.log(result)
                 resolve(result);
             };
             img.src = image;
@@ -405,7 +404,6 @@ export function FireworksProvider({children}: {children: ReactNode}){
         });
 
         if(isFinishedSparksAnimation.current){
-            console.log("sparks animation stopped")
             // 花火のアニメーションが終了したら、アニメーションを停止する
             setSparksAnimationFrameId(null);
             return;
@@ -422,7 +420,7 @@ export function FireworksProvider({children}: {children: ReactNode}){
     function raiseFireworks(initialX: number, initialY: number, radian: number){
         const defaultSpeed: number = 10; // 花火の基本速度
         const minSpeed: number = 1; // 花火の最低速度
-        const fadeSpeed: number = 30; // 花火が消える速度
+        const fadeSpeed: number = 10; // 花火が消える速度
 
         setRisingStars(prevStars => {
             const capitalStar = {...prevStars}.capitalStar;
@@ -849,7 +847,6 @@ export function FireworksProvider({children}: {children: ReactNode}){
     // 花火IDの用意とimageDataの取得が出来たら、花火の星を作成して、花火アニメーションを開始する
     useEffect(() => {
         if(!imageData) return;
-        console.log({fireworkPhase})
         switch(fireworkPhase){
             case 2:
                 // 花火を爆発させる
@@ -888,19 +885,21 @@ export function FireworksProvider({children}: {children: ReactNode}){
         if(!imageData) return;
 
         // 打ち上げ用花火を描画する
-        drawStar(ctx, risingStars.capitalStar);
-        risingStars.afterImageStars.forEach(star => {
-            drawStar(ctx, star);
-        })
+        if(fireworkPhase === 1){
+            drawStar(ctx, risingStars.capitalStar);
+            risingStars.afterImageStars.forEach(star => {
+                drawStar(ctx, star);
+            });
+        }else{
+            // 爆発用火花を描画する
+            for(const spark of sparks){
+                drawSpark(ctx, spark);
+            }
 
-        // 爆発用火花を描画する
-        for(const spark of sparks){
-            drawSpark(ctx, spark);
-        }
-
-        // 爆発用花火を描画する
-        for(const star of stars){
-            drawStar(ctx, star);
+            // 爆発用花火を描画する
+            for(const star of stars){
+                drawStar(ctx, star);
+            }
         }
     }, [stars, sparks, risingStars]);
 
