@@ -17,7 +17,10 @@ export const ModalContext = createContext<ModalData>(initialData);
 
 export function ModalProvider({children}: {children: ReactNode}){
     const [Modal, openModal, closeModal, isOpenModal] = useModal('portal-root-Modal', {
-        preventScroll: true
+        preventScroll: true,
+        focusTrapOptions : { 
+            clickOutsideDeactivates : false
+        }
     });
 
     return (
