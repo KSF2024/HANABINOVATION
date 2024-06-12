@@ -4,6 +4,7 @@ import { CaptureContext } from "../providers/CaptureProvider";
 import { FireworksContext } from "../providers/FireworkProvider";
 import { CameraContext } from "../providers/CameraProvider";
 import { ModalContext } from "../providers/ModalProvider";
+import { toast } from "react-toastify";
 
 export default function ConfirmCapture(){
     // 撮影処理用のcontext
@@ -24,7 +25,7 @@ export default function ConfirmCapture(){
     function takePhoto(){
         saveCapturedImage(); // 撮影写真を保存する
         console.log("花火データ送信"); // TODO 花火データの送信処理
-        // TODO toastifyの表示処理
+        showCongratulations(); // 花火大会への案内メッセージを送信する
         finishConfirmTakePhoto(); // 撮影写真の確認処理を終了する
     }
 
@@ -44,6 +45,24 @@ export default function ConfirmCapture(){
         setFireworkPhase(0); // 花火を半透明の初期表示状態に戻す
         closeModal(); // モーダルメニューを閉じる
     }
+
+    // 花火の撮影が終わったユーザーにメッセージを表示する関数
+    function showCongratulations(){
+        const toastTexts: string[] = ["花火の撮影ありがとうございます！", "このメッセージをクリックすると「花火大会」に参加することができます。", "他の人の作った花火も見てみましょう！"];
+        toast.info(
+            <div
+                onClick={() => {
+                    // toastメッセージがクリックされた場合、花火大会画面へ遷移する
+                    location.href = "../firework-show";
+                }}
+            >
+                {toastTexts.map((text, index) => (
+                    <div key={index}>{text}</div>
+                ))}
+            </div>
+        );
+    }
+
 
     useEffect(() => {
         if(canvasContainerRef.current && mergedCanvas){
