@@ -35,7 +35,7 @@ const theme = createTheme({
 
 export default function PhotoPage(){
     // モーダルメニュー用のコンテキスト
-    const resource = useContext(ModalContext);
+    const { Modal } = useContext(ModalContext);
 
     const { boothId } = useParams();
 
@@ -69,11 +69,9 @@ export default function PhotoPage(){
                     <ButtonArea theme={theme}/>
                 </ThemeProvider>
             </div>
-            {
-                <resource.Modal>
-                    <ConfirmCapture/>
-                </resource.Modal>
-            }
+            <Modal>
+                <ConfirmCapture/>
+            </Modal>
         </>
     )
 }
