@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useRef, useContext } from 'react';
+import { ReactNode, createContext, useRef, useContext, useState } from 'react';
 import { saveAs } from "file-saver";
 import { CameraContext } from './CameraProvider';
 import { FireworksContext } from './FireworkProvider';
@@ -7,18 +7,20 @@ import { FireworksContext } from './FireworkProvider';
 /* 型定義 */
 // contextに渡すデータの型
 type CaptureContext = {
-    mergedCanvasRef: React.MutableRefObject<HTMLCanvasElement | null>;
-    mergeCanvas(): void;
-    getCapturedBase64(): string | null;
+    isTakingPhoto: React.MutableRefObject<boolean>;
+    mergedCanvas: HTMLCanvasElement | null;
+    mergeCanvas(): HTMLCanvasElement | null;
+    convertCanvasToBase64(canvasElement: HTMLCanvasElement): string | null;
     saveImage: (dataURL: string) => void;
 };
 
 
 /* Provider */
 const initialData: CaptureContext = {
-    mergedCanvasRef: {} as any,
-    mergeCanvas: () => {},
-    getCapturedBase64: () => null,
+    isTakingPhoto: {} as any,
+    mergedCanvas: null,
+    mergeCanvas: () => null,
+    convertCanvasToBase64: () => null,
     saveImage: () => {}
 };
 
@@ -29,14 +31,15 @@ export function CaptureProvider({children}: {children: ReactNode}){
     /* useState, useContext等 */
     const { canvasRef } = useContext(FireworksContext);
     const { videoRef } = useContext(CameraContext);
-    const mergedCanvasRef = useRef<HTMLCanvasElement | null>(null);
+    const [ mergedCanvas, setMergedCanvas] = useState<HTMLCanvasElement | null>(null);
+    const isTakingPhoto = useRef<boolean>(false); // 撮影処理中かどうか
 
     /* useEffect等 */
 
 
     /* 関数定義 */
     // カメラと花火のcanvas要素を合成したcanvas要素を作成し、refに保存する関数
-    function mergeCanvas(){
+    function mergeCanvas(): HTMLCanvasElement | null{
         // カメラと花火のcanvas要素を、それぞれ取得する
         const fireworkCanvas: HTMLCanvasElement | null = canvasRef.current;
         const cameraCanvas: HTMLCanvasElement | null = getVideoCanvas();
@@ -56,13 +59,13 @@ export function CaptureProvider({children}: {children: ReactNode}){
         canvasCtx.drawImage(cameraCanvas, 0, 0, width, height); // カメラを貼り付ける
         canvasCtx.drawImage(fireworkCanvas, 0, 0, width, height); // リングを貼り付ける
 
-        mergedCanvasRef.current = canvasElement;
+        setMergedCanvas(canvasElement);
+        return canvasElement;
     }
 
     // 現在の撮影用canvasをbase64として出力する関数
-    function getCapturedBase64(): string | null{
-        if(!mergedCanvasRef.current) return null;
-        const dataURL: string = mergedCanvasRef.current.toDataURL('image/png');
+    function convertCanvasToBase64(canvasElement: HTMLCanvasElement): string | null{
+        const dataURL: string = canvasElement.toDataURL('image/png');
         return dataURL;
     }
 
@@ -142,9 +145,10 @@ export function CaptureProvider({children}: {children: ReactNode}){
     return (
         <CaptureContext.Provider
             value={{
-                mergedCanvasRef,
+                isTakingPhoto,
+                mergedCanvas,
                 mergeCanvas,
-                getCapturedBase64,
+                convertCanvasToBase64,
                 saveImage
             }}
         >

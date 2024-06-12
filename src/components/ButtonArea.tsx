@@ -25,9 +25,6 @@ export default function ButtonArea({theme}: {theme: Theme}){
         enableBothCamera
     } = useContext(CameraContext);
 
-    // 撮影処理中かどうか
-    const isTakingPhoto = useRef<boolean>(false);
-
     // 画面幅がmd以上かどうか
     const isMdScreen = useMediaQuery(() => theme.breakpoints.up("md")); // md以上
 
@@ -43,9 +40,8 @@ export default function ButtonArea({theme}: {theme: Theme}){
 
     // 写真撮影を行うためのcontext
     const {
-        mergeCanvas,
-        getCapturedBase64,
-        saveImage
+        isTakingPhoto,
+        mergeCanvas
     } = useContext(CaptureContext);
 
     // モーダルメニュー用のcontext
@@ -76,27 +72,10 @@ export default function ButtonArea({theme}: {theme: Theme}){
         // 花火の撮影処理は別の箇所で行う
     }
 
-    // 撮影処理
-    async function takePhoto(): Promise<void>{
-        // 撮影した写真に確認を取る
-        // 「撮影画像はこちらでよいですか」というメッセージボックスを表示する
-        const isPhotoOk: boolean = confirm("撮影画像はこちらでよいですか");
-
-        // 撮影した写真に承諾が取れたら、サーバーにリングを送信する
-        if(isPhotoOk){
-            sendFireworksData();
-        }else{
-            // 再撮影を望む場合、処理を止める
-            console.log("撮影やり直しのために処理を中断しました");
-        }
-
-        videoRef.current?.play(); // カメラを再生する
-        isTakingPhoto.current = false; // 撮影ボタンの処理が終わったことを記録する
-    }
-
-    // 花火データを送信する関数
-    function sendFireworksData(): void{
-        console.log("花火データ送信");
+    // 撮影写真の確認処理を行う関数
+    function confirmTakePhoto(){
+        mergeCanvas(); // 撮影写真を取得する
+        openModal(); // 撮影写真確認用モーダルメニューを開く
     }
 
 
@@ -106,17 +85,13 @@ export default function ButtonArea({theme}: {theme: Theme}){
         if(boothId) initializeImageSrc();
     }, [boothId]);
 
-    // 花火の爆発が終了したら、写真撮影処理を行う
+    // 花火の爆発が終了したら、撮影写真の確認処理を行う
     useEffect(() => {
         if(fireworkPhase !== 3) return; // 撮影待機状態でなければ処理を中止
         if(fireworkAnimationFrameId !== null) return; // 花火の爆発アニメーションが終了していなければ処理を中止
         if(sparksAnimationFrameId !== null) return; // 火花の爆発アニメーションが終了していなければ処理を中止
 
-        console.log("撮影")
-        mergeCanvas();
-        // const imageStr = getCapturedBase64();
-        // if(imageStr) saveImage(imageStr);
-        openModal();
+        confirmTakePhoto(); // 撮影写真の確認処理を行う
     }, [fireworkPhase, fireworkAnimationFrameId, sparksAnimationFrameId]);
 
 
