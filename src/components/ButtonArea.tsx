@@ -12,6 +12,7 @@ import { ICON_SIZE, ICON_COLOR, BUTTON_MARGIN } from "./../pages/PhotoPage";
 import { FireworksContext } from "../providers/FireworkProvider";
 import { DataContext } from "../providers/DataProvider";
 import { CaptureContext } from "../providers/CaptureProvider";
+import { ModalContext } from "../providers/ModalProvider";
 
 // ボタン類のコンポーネント
 export default function ButtonArea({theme}: {theme: Theme}){
@@ -43,9 +44,14 @@ export default function ButtonArea({theme}: {theme: Theme}){
     // 写真撮影を行うためのcontext
     const {
         mergeCanvas,
-        convertCanvasToBase64,
+        getCapturedBase64,
         saveImage
     } = useContext(CaptureContext);
+
+    // モーダルメニュー用のcontext
+    const {
+        openModal
+    } = useContext(ModalContext);
 
     // ブースIDを取得するためのcontext
     const {
@@ -107,11 +113,10 @@ export default function ButtonArea({theme}: {theme: Theme}){
         if(sparksAnimationFrameId !== null) return; // 火花の爆発アニメーションが終了していなければ処理を中止
 
         console.log("撮影")
-        const canvasElm = mergeCanvas();
-        if(canvasElm){
-            const imageStr = convertCanvasToBase64(canvasElm);
-            saveImage(imageStr);
-        }
+        mergeCanvas();
+        // const imageStr = getCapturedBase64();
+        // if(imageStr) saveImage(imageStr);
+        openModal();
     }, [fireworkPhase, fireworkAnimationFrameId, sparksAnimationFrameId]);
 
 
