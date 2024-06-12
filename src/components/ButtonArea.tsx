@@ -11,6 +11,7 @@ import Cameraswitch from '@mui/icons-material/Cameraswitch';
 import { ICON_SIZE, ICON_COLOR, BUTTON_MARGIN } from "./../pages/PhotoPage";
 import { FireworksContext } from "../providers/FireworkProvider";
 import { DataContext } from "../providers/DataProvider";
+import { CaptureContext } from "../providers/CaptureProvider";
 
 // ボタン類のコンポーネント
 export default function ButtonArea({theme}: {theme: Theme}){
@@ -23,24 +24,37 @@ export default function ButtonArea({theme}: {theme: Theme}){
         enableBothCamera
     } = useContext(CameraContext);
 
+    // 撮影処理中かどうか
     const isTakingPhoto = useRef<boolean>(false);
 
     // 画面幅がmd以上かどうか
     const isMdScreen = useMediaQuery(() => theme.breakpoints.up("md")); // md以上
 
+    // 花火データを操作するためのcontext
     const {
         initializeImageSrc,
         toggleFireworksPosition,
-        setFireworkPhase
+        fireworkPhase,
+        setFireworkPhase,
+        fireworkAnimationFrameId,
+        sparksAnimationFrameId
     } = useContext(FireworksContext);
 
+    // 写真撮影を行うためのcontext
+    const {
+        captureImage,
+        saveImage
+    } = useContext(CaptureContext);
+
+    // ブースIDを取得するためのcontext
     const {
         boothId
     } = useContext(DataContext);
 
+
     /* 関数定義 */
     // 撮影ボタンを押したときの処理
-    async function handleTakePhotoButton(): Promise<void>{
+    function handleTakePhotoButton(){
         // 既に撮影ボタンの処理が走っているなら、処理を中止する
         if(isTakingPhoto.current){
             console.error("既に撮影ボタンが押されています");
@@ -50,6 +64,13 @@ export default function ButtonArea({theme}: {theme: Theme}){
         isTakingPhoto.current = true; // 撮影ボタンの処理中であることを記録する
         videoRef.current?.pause(); // カメラを一時停止する
 
+        setFireworkPhase(1); // 花火の打ち上げアニメーションを開始する
+        // 花火の爆発アニメーションは別の箇所で行う
+        // 花火の撮影処理は別の箇所で行う
+    }
+
+    // 撮影処理
+    async function takePhoto(): Promise<void>{
         // 撮影した写真に確認を取る
         // 「撮影画像はこちらでよいですか」というメッセージボックスを表示する
         const isPhotoOk: boolean = confirm("撮影画像はこちらでよいですか");
@@ -71,10 +92,23 @@ export default function ButtonArea({theme}: {theme: Theme}){
         console.log("花火データ送信");
     }
 
+
+    /* useEffect */
     // boothIdが読み込めたら、画像データを読み込む
     useEffect(() => {
         if(boothId) initializeImageSrc();
     }, [boothId]);
+
+    // 花火の爆発が終了したら、写真撮影処理を行う
+    useEffect(() => {
+        if(fireworkPhase !== 3) return; // 撮影待機状態でなければ処理を中止
+        if(fireworkAnimationFrameId !== null) return; // 花火の爆発アニメーションが終了していなければ処理を中止
+        if(sparksAnimationFrameId !== null) return; // 火花の爆発アニメーションが終了していなければ処理を中止
+
+        console.log("撮影")
+        const image = captureImage();
+        if(image) saveImage(image);
+    }, [fireworkPhase, fireworkAnimationFrameId, sparksAnimationFrameId]);
 
 
     return (
@@ -112,11 +146,7 @@ export default function ButtonArea({theme}: {theme: Theme}){
                 }}
                 aria-label="capture-display"
                 color="primary"
-                onClick={() => {
-                    // TODO 撮影処理の実装
-                    setFireworkPhase(prev => (prev === 0) ? 1 : 0)
-                    // handleTakePhotoButton();
-                }}
+                onClick={handleTakePhotoButton}
             >
                 <DoubleCircleIcon
                     width={ICON_SIZE}

@@ -1,4 +1,5 @@
 import { CameraProvider } from "./CameraProvider";
+import { CaptureProvider } from "./CaptureProvider";
 import { DataProvider } from "./DataProvider";
 import { FireworksProvider } from "./FireworkProvider";
 
@@ -7,7 +8,9 @@ export function Providers({ children }: {children: React.ReactNode}){
         <DataProvider>
             <FireworksProvider>
                 <CameraProvider>
-                    {children}
+                    <CaptureProvider>
+                        {children}
+                    </CaptureProvider>
                 </CameraProvider>
             </FireworksProvider>
         </DataProvider>

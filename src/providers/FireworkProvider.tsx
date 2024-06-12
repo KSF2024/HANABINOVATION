@@ -14,6 +14,8 @@ type FireworksContent = {
     toggleFireworksPosition(): void;
     fireworkPhase: number;
     setFireworkPhase: React.Dispatch<React.SetStateAction<number>>;
+    fireworkAnimationFrameId: number | null;
+    sparksAnimationFrameId: number | null;
 };
 
 /* Provider */
@@ -22,7 +24,9 @@ const initialData: FireworksContent = {
     initializeImageSrc: () => {},
     toggleFireworksPosition: () => {},
     fireworkPhase: 0,
-    setFireworkPhase: {} as any
+    setFireworkPhase: {} as any,
+    fireworkAnimationFrameId: null,
+    sparksAnimationFrameId: null
 };
 
 export const FireworksContext = createContext<FireworksContent>(initialData);
@@ -161,6 +165,8 @@ export function FireworksProvider({children}: {children: ReactNode}){
                 return (Math.abs(dx) < 1 && Math.abs(dy) < 1);
             })
 
+            if(isFinishedFireworkAnimation.current) setFireworkPhase(3); // アニメーションが停止した場合、撮影待機状態に移る
+
             const result = updatedStars;
             return result;
         });
@@ -179,6 +185,7 @@ export function FireworksProvider({children}: {children: ReactNode}){
             });
             // 花火のアニメーションが終了したら、アニメーションを停止する
             setFireworkAnimationFrameId(null);
+            console.log("fireworks finished")
             return;
         }else{
             // 次のフレームを要求
@@ -405,6 +412,7 @@ export function FireworksProvider({children}: {children: ReactNode}){
         if(isFinishedSparksAnimation.current){
             // 花火のアニメーションが終了したら、アニメーションを停止する
             setSparksAnimationFrameId(null);
+            console.log("sparks finished")
             return;
         }else{
             // 次のフレームを要求
@@ -894,6 +902,9 @@ export function FireworksProvider({children}: {children: ReactNode}){
     useEffect(() => {
         if(!imageData) return;
         switch(fireworkPhase){
+            case 3:
+                // 撮影待機処理は別の箇所で行う
+                break;
             case 2:
                 // 花火を爆発させる
                 startBurstAnimation(imageData);
@@ -970,7 +981,9 @@ export function FireworksProvider({children}: {children: ReactNode}){
                 initializeImageSrc,
                 toggleFireworksPosition,
                 fireworkPhase,
-                setFireworkPhase
+                setFireworkPhase,
+                fireworkAnimationFrameId,
+                sparksAnimationFrameId
             }}
         >
             {children}
