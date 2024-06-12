@@ -42,7 +42,8 @@ export default function ButtonArea({theme}: {theme: Theme}){
 
     // 写真撮影を行うためのcontext
     const {
-        captureImage,
+        mergeCanvas,
+        convertCanvasToBase64,
         saveImage
     } = useContext(CaptureContext);
 
@@ -106,8 +107,11 @@ export default function ButtonArea({theme}: {theme: Theme}){
         if(sparksAnimationFrameId !== null) return; // 火花の爆発アニメーションが終了していなければ処理を中止
 
         console.log("撮影")
-        const image = captureImage();
-        if(image) saveImage(image);
+        const canvasElm = mergeCanvas();
+        if(canvasElm){
+            const imageStr = convertCanvasToBase64(canvasElm);
+            saveImage(imageStr);
+        }
     }, [fireworkPhase, fireworkAnimationFrameId, sparksAnimationFrameId]);
 
 

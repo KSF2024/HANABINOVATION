@@ -7,14 +7,16 @@ import { FireworksContext } from './FireworkProvider';
 /* 型定義 */
 // contextに渡すデータの型
 type CaptureContext = {
-    captureImage: () => string | null;
+    mergeCanvas(): HTMLCanvasElement | null;
+    convertCanvasToBase64(canvasElement: HTMLCanvasElement): string;
     saveImage: (dataURL: string) => void;
 };
 
 
 /* Provider */
 const initialData: CaptureContext = {
-    captureImage: () => null,
+    mergeCanvas: () => null,
+    convertCanvasToBase64: () => "",
     saveImage: () => {}
 };
 
@@ -31,12 +33,12 @@ export function CaptureProvider({children}: {children: ReactNode}){
 
 
     /* 関数定義 */
-    // カメラと花火のcanvas要素を合成して、base64形式の画像を返す関数
-    function captureImage(): string | null{
+    // カメラと花火のcanvas要素を合成したcanvas要素を作成する関数
+    function mergeCanvas(): HTMLCanvasElement | null{
         // カメラと花火のcanvas要素を、それぞれ取得する
-        const ringCanvas: HTMLCanvasElement | null = canvasRef.current;
+        const fireworkCanvas: HTMLCanvasElement | null = canvasRef.current;
         const cameraCanvas: HTMLCanvasElement | null = getVideoCanvas();
-        if(!ringCanvas) return null;
+        if(!fireworkCanvas) return null;
         if(!cameraCanvas) return null;
 
         // 2つのcanvas要素を合成したものを貼り付けるためのcanvas要素を作成する
@@ -50,9 +52,13 @@ export function CaptureProvider({children}: {children: ReactNode}){
         const canvasCtx: CanvasRenderingContext2D | null = canvasElement.getContext("2d");
         if(!canvasCtx) return null;
         canvasCtx.drawImage(cameraCanvas, 0, 0, width, height); // カメラを貼り付ける
-        canvasCtx.drawImage(ringCanvas, 0, 0, width, height); // リングを貼り付ける
+        canvasCtx.drawImage(fireworkCanvas, 0, 0, width, height); // リングを貼り付ける
 
-        // base64として出力する
+        return canvasElement;
+    }
+
+    // canvasをbase64として出力する関数
+    function convertCanvasToBase64(canvasElement: HTMLCanvasElement){
         const dataURL: string = canvasElement.toDataURL('image/png');
         return dataURL;
     }
@@ -133,7 +139,8 @@ export function CaptureProvider({children}: {children: ReactNode}){
     return (
         <CaptureContext.Provider
             value={{
-                captureImage,
+                mergeCanvas,
+                convertCanvasToBase64,
                 saveImage
             }}
         >
