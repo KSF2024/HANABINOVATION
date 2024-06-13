@@ -33,7 +33,11 @@ export default function DesignPage(){
             >
                 好きな形の花火と火花を選んで、オリジナルの花火を作ろう！
             </Typography>
-            <PickUpSetUp/>
+            {(isDrawing) ? (
+                <></>
+            ) : (
+                <PickUpSetUp setIsDrawing={setIsDrawing}/>
+            )}
         </Box>
     )
 }

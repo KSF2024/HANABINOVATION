@@ -4,6 +4,7 @@ import { getAllImageData, getBoothColor, getCtxFromCanvas } from "../utils/modul
 import { drawSpark, drawStar, generateSparks, generateStars } from "../utils/hanabi";
 import { Spark, Star } from "../utils/types";
 import { Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const containerStyle: CSSProperties = {
     display: "flex",
@@ -33,7 +34,9 @@ function getSecondaryCanvasSize(): number{
     }
 }
 
-export default function PickUpSetUp(){
+export default function PickUpSetUp({ setIsDrawing }: { setIsDrawing: React.Dispatch<React.SetStateAction<boolean>> }){
+    const navigate = useNavigate();
+
     const [fireworkImages, setFireworkImages] = useState<ImageData[]>([]); // 花火の画像データ
     const [fireworkSize, setFireworkSize] = useState<{width: number, height: number}>({width: 0, height: 0}); // 花火の幅
 
@@ -52,41 +55,45 @@ export default function PickUpSetUp(){
 
 
     // 花火を初期表示する関数
-    function previewFireworks(ctx: CanvasRenderingContext2D, canvasElement: HTMLCanvasElement, imageData: ImageData){
+    function previewFireworks(ctx: CanvasRenderingContext2D, imageData: ImageData, canvasSize: number, disableFireworkSize: boolean = false){
         // imageDataから花火の星を作成する
         const newStars: Star[] = generateStars(imageData);
-        console.log("length", newStars.length)
 
-        const canvasSize: number = getPrimaryCanvasSize();
+        const scale: number = canvasSize / 300 * 0.8; // 300を基準としたスケーリングファクター
+        const fireworkWidth: number = disableFireworkSize ? 0 : (fireworkSize.width * scale) / 2;
+        const fireworkHeight: number = disableFireworkSize ? 0 : (fireworkSize.height * scale) / 2;
+        const initialX: number = canvasSize / 2 - fireworkWidth;
+        const initialY: number = canvasSize / 2 - fireworkHeight;
 
-        // 花火を打ち上げる中心点を求める
+        // 花火を描画する
         newStars.forEach((star) => {
-            star.x += canvasSize / 2 - fireworkSize.width / 2;
-            star.y += canvasSize / 2 - fireworkSize.height / 2;
-            drawStar(ctx, star, 255);
+            star.x += initialX;
+            star.y += initialY;
+            drawStar(ctx, star, 255, scale);
         })
     }
 
     // 火花を初期表示する関数
-    function previewSparks(ctx: CanvasRenderingContext2D, canvasElement: HTMLCanvasElement, sparksType: number){
+    function previewSparks(ctx: CanvasRenderingContext2D, sparksType: number, canvasSize: number){
         if(!boothId) return;
         const sparksColor: string | null = getBoothColor(boothId);
         if(!sparksColor) return;
 
-        const initialX: number = fireworkSize.width / 2 - canvasElement.clientWidth / 2;
-        const initialY: number = fireworkSize.height / 2 - canvasElement.clientHeight / 2;
+        const scale: number = canvasSize / 300 * 0.8; // 300を基準としたスケーリングファクター
+        const initialX: number = canvasSize / 2;
+        const initialY: number = canvasSize / 2;
 
         // 火花データを生成する
-        const generatedSparks: Spark[] = generateSparks(sparksType, sparksColor, 0, 0);
+        const generatedSparks: Spark[] = generateSparks(sparksType, sparksColor, initialX, initialY);
         const finalSparks: Spark[] = getFinalSparks();
 
         finalSparks.forEach(spark => {
-            drawSpark(ctx, spark, 255);
+            drawSpark(ctx, spark, 255, Math.max(scale, 0.5));
         })
 
         // 火花の最終位置を取得する関数
         function getFinalSparks(): Spark[]{
-            const speed: number = 10;
+            const speed: number = 10 * scale;
             const outerDifference: number = 0.75; // 外火花と内火花の距離の差の倍率
             let result: Spark[] = [...generatedSparks];
             let isNotFinished: boolean = true; // 火花の最終位置の取得が済んでいないか
@@ -94,7 +101,7 @@ export default function PickUpSetUp(){
                 const afterImageSparks: Spark[] = []; // 火花の残像
                 const newSparks = result.map(spark => {
                     // 火花の最終位置を計算する
-                    const maxDistance: number = (Math.max(fireworkSize.width, fireworkSize.height) / 2) * 1.1;
+                    const maxDistance: number = (Math.max(fireworkSize.width, fireworkSize.height) / 2) * 1.1 * scale;
                     const goalDistance: number = maxDistance * ((spark.movementType - 1) ? 1 : outerDifference); // 火花の最終位置から中心点の距離
 
                     // 火花の動きを停止させるかどうかを計算する
@@ -197,45 +204,41 @@ export default function PickUpSetUp(){
     // 画像データを読み込み終えたら、セットアップ選択用canvasに描画を行う
     useEffect(() => {
         if(fireworkImages.length <= 0) return;
-        if(!previewCanvasRef.current) return;
-        const mainCtx = getCtxFromCanvas(previewCanvasRef.current);
-        if(!mainCtx) return;
-        if(!previewCanvasRef.current) return;
-        previewFireworks(mainCtx, previewCanvasRef.current, fireworkImages[0]);
-        previewSparks(mainCtx, previewCanvasRef.current, 0);
 
-
-        // 花火のセットアップ選択用描画を行う
-        fireworkCanvasRefs.current.forEach((canvasElement, index) => {
-            const ctx = getCtxFromCanvas(canvasElement);
-            if(!ctx) return;
-            if(!canvasElement) return;
-            previewFireworks(ctx, canvasElement, fireworkImages[index]);
-        });
+        const secondaryCanvasSize: number = getSecondaryCanvasSize();
 
         // 火花のセットアップ選択用描画を行う
         sparksCanvasRefs.current.forEach((canvasElement, index) => {
             const ctx = getCtxFromCanvas(canvasElement);
             if(!ctx) return;
             if(!canvasElement) return;
-            previewSparks(ctx, canvasElement, index);
+            previewSparks(ctx, index, secondaryCanvasSize);
+        });
+
+        // 花火のセットアップ選択用描画を行う
+        fireworkCanvasRefs.current.forEach((canvasElement, index) => {
+            const ctx = getCtxFromCanvas(canvasElement);
+            if(!ctx) return;
+            if(!canvasElement) return;
+            previewFireworks(ctx, fireworkImages[index], secondaryCanvasSize, true);
         });
     }, [fireworkImages]);
 
 
-        // 花火の初期表示を行う
-        // useEffect(() => {
-        //     if(fireworkPhase === 0){
-        //         const canvas = canvasRef.current;
-        //         if (!canvas) return;
-        //         const ctx = canvas.getContext('2d');
-        //         if (!ctx) return;
-        //         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        //         if(!imageData) return;
-        //         previewSparks(ctx);
-        //         previewFireworks(ctx, imageData);
-        //     }
-        // }, [imageData, fireworkPhase, launchAngle]);
+    // 花火の初期表示を行う
+    useEffect(() => {
+        if(fireworkImages.length <= 0) return;
+        if(!previewCanvasRef.current) return;
+
+        const primaryCanvasSize: number = getPrimaryCanvasSize();
+
+        // セットアップ確認ウィンドウ用描画を行う
+        const mainCtx = getCtxFromCanvas(previewCanvasRef.current);
+        if(!mainCtx) return;
+        mainCtx.clearRect(0, 0, primaryCanvasSize, primaryCanvasSize);
+        previewSparks(mainCtx, sparksType, primaryCanvasSize);
+        previewFireworks(mainCtx, fireworkImages[fireworkType - 1], primaryCanvasSize);
+    }, [fireworkImages, fireworkType, sparksType]);
 
     return (
         <div
@@ -269,8 +272,10 @@ export default function PickUpSetUp(){
                             height={getSecondaryCanvasSize()}
                             style={{
                                 border: "1px black solid",
-                                marginLeft: (index === 0) ? 0 : "1rem"
+                                marginLeft: (index === 0) ? 0 : "1rem",
+                                outline: (value === fireworkType) ? "0.3rem #1976D2 solid" : ""
                             }}
+                            onClick={() => setFireworkType(value as 1 | 2 | 3)}
                         />
                     ))}
                 </div>
@@ -284,8 +289,10 @@ export default function PickUpSetUp(){
                             style={{
                                 border: "1px black solid",
                                 marginLeft: (index === 0) ? 0 : "1rem",
-                                backgroundColor: "black"
+                                backgroundColor: "black",
+                                outline: (value === sparksType) ? "0.3rem #1976D2 solid" : ""
                             }}
+                            onClick={() => setSparksType(value as 0 | 1 | 2)}
                         />
                     ))}
                 </div>
@@ -302,12 +309,14 @@ export default function PickUpSetUp(){
                 <Button
                     variant="contained"
                     style={{display: "block"}}
+                    onClick={() => setIsDrawing(true)}
                 >
                     自分で描く
                 </Button>
                 <Button
                     variant="contained"
                     style={{display: "block"}}
+                    onClick={() => navigate(`/${boothId}/capture-firework`)}
                 >
                     完成
                 </Button>

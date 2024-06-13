@@ -58,12 +58,20 @@ function rotatePoint(x: number, y: number, width: number, height: number, angle:
 }
 
 // starデータからキャンバスに点を描画する関数
-export function drawStar(ctx: CanvasRenderingContext2D, star: Star, alpha?: number){
+export function drawStar(ctx: CanvasRenderingContext2D, star: Star, alpha?: number, scale: number = 1){
+    // スケーリングされた座標と半径
+    const scaledX: number = star.x * scale;
+    const scaledY: number = star.y * scale;
+    const scaledRadius: number = star.radius * scale;
+
+    // 色の設定
     const starAlpha: number = (alpha) ? Math.min(star.color.alpha, alpha): star.color.alpha;
     const color: string = `rgba(${[star.color.red, star.color.green, star.color.blue, starAlpha / 255]})`;
     ctx.fillStyle = color;
+
+    // 星の描画
     ctx.beginPath();
-    ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+    ctx.arc(scaledX, scaledY, scaledRadius, 0, Math.PI * 2);
     ctx.fill();
     ctx.closePath();
 }
@@ -163,11 +171,17 @@ export function generateSparks(sparkType: number, colorCode: string, initialX: n
 }
 
 // sparkデータからキャンバスに点を描画する関数
-export function drawSpark(ctx: CanvasRenderingContext2D, spark: Spark, alpha?: number){
+export function drawSpark(ctx: CanvasRenderingContext2D, spark: Spark, alpha?: number, scale: number = 1){
+    // スケーリングされた半径
+    const scaledRadius: number = spark.radius * scale;
+
+    // 色の設定
     const sparkAlpha: number = (alpha || spark.color.alpha) / 255;
     ctx.fillStyle = `rgba(${spark.color.red},${spark.color.green},${spark.color.blue},${sparkAlpha})`;
+
+    // 火花の描画
     ctx.beginPath();
-    ctx.arc(spark.x, spark.y, spark.radius, 0, Math.PI * 2);
+    ctx.arc(spark.x, spark.y, scaledRadius, 0, Math.PI * 2);
     ctx.fill();
     ctx.closePath();
 }
