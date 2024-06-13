@@ -6,6 +6,7 @@ import QRPage from "./pages/QRPage";
 import LotteryPage from "./pages/LotteryPage";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import DesignPage from "./pages/DesignPage";
 
 <ToastContainer />
 
@@ -15,7 +16,7 @@ export default function App(){
             <BrowserRouter>
                 <Routes>
                     <Route path="/"/>
-                    <Route path="/:boothId/create-firework"/>
+                    <Route path="/:boothId/create-firework" element={<DesignPage/>}/>
                     <Route path="/:boothId/capture-firework" element={<PhotoPage/>}/>
                     <Route path="/firework-show" element={<HanabiPage/>}/>
                     <Route path="/map" element={<MapPage/>} />
