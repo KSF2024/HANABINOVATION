@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useState, useEffect, useRef } from 'react';
+import { ReactNode, createContext, useState, useRef } from 'react';
 
 /* 型定義 */
 // contextに渡すデータの型
@@ -7,6 +7,7 @@ type CameraContext = {
     cameraFacing: "out" | "in" | "other" | null;
     switchCameraFacing(isNotCapturing: boolean): Promise<void>;
     enableBothCamera: boolean;
+    initCamera(): Promise<void>;
 };
 
 
@@ -15,7 +16,8 @@ const initialData: CameraContext = {
     videoRef: {} as React.RefObject<HTMLVideoElement>,
     cameraFacing: null,
     switchCameraFacing: () => Promise.resolve(),
-    enableBothCamera: false
+    enableBothCamera: false,
+    initCamera: () => Promise.resolve(),
 };
 
 export const CameraContext = createContext<CameraContext>(initialData);
@@ -28,18 +30,10 @@ export function CameraProvider({children}: {children: ReactNode}){
     const [currentStream, setCurrentStream] = useState<MediaStream | null>(null); // 現在のstreamを保存する
     const [enableBothCamera, setEnableBothCamera] = useState<boolean>(false); // インカメラ, アウトカメラが両方有効かどうか
 
-    /* useEffect等 */
-    // 初回レンダリング時、カメラに接続する
-    useEffect(() => {
-        initCamera().then((newStream) => {
-            setCurrentStream(newStream);
-        });
-    }, []);
-
 
     /* 関数定義 */
     // カメラに初回接続する関数
-    async function initCamera(): Promise<MediaStream | null>{
+    async function initCamera(){
         // カメラ接続を試みる
         let stream: MediaStream | null = null;
 
@@ -89,12 +83,13 @@ export function CameraProvider({children}: {children: ReactNode}){
             // video要素のsrcObjectにカメラを設定する
             if(videoRef.current){
                 videoRef.current.srcObject = stream;
-            };
+            }
         }else{
             // アウトカメラとインカメラ両方に接続できなかった場合
             console.error("カメラのアクセスに失敗", "カメラの許可が必要です");
         };
-        return stream;
+
+        setCurrentStream(stream);
     }
 
     // インカメラ/アウトカメラを切り替える関数
@@ -183,7 +178,8 @@ export function CameraProvider({children}: {children: ReactNode}){
                 videoRef,
                 cameraFacing,
                 switchCameraFacing,
-                enableBothCamera
+                enableBothCamera,
+                initCamera
             }}
         >
             {children}

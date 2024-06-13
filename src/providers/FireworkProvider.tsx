@@ -131,7 +131,6 @@ export function FireworksProvider({children}: {children: ReactNode}){
             });
             // 花火のアニメーションが終了したら、アニメーションを停止する
             setFireworkAnimationFrameId(null);
-            console.log("fireworks finished")
             return;
         }else{
             // 次のフレームを要求
@@ -254,7 +253,6 @@ export function FireworksProvider({children}: {children: ReactNode}){
         if(isFinishedSparksAnimation.current){
             // 花火のアニメーションが終了したら、アニメーションを停止する
             setSparksAnimationFrameId(null);
-            console.log("sparks finished")
             return;
         }else{
             // 次のフレームを要求
@@ -393,7 +391,6 @@ export function FireworksProvider({children}: {children: ReactNode}){
             star.y += -fireworkSize.height / 2 + initialY;
             drawStar(ctx, star, alpha);
         })
-        console.log(`${canvasRef.current?.clientWidth} / 2  - ${fireworkSize.width} / 2 = ${-fireworkSize.width / 2 + initialX}`)
     }
 
     // 火花を初期表示する
