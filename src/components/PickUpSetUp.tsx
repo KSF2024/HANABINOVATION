@@ -61,9 +61,9 @@ export default function PickUpSetUp({ setIsDrawing }: { setIsDrawing: React.Disp
 
         const scale: number = canvasSize / 300 * 0.8; // 300を基準としたスケーリングファクター
         const fireworkWidth: number = disableFireworkSize ? 0 : (fireworkSize.width * scale) / 2;
-        const fireworkHeight: number = disableFireworkSize ? 0 : (fireworkSize.height * scale) / 2;
+        // const fireworkHeight: number = disableFireworkSize ? 0 : (fireworkSize.height * scale) / 2;
         const initialX: number = canvasSize / 2 - fireworkWidth;
-        const initialY: number = canvasSize / 2 - fireworkHeight;
+        const initialY: number = canvasSize / 2 - fireworkWidth;
 
         // 花火を描画する
         newStars.forEach((star) => {
