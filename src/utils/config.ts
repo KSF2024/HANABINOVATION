@@ -37,6 +37,11 @@ type SchoolInfo = {
     positionY: number; // マップ上のブースの位置(縦軸)
 }
 
+type OpencampusDate = {
+    url: string; //オープンキャンパスのurl
+    date: string; //オープンキャンパスの日付
+}[];
+
 // 各学校の設定データ
 export const SCHOOL_DATA: { [boothId: string]: SchoolInfo } = {
     "HF5W2T": {
@@ -144,3 +149,12 @@ export function getBoothColor(boothId: string): string | null{
     if(!validateBoothId(boothId)) return null;
     return SCHOOL_DATA[boothId].color;
 }
+
+export const OPENCAMPUS_DATE: OpencampusDate[] = [
+    [
+        {url: "https://kbc.kawahara.ac.jp/oc/2024-06-15/", date: "6/15"},
+    ],
+    [
+        {url: "https://kbc.kawahara.ac.jp/oc/2024-06-22/", date: "6/22"}
+    ]
+];

@@ -4,6 +4,7 @@ import HanabiPage from "./pages/HanabiPage";
 import MapPage from "./pages/MapPage";
 import QRPage from "./pages/QRPage";
 import LotteryPage from "./pages/LotteryPage";
+import HanabiDataSubmission from "./pages/HanabiDataSubmission";
 
 export default function App(){
     return (
@@ -16,6 +17,7 @@ export default function App(){
                 <Route path="/map" element={<MapPage/>} />
                 <Route path="/scan-qr" element={<QRPage/>}/>
                 <Route path="/enter-lottery" element={<LotteryPage/>}/>
+                <Route path="/hanabi-submit" element={<HanabiDataSubmission/>}/>
                 <Route path="/*" element={<div>パスエラー</div>}/>
             </Routes>
         </BrowserRouter>
