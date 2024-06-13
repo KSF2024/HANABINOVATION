@@ -4,7 +4,6 @@ import HanabiPage from "./pages/HanabiPage";
 import MapPage from "./pages/MapPage";
 import QRPage from "./pages/QRPage";
 import LotteryPage from "./pages/LotteryPage";
-import LotteryConfirmationPage from "./components/LotteryConfirmationPage";
 
 export default function App(){
     return (

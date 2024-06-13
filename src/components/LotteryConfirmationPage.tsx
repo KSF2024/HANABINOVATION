@@ -37,7 +37,7 @@ export default function LotteryConfirmationPage(){
                         width:"100%",
                         height: "420px" ,
                         color: "#FFFFFF",
-                        backgroundColor: "#18BAFF",
+                        background: "linear-gradient(to bottom, #18BAFF, #00CC99)",
                         textAlign: "center",
                     }}
                 >
