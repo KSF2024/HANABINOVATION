@@ -112,35 +112,4 @@ export const SCHOOL_DATA: { [boothId: string]: SchoolInfo } = {
 };
 
 // ブースIDのリスト
-const BOOTH_ID_LIST: string[] = Object.keys(SCHOOL_DATA);
-
-// 正しいブースIDかどうかを確かめる関数
-export function validateBoothId(boothId: string): boolean{
-    return BOOTH_ID_LIST.includes(boothId);
-}
-
-// 画像データのパスを取得する関数
-export function getImageSrc(boothId: string, fireworkType: 0 | 1 | 2 | 3, fireworkDesign: Blob | null): string | null{
-    let result: string = "";
-
-    // 例外処理を行う
-    if(!boothId) return null;
-    if(!validateBoothId(boothId)) return null;
-
-    // 画像データへのパスを取得する
-    if(fireworkType === 0){
-        if(!fireworkDesign) return null;
-        result = URL.createObjectURL(fireworkDesign);
-    }else{
-        const fireworkTypeIndex: 0 | 1 | 2 = (fireworkType - 1) as (0 | 1 | 2);
-        result = SCHOOL_DATA[boothId].fireworksImages[fireworkTypeIndex];
-    }
-
-    return result;
-}
-
-// ブースIDを指定して、各専門学校のテーマカラーを取得する関数
-export function getBoothColor(boothId: string): string | null{
-    if(!validateBoothId(boothId)) return null;
-    return SCHOOL_DATA[boothId].color;
-}
+export const BOOTH_ID_LIST: string[] = Object.keys(SCHOOL_DATA);

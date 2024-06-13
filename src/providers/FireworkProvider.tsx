@@ -1,10 +1,8 @@
 import { createContext, ReactNode, useState, useEffect, useRef, useContext } from 'react';
 import { ImageInfo, RisingAfterImage, RisingStars, Spark, Star } from '../utils/types';
-import { generateStars } from '../utils/hanabi';
+import { generateStars, generateSparks, drawStar, drawSpark } from '../utils/hanabi';
 import { DataContext } from './DataProvider';
-import { getBoothColor, getImageSrc } from '../utils/config';
-import { ulid } from "ulidx";
-import { calculateDistance, findIntersection, hexToRgba, sleep } from '../utils/modules';
+import { calculateDistance, findIntersection, getImageData, hexToRgba, sleep, getBoothColor, getImageSrc } from '../utils/modules';
 
 /* 型定義 */
 // contextに渡すデータの型
@@ -82,58 +80,6 @@ export function FireworksProvider({children}: {children: ReactNode}){
 
 
     /* 花火(Star)用関数定義 */
-    // 画像からImageDataを作成する関数
-    async function getImageData(image: string): Promise<ImageInfo>{
-        return new Promise<ImageInfo>((resolve, _rejects) => {
-            // canvas要素を作成
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-
-            // 画像を読み込み、canvasに描画
-            const img = new Image();
-            const newId: string = ulid();
-            img.onload = () => {
-                if (!ctx) return;
-
-                // 元の画像の比率を保持したまま横幅を300pxに設定
-                const originalWidth = img.width;
-                const originalHeight = img.height;
-                const newWidth = Math.min(window.innerWidth, window.innerHeight) * 0.7;
-                const newHeight = (originalHeight * newWidth) / originalWidth;
-
-                // canvasの大きさを新しい大きさに合わせる
-                canvas.width = newWidth;
-                canvas.height = newHeight;
-
-                // 画像のリサイズと中心点の調整をして描画
-                ctx.drawImage(img, 0, 0, newWidth, newHeight);
-
-                // ImageDataオブジェクトを取得
-                const newImageData: ImageData = ctx.getImageData(0, 0, newWidth, newHeight);
-                
-                const result: ImageInfo = {
-                    id: newId,
-                    imageData: newImageData,
-                    width: newWidth,
-                    height: newHeight
-                };
-                resolve(result);
-            };
-            img.src = image;
-        });
-    }
-
-    // starデータからキャンバスに点を描画する関数
-    function drawStar(ctx: CanvasRenderingContext2D, star: Star, alpha?: number){
-        const starAlpha: number = (alpha) ? Math.min(star.color.alpha, alpha): star.color.alpha;
-        const color: string = `rgba(${[star.color.red, star.color.green, star.color.blue, starAlpha / 255]})`;
-        ctx.fillStyle = color;
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.closePath();
-    }
-
     // 花火を爆発させるアニメーション
     function burstFireworks(initialX: number, initialY: number){
         const renderingStars: Star[] = starsRef.current; // 花火の完成予想図
@@ -203,110 +149,6 @@ export function FireworksProvider({children}: {children: ReactNode}){
 
 
     /* 花火(Spark)用関数定義 */
-    // 火花データを生成する関数
-    function generateSparks(sparkType: number, colorCode: string, initialX: number, initialY: number): Spark[]{
-        const result: Spark[] = [];
-
-        const amount: number = 30; // 火花の数
-        const standardRadius: number = 5; // 火花の大きさ
-        const color = hexToRgba(colorCode, 255);
-
-        // 火花データを生成する
-        switch(sparkType){
-            case 2: // 雫型
-                generateDropSparks();
-                break;
-            case 1: // 線型
-                generateLineSparks();
-                break;
-            case 0: // 丸型
-            default:
-                generateNormalSparks();
-        }
-
-        // 丸型の火花を生成する関数
-        function generateNormalSparks(){
-            for(let i: number = 0; i < amount; i++){
-                const direction: number = ((360 / amount) * i) / Math.PI; // 火花の向き(ラジアン)
-                const newOuterSpark: Spark = {
-                    color,
-                    x: initialX,
-                    y: initialY,
-                    standardRadius,
-                    radius: standardRadius,
-                    direction,
-                    movementType: 2,
-                    sparkType: 0
-                };
-                const newInnerSpark: Spark = {
-                    color,
-                    x: initialX,
-                    y: initialY,
-                    standardRadius,
-                    radius: standardRadius * 0.9,
-                    direction,
-                    movementType: 1,
-                    sparkType: 0
-                };
-
-                result.push(newOuterSpark);
-                result.push(newInnerSpark);
-            }
-        }
-
-        // 線型の火花を生成する関数
-        function generateLineSparks(){
-            for(let i: number = 0; i < amount; i++){
-                const direction: number = ((360 / amount) * i) / Math.PI; // 火花の向き(ラジアン)
-                const newSpark: Spark = {
-                    color,
-                    x: initialX,
-                    y: initialY,
-                    standardRadius: standardRadius * 0.5,
-                    radius: standardRadius,
-                    direction,
-                    movementType: 2,
-                    sparkType: 1
-                };
-                result.push(newSpark);
-            }
-
-            return result;
-        }
-
-        // 雫型の火花を生成する関数
-        function generateDropSparks(){
-            for(let i: number = 0; i < amount; i++){
-                const direction: number = ((360 / amount) * i) / Math.PI; // 火花の向き(ラジアン)
-                const newSpark: Spark = {
-                    color,
-                    x: initialX,
-                    y: initialY,
-                    standardRadius,
-                    radius: standardRadius,
-                    direction,
-                    movementType: 2,
-                    sparkType: 2
-                };
-                result.push(newSpark);
-            }
-
-            return result;
-        }
-
-        return result;
-    }
-
-    // sparkデータからキャンバスに点を描画する関数
-    function drawSpark(ctx: CanvasRenderingContext2D, spark: Spark, alpha?: number){
-        const sparkAlpha: number = (alpha || spark.color.alpha) / 255;
-        ctx.fillStyle = `rgba(${spark.color.red},${spark.color.green},${spark.color.blue},${sparkAlpha})`;
-        ctx.beginPath();
-        ctx.arc(spark.x, spark.y, spark.radius, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.closePath();
-    }
-
     // 火花を爆発させるアニメーション
     function burstSparks(initialX: number, initialY: number){
         const speed: number = 10;

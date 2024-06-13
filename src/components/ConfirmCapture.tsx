@@ -1,4 +1,4 @@
-import { Button, Paper, Typography } from "@mui/material";
+import { Button, Grid, Paper, Typography } from "@mui/material";
 import { useContext, useEffect, useRef } from "react";
 import { CaptureContext } from "../providers/CaptureProvider";
 import { FireworksContext } from "../providers/FireworkProvider";
@@ -109,26 +109,30 @@ export default function ConfirmCapture(){
                         overflow: "hidden"
                     }}
                 />
-                <div
-                    style={{
-                        display: "flex",
+                <Grid
+                    container
+                    spacing={8}
+                    sx={{
                         justifyContent: "center"
                     }}
                 >
-                    <Button
-                        variant="contained"
-                        sx={{ mr: 5 }}
-                        onClick={takePhoto}
-                    >
-                        はい
-                    </Button>
-                    <Button
-                        variant="outlined"
-                        onClick={finishConfirmTakePhoto}
-                    >
-                        いいえ
-                    </Button>
-                </div>
+                    <Grid item>
+                        <Button
+                            variant="contained"
+                            onClick={takePhoto}
+                        >
+                            はい
+                        </Button>
+                    </Grid>
+                    <Grid item>
+                        <Button
+                            variant="outlined"
+                            onClick={finishConfirmTakePhoto}
+                        >
+                            いいえ
+                        </Button>
+                    </Grid>
+                </Grid>
             </div>
         </Paper>
     )

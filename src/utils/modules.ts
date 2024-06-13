@@ -1,4 +1,6 @@
-import { Color, Point } from "./types";
+import { ulid } from "ulidx";
+import { Color, ImageInfo, Point } from "./types";
+import { BOOTH_ID_LIST, SCHOOL_DATA } from "./config";
 
 /**
  * カラーコードと透明度を受け取り、オブジェクト形式に変換する関数
@@ -45,4 +47,90 @@ export function calculateDistance(x1: number, y1: number, x2: number, y2: number
     return Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 }
 
+// sleep関数
 export const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms));
+
+// 画像からImageDataを作成する関数
+export async function getImageData(image: string): Promise<ImageInfo>{
+    return new Promise<ImageInfo>((resolve, _rejects) => {
+        // canvas要素を作成
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // 画像を読み込み、canvasに描画
+        const img = new Image();
+        const newId: string = ulid();
+        img.onload = () => {
+            if (!ctx) return;
+
+            // 元の画像の比率を保持したまま横幅を300pxに設定
+            const originalWidth = img.width;
+            const originalHeight = img.height;
+            const newWidth = Math.min(window.innerWidth, window.innerHeight) * 0.7;
+            const newHeight = (originalHeight * newWidth) / originalWidth;
+
+            // canvasの大きさを新しい大きさに合わせる
+            canvas.width = newWidth;
+            canvas.height = newHeight;
+
+            // 画像のリサイズと中心点の調整をして描画
+            ctx.drawImage(img, 0, 0, newWidth, newHeight);
+
+            // ImageDataオブジェクトを取得
+            const newImageData: ImageData = ctx.getImageData(0, 0, newWidth, newHeight);
+            
+            const result: ImageInfo = {
+                id: newId,
+                imageData: newImageData,
+                width: newWidth,
+                height: newHeight
+            };
+            resolve(result);
+        };
+        img.src = image;
+    });
+}
+
+// 正しいブースIDかどうかを確かめる関数
+export function validateBoothId(boothId: string): boolean{
+    return BOOTH_ID_LIST.includes(boothId);
+}
+
+// 画像データのパスを取得する関数
+export function getImageSrc(boothId: string, fireworkType: 0 | 1 | 2 | 3, fireworkDesign: Blob | null): string | null{
+    let result: string = "";
+
+    // 例外処理を行う
+    if(!boothId) return null;
+    if(!validateBoothId(boothId)) return null;
+
+    // 画像データへのパスを取得する
+    if(fireworkType === 0){
+        if(!fireworkDesign) return null;
+        result = URL.createObjectURL(fireworkDesign);
+    }else{
+        const fireworkTypeIndex: 0 | 1 | 2 = (fireworkType - 1) as (0 | 1 | 2);
+        result = SCHOOL_DATA[boothId].fireworksImages[fireworkTypeIndex];
+    }
+
+    return result;
+}
+
+// ブースIDを指定して、各専門学校のテーマカラーを取得する関数
+export function getBoothColor(boothId: string): string | null{
+    if(!validateBoothId(boothId)) return null;
+    return SCHOOL_DATA[boothId].color;
+}
+
+// ブースの3種類の花火型のセットアップのImageDataを取得する関数
+export async function getAllImageData(boothId: string, setupList: number[]): Promise<ImageInfo[]>{
+    const newFireworkImages: ImageInfo[] = [];
+    for(const fireworkType of setupList){
+        const imageSrc = getImageSrc(boothId, fireworkType as any, null);
+        if(imageSrc){
+            const newImageData = await getImageData(imageSrc);
+            newFireworkImages.push(newImageData);
+        }
+    }
+    return newFireworkImages;
+}
