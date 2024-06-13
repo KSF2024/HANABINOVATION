@@ -393,6 +393,7 @@ export function FireworksProvider({children}: {children: ReactNode}){
             star.y += -fireworkSize.height / 2 + initialY;
             drawStar(ctx, star, alpha);
         })
+        console.log(`${canvasRef.current?.clientWidth} / 2  - ${fireworkSize.width} / 2 = ${-fireworkSize.width / 2 + initialX}`)
     }
 
     // 火花を初期表示する
@@ -584,8 +585,8 @@ export function FireworksProvider({children}: {children: ReactNode}){
         let initialX: number =  0;
         let initialY: number =  0;
         if(canvasRef.current){
-            initialX = canvasRef.current.width / 2 + (fireworkPosition.gapX || 0);
-            initialY = canvasRef.current.height / 3 + (fireworkPosition.gapY || 0);
+            initialX = canvasRef.current.clientWidth / 2 + (fireworkPosition.gapX || 0);
+            initialY = canvasRef.current.clientHeight / 3 + (fireworkPosition.gapY || 0);
         }
         return { initialX, initialY };
     }

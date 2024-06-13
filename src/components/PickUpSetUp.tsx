@@ -1,17 +1,9 @@
 import { CSSProperties, useContext, useEffect, useRef, useState } from "react";
 import { DataContext } from "../providers/DataProvider";
-import { getAllImageData, getBoothColor } from "../utils/modules";
+import { getAllImageData, getBoothColor, getCtxFromCanvas } from "../utils/modules";
 import { drawSpark, drawStar, generateSparks, generateStars } from "../utils/hanabi";
 import { Spark, Star } from "../utils/types";
 import { Button } from "@mui/material";
-
-const subCanvasStyle: CSSProperties = {
-    width: "20vw",
-    height: "20vw",
-    maxWidth: "10vh",
-    maxHeight: "10vh",
-    border: "1px black solid"
-};
 
 const containerStyle: CSSProperties = {
     display: "flex",
@@ -20,6 +12,26 @@ const containerStyle: CSSProperties = {
     width: "100%",
     margin: "0.5rem 0"
 };
+
+function getPrimaryCanvasSize(): number{
+    const maxWidth: number = window.innerHeight * 0.4;
+    const width: number = window.innerWidth * 0.8;
+    if(maxWidth > width){
+        return width;
+    }else{
+        return maxWidth;
+    }
+}
+
+function getSecondaryCanvasSize(): number{
+    const maxWidth: number = window.innerHeight * 0.1;
+    const width: number = window.innerWidth * 0.2;
+    if(maxWidth > width){
+        return width;
+    }else{
+        return maxWidth;
+    }
+}
 
 export default function PickUpSetUp(){
     const [fireworkImages, setFireworkImages] = useState<ImageData[]>([]); // 花火の画像データ
@@ -40,26 +52,29 @@ export default function PickUpSetUp(){
 
 
     // 花火を初期表示する関数
-    function previewFireworks(ctx: CanvasRenderingContext2D, imageData: ImageData){
+    function previewFireworks(ctx: CanvasRenderingContext2D, canvasElement: HTMLCanvasElement, imageData: ImageData){
         // imageDataから花火の星を作成する
-        const newStars: Star[] = generateStars(imageData, 0);
+        const newStars: Star[] = generateStars(imageData);
+        console.log("length", newStars.length)
+
+        const canvasSize: number = getPrimaryCanvasSize();
 
         // 花火を打ち上げる中心点を求める
         newStars.forEach((star) => {
-            star.x += 0;
-            star.y += 0;
+            star.x += canvasSize / 2 - fireworkSize.width / 2;
+            star.y += canvasSize / 2 - fireworkSize.height / 2;
             drawStar(ctx, star, 255);
         })
     }
 
     // 火花を初期表示する関数
-    function previewSparks(ctx: CanvasRenderingContext2D){
+    function previewSparks(ctx: CanvasRenderingContext2D, canvasElement: HTMLCanvasElement, sparksType: number){
         if(!boothId) return;
         const sparksColor: string | null = getBoothColor(boothId);
         if(!sparksColor) return;
 
-        const initialX: number = 0;
-        const initialY: number = 0;
+        const initialX: number = fireworkSize.width / 2 - canvasElement.clientWidth / 2;
+        const initialY: number = fireworkSize.height / 2 - canvasElement.clientHeight / 2;
 
         // 火花データを生成する
         const generatedSparks: Spark[] = generateSparks(sparksType, sparksColor, 0, 0);
@@ -179,6 +194,49 @@ export default function PickUpSetUp(){
         })();
     }, [boothId]);
 
+    // 画像データを読み込み終えたら、セットアップ選択用canvasに描画を行う
+    useEffect(() => {
+        if(fireworkImages.length <= 0) return;
+        if(!previewCanvasRef.current) return;
+        const mainCtx = getCtxFromCanvas(previewCanvasRef.current);
+        if(!mainCtx) return;
+        if(!previewCanvasRef.current) return;
+        previewFireworks(mainCtx, previewCanvasRef.current, fireworkImages[0]);
+        previewSparks(mainCtx, previewCanvasRef.current, 0);
+
+
+        // 花火のセットアップ選択用描画を行う
+        fireworkCanvasRefs.current.forEach((canvasElement, index) => {
+            const ctx = getCtxFromCanvas(canvasElement);
+            if(!ctx) return;
+            if(!canvasElement) return;
+            previewFireworks(ctx, canvasElement, fireworkImages[index]);
+        });
+
+        // 火花のセットアップ選択用描画を行う
+        sparksCanvasRefs.current.forEach((canvasElement, index) => {
+            const ctx = getCtxFromCanvas(canvasElement);
+            if(!ctx) return;
+            if(!canvasElement) return;
+            previewSparks(ctx, canvasElement, index);
+        });
+    }, [fireworkImages]);
+
+
+        // 花火の初期表示を行う
+        // useEffect(() => {
+        //     if(fireworkPhase === 0){
+        //         const canvas = canvasRef.current;
+        //         if (!canvas) return;
+        //         const ctx = canvas.getContext('2d');
+        //         if (!ctx) return;
+        //         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        //         if(!imageData) return;
+        //         previewSparks(ctx);
+        //         previewFireworks(ctx, imageData);
+        //     }
+        // }, [imageData, fireworkPhase, launchAngle]);
+
     return (
         <div
             style={{
@@ -192,31 +250,42 @@ export default function PickUpSetUp(){
         >
             <canvas
                 ref={previewCanvasRef}
+                className="bg-img-transparent"
+                width={getPrimaryCanvasSize()}
+                height={getPrimaryCanvasSize()}
                 style={{
                     margin: "0.5rem",
-                    width: "80vw",
-                    height: "80vw",
-                    maxWidth: "40dvh",
-                    maxHeight: "40dvh",
                     border: "1px black solid"
                 }}
             />
             <div>
                 <div style={containerStyle}>
-                    {[1, 2, 3].map((_fireworkType, index) => (
+                    {[1, 2, 3].map((value, index) => (
                         <canvas
                             key={index}
                             ref={(element) => (fireworkCanvasRefs.current[index] = element)}
-                            style={{...subCanvasStyle, marginLeft: (index === 0) ? 0 : "1rem" }}
+                            className="bg-img-transparent"
+                            width={getSecondaryCanvasSize()}
+                            height={getSecondaryCanvasSize()}
+                            style={{
+                                border: "1px black solid",
+                                marginLeft: (index === 0) ? 0 : "1rem"
+                            }}
                         />
                     ))}
                 </div>
                 <div style={{...containerStyle, marginTop: "1.5rem"}}>
-                    {[0, 1, 2].map((_sparksType, index) => (
+                    {[0, 1, 2].map((value, index) => (
                         <canvas
                             key={index}
                             ref={(element) => (sparksCanvasRefs.current[index] = element)}
-                            style={{...subCanvasStyle, marginLeft: (index === 0) ? 0 : "1rem" }}
+                            width={getSecondaryCanvasSize()}
+                            height={getSecondaryCanvasSize()}
+                            style={{
+                                border: "1px black solid",
+                                marginLeft: (index === 0) ? 0 : "1rem",
+                                backgroundColor: "black"
+                            }}
                         />
                     ))}
                 </div>
