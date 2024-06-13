@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useState, useEffect, useRef, useContext } from 'react';
-import { ImageInfo, RisingAfterImage, RisingStars, Spark, Star } from '../utils/types';
+import { ImageInfo, RisingAfterImage, RisingStars, Size, Spark, Star } from '../utils/types';
 import { generateStars, generateSparks, drawStar, drawSpark } from '../utils/hanabi';
 import { DataContext } from './DataProvider';
 import { calculateDistance, findIntersection, getImageData, hexToRgba, sleep, getBoothColor, getImageSrc } from '../utils/modules';
@@ -49,7 +49,7 @@ export function FireworksProvider({children}: {children: ReactNode}){
 
     // 花火の設定情報
     const [fireworkPhase, setFireworkPhase] = useState<number>(0); // 花火アニメーションの段階(0: 半透明, 1: 打ち上げ, 2: 爆発, 3: 撮影待機)
-    const [fireworkSize, setFireworkSize] = useState<{width: number, height: number}>({width: 0, height: 0}); // 花火の幅
+    const [fireworkSize, setFireworkSize] = useState<Size>({width: 0, height: 0}); // 花火の幅
     const [launchAngle, setLaunchAngle] = useState<number>(0); // 花火の打ち上げ角度 (デフォルト0度)
     const [fireworkPosition, setFireworkPosition] = useState<{gapX: number, gapY: number}>({gapX: 0, gapY: 0}); // 花火が打ち上がる位置
     const [positionToggle, setPositionToggle] = useState<boolean>(false); // 花火が打ちあがる位置をトグルで切り替えるためのstate

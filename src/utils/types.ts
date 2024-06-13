@@ -4,6 +4,11 @@ export type Point = {
     y: number;
 };
 
+export type Size = {
+    width: number;
+    height: number;
+}
+
 // 色データの型
 export type Color = {
     red: number;
