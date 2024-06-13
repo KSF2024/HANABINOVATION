@@ -1,9 +1,25 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { CSSProperties, useContext, useEffect, useRef, useState } from "react";
 import { DataContext } from "../providers/DataProvider";
 import { getAllImageData, getBoothColor } from "../utils/modules";
 import { drawSpark, drawStar, generateSparks, generateStars } from "../utils/hanabi";
 import { Spark, Star } from "../utils/types";
-import { Grid } from "@mui/material";
+import { Button } from "@mui/material";
+
+const subCanvasStyle: CSSProperties = {
+    width: "20vw",
+    height: "20vw",
+    maxWidth: "10vh",
+    maxHeight: "10vh",
+    border: "1px black solid"
+};
+
+const containerStyle: CSSProperties = {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    margin: "0.5rem 0"
+};
 
 export default function PickUpSetUp(){
     const [fireworkImages, setFireworkImages] = useState<ImageData[]>([]); // 花火の画像データ
@@ -169,7 +185,7 @@ export default function PickUpSetUp(){
                 flexGrow: 1,
                 display: "flex",
                 flexDirection: "column",
-                justifyContent: "space-evenly",
+                justifyContent: "space-around",
                 alignItems: "center",
                 margin: "1rem"
             }}
@@ -177,57 +193,56 @@ export default function PickUpSetUp(){
             <canvas
                 ref={previewCanvasRef}
                 style={{
-                    width: "80vw",
-                    height: "80vw",
-                    maxWidth: "50vh",
-                    maxHeight: "50vh",
+                    margin: "0.5rem",
+                    width: "70vw",
+                    height: "70vw",
+                    maxWidth: "40dvh",
+                    maxHeight: "40dvh",
                     border: "1px black solid"
                 }}
             />
-            <Grid
-                container
-                spacing={5}
+            <div>
+                <div style={containerStyle}>
+                    {[1, 2, 3].map((_fireworkType, index) => (
+                        <canvas
+                            key={index}
+                            ref={(element) => (fireworkCanvasRefs.current[index] = element)}
+                            style={{...subCanvasStyle, marginLeft: (index === 0) ? 0 : "1rem" }}
+                        />
+                    ))}
+                </div>
+                <div style={{...containerStyle, marginTop: "1.5rem"}}>
+                    {[0, 1, 2].map((_sparksType, index) => (
+                        <canvas
+                            key={index}
+                            ref={(element) => (sparksCanvasRefs.current[index] = element)}
+                            style={{...subCanvasStyle, marginLeft: (index === 0) ? 0 : "1rem" }}
+                        />
+                    ))}
+                </div>
+            </div>
+            <div
                 style={{
-                    height: "20vw",
-                    maxHeight: "10vh",
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    width: "100%",
+                    maxWidth: "300px"
                 }}
             >
-                {[1, 2, 3].map((_fireworkType, index) => (
-                    <canvas
-                        key={index}
-                        ref={(element) => (fireworkCanvasRefs.current[index] = element)}
-                        style={{
-                            width: "20vw",
-                            height: "20vw",
-                            maxWidth: "10vh",
-                            maxHeight: "10vh",
-                            border: "1px black solid"
-                        }}
-                    />
-                ))}
-            </Grid>
-            <Grid
-                container
-                spacing={5}
-                style={{
-                    height: "20vw",
-                    maxHeight: "10vh",
-                }}
-            >
-                {[0, 1, 2].map((_sparksType, index) => (
-                    <canvas
-                        key={index}
-                        ref={(element) => (sparksCanvasRefs.current[index] = element)}
-                        style={{
-                            width: "20vw",
-                            height: "20vw",
-                            maxWidth: "10vh",
-                            maxHeight: "10vh",
-                            border: "1px black solid"
-                        }}
-                    />
-                ))}
-            </Grid>
+                <Button
+                    variant="contained"
+                    style={{display: "block"}}
+                >
+                    自分で描く
+                </Button>
+                <Button
+                    variant="contained"
+                    style={{display: "block"}}
+                >
+                    完成
+                </Button>
+            </div>
         </div>
     )
 }

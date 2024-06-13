@@ -20,8 +20,9 @@ export default function DesignPage(){
 
     return (
         <Box
-            sx={{ p: 2 }}
             style={{
+                padding: "1rem",
+                height: "calc(100dvh - 2rem)",
                 display: "flex",
                 flexDirection: "column"
             }}
