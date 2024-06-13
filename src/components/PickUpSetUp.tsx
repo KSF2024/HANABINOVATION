@@ -194,8 +194,8 @@ export default function PickUpSetUp(){
                 ref={previewCanvasRef}
                 style={{
                     margin: "0.5rem",
-                    width: "70vw",
-                    height: "70vw",
+                    width: "80vw",
+                    height: "80vw",
                     maxWidth: "40dvh",
                     maxHeight: "40dvh",
                     border: "1px black solid"
