@@ -16,8 +16,7 @@ const containerStyle: CSSProperties = {
 };
 
 function getPrimaryCanvasSize(): number{
-    // const maxWidth: number = window.innerHeight * 0.4;
-    const maxWidth: number = window.innerHeight * 1;
+    const maxWidth: number = window.innerHeight * 0.4;
     const width: number = window.innerWidth * 0.8;
     if(maxWidth > width){
         return width;
@@ -68,55 +67,35 @@ export default function PickUpSetUp({ setIsDrawing }: { setIsDrawing: React.Disp
         ctx: CanvasRenderingContext2D,
         imageData: ImageData,
         canvasSize: number,
-        fireworkSize: Size,
-        isPrimaryCanvas: boolean = false
+        fireworkSize: Size
     ){
         // imageDataから花火の星を作成する
         const newStars: Star[] = generateStars(imageData);
 
-        const scale: number = canvasSize / 300 * 0.8; // 300を基準としたスケーリングファクター
-        const fireworkWidth: number = (fireworkSize.width * scale) / 2;
-        const fireworkHeight: number = (fireworkSize.height * scale) / 2;
-        // const initialX: number = isPrimaryCanvas ? (
-        //     canvasSize / 2 - fireworkSize.width / 2
-        // ) : (
-        //     canvasSize / 2  - fireworkSize.width / 2
-        // );
-        // const initialY: number = isPrimaryCanvas ? (
-        //     canvasSize / 2 - fireworkHeight
-        // ) : (
-        //     canvasSize / 2
-        // );
-        // const initialX: number = 40;
-        const initialY: number = 40;
-        const initialX: number =  (canvasSize / 2) - (fireworkSize.width / 2);
-        // const initialX: number = canvasSize / 2 - fireworkWidth;
-        // const initialY: number = canvasSize / 2 - fireworkHeight;
-        // const initialX: number = /* canvasSize / 2 */ - fireworkWidth;
-        // const initialY: number = /* canvasSize / 2 */ - fireworkHeight;
-        console.log({
-            canvasSize,
-            scale: canvasSize / 300,
-            width: fireworkSize.width,
-            height: fireworkSize.height
-        })
+        // 花火の中心点を求める
+        const defaultWidth: number = 300; // 花火の基本サイズ
+        const reductionRate: number = 0.8; // 花火の縮小率
+        const scale: number = canvasSize / defaultWidth * reductionRate; // 300を基準としたスケーリングファクター
+        const initialX: number = (defaultWidth / 2) - (fireworkSize.width / 2) + (defaultWidth * (1 - reductionRate) / 2);
+        const initialY: number = (defaultWidth / 2) - (fireworkSize.height / 2) + (defaultWidth * (1 - reductionRate) / 2);
 
         // 花火を描画する
         newStars.forEach((star) => {
             star.x += initialX;
             star.y += initialY;
-            // drawStar(ctx, star, 255, scale);
-            drawStar(ctx, star, 255, 1);
+            drawStar(ctx, star, 255, scale);
         })
     }
 
     // 火花を初期表示する関数
-    function previewSparks(ctx: CanvasRenderingContext2D, sparksType: number, canvasSize: number, fireworkSize: Size){
+    function previewSparks(ctx: CanvasRenderingContext2D, sparksType: number, canvasSize: number){
         if(!boothId) return;
         const sparksColor: string | null = getBoothColor(boothId);
         if(!sparksColor) return;
 
-        const scale: number = canvasSize / 300 * 0.8; // 300を基準としたスケーリングファクター
+        const defaultWidth: number = 300; // 花火の基本サイズ
+        const reductionRate: number = 0.8; // 花火の縮小率
+        const scale: number = canvasSize / defaultWidth * reductionRate; // 300を基準としたスケーリングファクター
         const initialX: number = canvasSize / 2;
         const initialY: number = canvasSize / 2;
 
@@ -246,7 +225,7 @@ export default function PickUpSetUp({ setIsDrawing }: { setIsDrawing: React.Disp
             const ctx = getCtxFromCanvas(canvasElement);
             if(!ctx) return;
             if(!canvasElement) return;
-            previewSparks(ctx, index, secondaryCanvasSize, fireworkSize);
+            previewSparks(ctx, index, secondaryCanvasSize);
         });
 
         // 花火のセットアップ選択用描画を行う
@@ -271,8 +250,8 @@ export default function PickUpSetUp({ setIsDrawing }: { setIsDrawing: React.Disp
         const mainCtx = getCtxFromCanvas(previewCanvasRef.current);
         if(!mainCtx) return;
         mainCtx.clearRect(0, 0, primaryCanvasSize, primaryCanvasSize);
-        previewSparks(mainCtx, sparksType, primaryCanvasSize, fireworkSize);
-        previewFireworks(mainCtx, fireworkImages[fireworkType - 1], primaryCanvasSize, fireworkSize, true);
+        previewSparks(mainCtx, sparksType, primaryCanvasSize);
+        previewFireworks(mainCtx, fireworkImages[fireworkType - 1], primaryCanvasSize, fireworkSize);
     }, [fireworkImages, fireworkType, sparksType]);
 
     return (
