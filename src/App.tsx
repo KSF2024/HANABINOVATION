@@ -7,6 +7,7 @@ import LotteryPage from "./pages/LotteryPage";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import DesignPage from "./pages/DesignPage";
+import ErrorPage from "./pages/ErrorPage";
 
 <ToastContainer />
 
@@ -22,7 +23,7 @@ export default function App(){
                     <Route path="/map" element={<MapPage/>} />
                     <Route path="/scan-qr" element={<QRPage/>}/>
                     <Route path="/enter-lottery" element={<LotteryPage/>}/>
-                    <Route path="/*" element={<div>パスエラー</div>}/>
+                    <Route path="/*" element={<ErrorPage/>}/>
                 </Routes>
             </BrowserRouter>
             <ToastContainer

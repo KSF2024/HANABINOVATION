@@ -7,6 +7,8 @@ import { useParams } from "react-router-dom";
 import CaptureFireworkCanvas from "../components/CaptureFireworkCanvas";
 import { ModalContext } from "../providers/ModalProvider";
 import ConfirmCapture from "../components/ConfirmCapture";
+import { BOOTH_ID_LIST } from "../utils/config";
+import ErrorPage from "./ErrorPage";
 
 /* 定数定義 */
 export const ICON_SIZE: string = "5rem"; // ボタンの大きさ
@@ -48,30 +50,34 @@ export default function PhotoPage(){
     }, [boothId]);
 
     return (
-        <>
-            <div
-                style={{
-                    backgroundColor: "black",
-                    width: "100vw",
-                    height: "100dvh"
-                }}
-            >
+        (BOOTH_ID_LIST.includes(boothId || "")) ? (
+            <>
                 <div
                     style={{
-                        overflow: "hidden",
-                        zIndex: "0"
+                        backgroundColor: "black",
+                        width: "100vw",
+                        height: "100dvh"
                     }}
                 >
-                    <Camera/>
-                    <CaptureFireworkCanvas/>
+                    <div
+                        style={{
+                            overflow: "hidden",
+                            zIndex: "0"
+                        }}
+                    >
+                        <Camera/>
+                        <CaptureFireworkCanvas/>
+                    </div>
+                    <ThemeProvider theme={theme}>
+                        <ButtonArea theme={theme}/>
+                    </ThemeProvider>
                 </div>
-                <ThemeProvider theme={theme}>
-                    <ButtonArea theme={theme}/>
-                </ThemeProvider>
-            </div>
-            <Modal>
-                <ConfirmCapture/>
-            </Modal>
-        </>
+                <Modal>
+                    <ConfirmCapture/>
+                </Modal>
+            </>
+        ) : (
+            <ErrorPage/>
+        )
     )
 }
