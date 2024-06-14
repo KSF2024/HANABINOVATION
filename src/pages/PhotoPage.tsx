@@ -9,6 +9,7 @@ import { ModalContext } from "../providers/ModalProvider";
 import ConfirmCapture from "../components/ConfirmCapture";
 import { BOOTH_ID_LIST } from "../utils/config";
 import ErrorPage from "./ErrorPage";
+import { toast } from "react-toastify";
 
 /* 定数定義 */
 export const ICON_SIZE: string = "5rem"; // ボタンの大きさ
@@ -48,6 +49,22 @@ export default function PhotoPage(){
     useEffect(() => {
         if(boothId) setBoothId(boothId);
     }, [boothId]);
+
+    // 初回案内を行う
+    useEffect(() => {
+        const isSubmitted: boolean = false; // TODO 既に撮影を終えたブースかどうかを取得する処理
+        if(isSubmitted) return;
+
+        // 初回アクセスの場合、案内メッセージを表示する
+        const toastTexts: string[] = ["撮影ボタンを押して、デザインした花火を打ち上げましょう！"];
+        toast.info(
+            (<div>
+                {toastTexts.map((text, index) => (
+                    <div key={index}>{text}</div>
+                ))}
+            </div>)
+        );
+    }, []);
 
     return (
         (BOOTH_ID_LIST.includes(boothId || "")) ? (

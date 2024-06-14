@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import DrawFirework from "../components/DrawFirework";
 import { BOOTH_ID_LIST } from "../utils/config";
 import ErrorPage from "./ErrorPage";
+import { toast } from "react-toastify";
 
 export default function DesignPage(){
     const navigate = useNavigate();
@@ -22,6 +23,22 @@ export default function DesignPage(){
     useEffect(() => {
         if(boothId) setBoothId(boothId);
     }, [boothId]);
+
+    // 初回案内を行う
+    useEffect(() => {
+        const isSubmitted: boolean = false; // TODO 既に撮影を終えたブースかどうかを取得する処理
+        if(isSubmitted) return;
+
+        // 初回アクセスの場合、案内メッセージを表示する
+        const toastTexts: string[] = ["HANABINOVATIONへようこそ！", "あなただけの花火をデザインして、学園祭の思い出を彩りましょう！", "スタンプラリーを制覇して、抽選会に参加しましょう！"];
+        toast.info(
+            <div>
+                {toastTexts.map((text, index) => (
+                    <div key={index}>{text}</div>
+                ))}
+            </div>
+        );
+    }, []);
 
     return (
         (BOOTH_ID_LIST.includes(boothId || "")) ? (

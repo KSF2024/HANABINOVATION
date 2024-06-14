@@ -27,7 +27,6 @@ export default function App(){
                 </Routes>
             </BrowserRouter>
             <ToastContainer
-                autoClose={false}
                 draggable
                 closeOnClick
                 theme="colored"

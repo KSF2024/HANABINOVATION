@@ -5,8 +5,11 @@ import { FireworksContext } from "../providers/FireworkProvider";
 import { CameraContext } from "../providers/CameraProvider";
 import { ModalContext } from "../providers/ModalProvider";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export default function ConfirmCapture(){
+    const navigate = useNavigate();
+
     // 撮影処理用のcontext
     const {
         mergedCanvas,
@@ -50,16 +53,17 @@ export default function ConfirmCapture(){
     function showCongratulations(){
         const toastTexts: string[] = ["花火の撮影ありがとうございます！", "このメッセージをクリックすると「花火大会」に参加することができます。", "他の人の作った花火も見てみましょう！"];
         toast.info(
-            <div
+            (<div
                 onClick={() => {
                     // toastメッセージがクリックされた場合、花火大会画面へ遷移する
-                    location.href = "../firework-show";
+                    navigate("/firework-show");
                 }}
             >
                 {toastTexts.map((text, index) => (
                     <div key={index}>{text}</div>
                 ))}
-            </div>
+            </div>),
+            {autoClose: false}
         );
     }
 
