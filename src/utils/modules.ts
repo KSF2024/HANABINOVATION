@@ -66,7 +66,6 @@ export async function getImageData(image: string): Promise<ImageInfo>{
             // 元の画像の比率を保持したまま横幅を300pxに設定
             const originalWidth = img.width;
             const originalHeight = img.height;
-            // const newWidth = Math.min(window.innerWidth, window.innerHeight) * 0.7;
             const newWidth = 300;
             const newHeight = (originalHeight * newWidth) / originalWidth;
 
