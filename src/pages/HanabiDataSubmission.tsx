@@ -17,9 +17,9 @@ export default function HanabiDataSubmission(){
     >
         <Typography
             sx={{
-                fontSize: "20px",
+                fontSize: "1.25rem",
                 fontWeight: "bold",
-                padding: "58px"
+                padding: "1rem"
             }}
         >
             花火データの送信、
@@ -29,9 +29,9 @@ export default function HanabiDataSubmission(){
 
         <Typography
             sx={{
-                fontSize: "36px",
+                fontSize: "2.25rem",
                 fontWeight: "bold",
-                paddingTop: "80px"
+                paddingTop: "1rem"
             }}
         >
             OPENCAMPUS
@@ -39,20 +39,20 @@ export default function HanabiDataSubmission(){
 
         <Typography
             sx={{
-                fontSize: "20px",
+                fontSize: "1.25rem",
                 fontWeight: "bold",
-                paddingTop: "18px"
+                paddingTop: "1rem"
             }}
         >
             オープンキャンパスに参加しよう！
         </Typography>
 
-        <Box sx={{paddingLeft: "25px", paddingRight: "30px"}}>
+        <Box sx={{paddingLeft: "1.56rem", paddingRight: "1.875rem"}}>
             <Typography
                 sx={{
-                    fontSize: "16px",
+                    fontSize: "1rem",
                     fontWeight: "medium",
-                    paddingTop: "18px"
+                    paddingTop: "1.5rem"
                 }}
             >
                 実際に校舎の実習室･教室など、設備･施設を見学して、学校のイメージをふくらませよう！
@@ -64,22 +64,21 @@ export default function HanabiDataSubmission(){
 
         <Box 
             sx={{
-                padding: "25px",
+                padding: "1.5rem",
                 display: "flex",
             }}
         >
             {OPENCAMPUS_DATE.map((campusDate) =>(
                 <Card 
                     sx={{
-                        width: "150px",
-                        height: "127px",
-                        marginRight: "11px",
-                        padding: "5px",
+                        width: "9.37rem",
+                        height: "7.93rem",
+                        marginRight: "0.68rem",
+                        padding: "0.3rem",
                     }}
                 >
                     <CardMedia
                         component="img"
-                        height="60"
                         image={OPENCAMPUSIMAGE}>
                     </CardMedia>
                     <a href={campusDate[0].url}>
@@ -93,12 +92,12 @@ export default function HanabiDataSubmission(){
         <a href="https://kbc.kawahara.ac.jp/academics/it_cyber/">
             <Button 
                 sx={{
-                    width: "367px",
-                    height: "45px",
+                    width: "22rem",
+                    height: "2.9rem",
                     backgroundColor: "#FFFFFF",
                     color: "#000000",
                     borderStyle: "solid",
-                    borderWidth: "1px"
+                    borderWidth: "0.0625rem"
                 }}
             >
                 オープンキャンパスTOPへ
