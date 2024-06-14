@@ -4,25 +4,26 @@ import { LOTTERY_EVENTS } from "../utils/config";
 
 export default function LotteryConfirmationPage(){
     return (
-        <FooterPage>
             <Box
                 sx={{
                     textAlign: "center",
+                    display: "flex",
+                    flexDirection: "column"
                 }}
             >
                 <Typography variant="h4">
                     抽選応募確認
                 </Typography>
 
-                <Typography sx={{padding: "40px"}}>
+                <Typography sx={{padding: "2rem"}}>
                     ユーザー名
                 </Typography>
 
-                <Typography sx={{padding: "45px"}}>
+                <Typography sx={{padding: "2rem"}}>
                     受付番号
                 </Typography>
 
-                <Box sx={{padding: "20px"}}>
+                <Box sx={{padding: "1.25rem"}}>
                     <Button
                         type="button"
                         color="primary"
@@ -31,42 +32,51 @@ export default function LotteryConfirmationPage(){
                         応募修正
                     </Button>
                 </Box>
-
                 <Box
                     sx={{ 
                         width:"100%",
-                        height: "420px" ,
+                        height: "26.25rem" ,
                         color: "#FFFFFF",
                         background: "linear-gradient(to bottom, #18BAFF, #00CC99)",
                         textAlign: "center",
                     }}
                 >
-
-                    <Typography sx={{fontSize: "35px", padding: "12px", fontWeight: "bold"}}>
-                        HANABINOVATION
-                    </Typography>
-                
-                    <Typography sx={{fontSize: "30px", fontWeight: "bold"}}>
-                        抽選会
-                    </Typography>
-
-                    {LOTTERY_EVENTS.map(eventDate => (
-                        <Typography sx={{fontSize: "26px", fontWeight: "bold", padding: "9px"}}>
-                            {eventDate}
+                    <FooterPage>
+                        <Typography 
+                            sx={{
+                                fontSize: "2rem", 
+                                padding: "0.75rem",
+                                fontWeight: "bold"
+                            }}
+                        >
+                            HANABINOVATION
                         </Typography>
-                    ))}
+                
+                        <Typography sx={{fontSize: "1.5rem", fontWeight: "bold"}}>
+                            抽選会
+                        </Typography>
 
-                    <Typography sx={{fontSize: "30px", fontWeight: "bold"}}>
-                        プロジェクター投影会
-                    </Typography>
+                        {LOTTERY_EVENTS.map(eventDate => (
+                            <Typography 
+                                sx={{
+                                    fontSize: "1.45rem",
+                                    fontWeight: "bold",
+                                }}>
+                                {eventDate}
+                            </Typography>
+                        ))}
 
-                    <Typography sx={{fontSize: "20px", fontWeight: "bold"}}>
-                        河原電子ビジネス専門学校
-                        ITイノベーション科のブースに行ってみましょう！
-                        あなたが作った花火をプロジェクターで投影できます！
-                    </Typography>
+                        <Typography sx={{fontSize: "1.5rem", fontWeight: "bold"}}>
+                            プロジェクター投影会
+                        </Typography>
+
+                        <Typography sx={{fontSize: "1.1rem", fontWeight: "bold"}}>
+                            河原電子ビジネス専門学校
+                            ITイノベーション科のブースに行ってみましょう！
+                            あなたが作った花火をプロジェクターで投影できます！
+                        </Typography>
+                    </FooterPage>
                 </Box>
             </Box>
-        </FooterPage>
     )
 }
