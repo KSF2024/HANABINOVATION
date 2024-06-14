@@ -11,7 +11,8 @@ export default function HanabiDataSubmission(){
             background: "linear-gradient(to bottom, #18BAFF, #00CC99)",
             display: "flex",
             flexDirection: "column",
-            alignItems: "center"
+            alignItems: "center",
+            overflowX: "scroll"
         }}
     >
         <Typography
