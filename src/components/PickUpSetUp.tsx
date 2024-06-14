@@ -3,9 +3,6 @@ import { DataContext } from "../providers/DataProvider";
 import { getAllImageData, getBoothColor, getCtxFromCanvas } from "../utils/modules";
 import { drawSpark, drawStar, generateSparks, generateStars } from "../utils/hanabi";
 import { Size, Spark, Star } from "../utils/types";
-import { Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { Height } from "@mui/icons-material";
 
 const containerStyle: CSSProperties = {
     display: "flex",
@@ -35,9 +32,7 @@ function getSecondaryCanvasSize(): number{
     }
 }
 
-export default function PickUpSetUp({ setIsDrawing }: { setIsDrawing: React.Dispatch<React.SetStateAction<boolean>> }){
-    const navigate = useNavigate();
-
+export default function PickUpSetUp(){
     const [fireworkImages, setFireworkImages] = useState<ImageData[]>([]); // 花火の画像データ
 
     const previewCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -260,9 +255,8 @@ export default function PickUpSetUp({ setIsDrawing }: { setIsDrawing: React.Disp
                 flexGrow: 1,
                 display: "flex",
                 flexDirection: "column",
-                justifyContent: "space-around",
-                alignItems: "center",
-                margin: "1rem"
+                justifyContent: "center",
+                alignItems: "center"
             }}
         >
             <canvas
@@ -310,30 +304,6 @@ export default function PickUpSetUp({ setIsDrawing }: { setIsDrawing: React.Disp
                         />
                     ))}
                 </div>
-            </div>
-            <div
-                style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    width: "100%",
-                    maxWidth: "300px"
-                }}
-            >
-                <Button
-                    variant="contained"
-                    style={{display: "block"}}
-                    onClick={() => setIsDrawing(true)}
-                >
-                    自分で描く
-                </Button>
-                <Button
-                    variant="contained"
-                    style={{display: "block"}}
-                    onClick={() => navigate(`/${boothId}/capture-firework`)}
-                >
-                    完成
-                </Button>
             </div>
         </div>
     )

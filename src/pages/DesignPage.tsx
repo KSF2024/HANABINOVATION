@@ -1,10 +1,13 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { DataContext } from "../providers/DataProvider";
 import PickUpSetUp from "../components/PickUpSetUp";
+import { useNavigate } from "react-router-dom";
+import DrawFirework from "../components/DrawFirework";
 
 export default function DesignPage(){
+    const navigate = useNavigate();
     const [ isDrawing, setIsDrawing ] = useState<boolean>(false); // 「自分で描く」中かどうか
     const { boothId } = useParams(); // URLからブースIDを取得する
 
@@ -21,23 +24,49 @@ export default function DesignPage(){
     return (
         <Box
             style={{
-                padding: "1rem",
-                height: "calc(100dvh - 2rem)",
+                padding: "2rem",
+                height: "calc(100dvh - 2rem * 2)",
                 display: "flex",
-                flexDirection: "column"
+                flexDirection: "column",
+                alignItems: "center"
             }}
         >
             <Typography
                 variant="h6"
                 style={{ textAlign: "center" }}
             >
-                好きな形の花火と火花を選んで、オリジナルの花火を作ろう！
+                {isDrawing ? "あなただけのオリジナル花火を描きましょう！" : "好きな形の花火と火花を選んで、オリジナルの花火を作ろう！"}
             </Typography>
             {(isDrawing) ? (
-                <></>
+                <DrawFirework/>
             ) : (
-                <PickUpSetUp setIsDrawing={setIsDrawing}/>
+                <PickUpSetUp/>
             )}
+            <div
+                style={{
+                    padding: "1rem",
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    width: "100%",
+                    maxWidth: "300px"
+                }}
+            >
+                <Button
+                    variant="contained"
+                    style={{display: "block"}}
+                    onClick={() => setIsDrawing(prev => !prev)}
+                >
+                    {isDrawing ? "戻る" : "自分で描く"}
+                </Button>
+                <Button
+                    variant="contained"
+                    style={{display: "block"}}
+                    onClick={() => navigate(`/${boothId}/capture-firework`)}
+                >
+                    完成
+                </Button>
+            </div>
         </Box>
     )
 }
