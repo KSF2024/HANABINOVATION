@@ -22,9 +22,8 @@ export default function HanabiDataSubmission(){
                 padding: "1rem"
             }}
         >
-            花火データの送信、
-            <div/>
-            ありがとうございました！
+            <div>花火データの送信、</div>
+            <div>ありがとうございました！</div>
         </Typography>
 
         <Typography
