@@ -2,7 +2,7 @@ import { Box, Typography, Card, Button, CardContent, CardMedia } from "@mui/mate
 import { OPENCAMPUS_DATE } from "../utils/config"
 import OPENCAMPUSIMAGE from "./../images/opencampus_06_15.png"
 
-export default function HanabiDataSubmission(){
+export default function SubmitFireworkPage(){
     return <Box 
         sx={{
             width: "100%",
