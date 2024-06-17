@@ -1,11 +1,18 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { CameraContext } from '../providers/CameraProvider';
 
 // カメラの映像を表示するコンポーネント
 export default function Camera(){
     const {
-        videoRef
+        videoRef,
+        initCamera
     } = useContext(CameraContext);
+
+    /* useEffect等 */
+    // 初回レンダリング時、カメラに接続する
+    useEffect(() => {
+        initCamera();
+    }, []);
 
     return (
         <div
@@ -16,7 +23,7 @@ export default function Camera(){
                 top: 0,
                 left: 0,
                 width: "100%",
-                height: "100vh",
+                height: "100dvh",
                 overflow: "hidden",
                 userSelect: "none"
             }}

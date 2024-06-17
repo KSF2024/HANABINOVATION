@@ -6,6 +6,7 @@ import { ulid } from "ulidx";
 type DataContent = {
     userId: string | null;
     boothId: string | null;
+    setBoothId: React.Dispatch<React.SetStateAction<string | null>>;
     fireworkType: 0 | 1 | 2 | 3;
     setFireworkType: React.Dispatch<React.SetStateAction<0 | 1 | 2 | 3>>;
     sparksType: 0 | 1 | 2;
@@ -18,6 +19,7 @@ type DataContent = {
 const initialData: DataContent = {
     userId: null,
     boothId: null,
+    setBoothId: () => null,
     fireworkType: 1,
     setFireworkType: () => 0,
     sparksType: 0,
@@ -31,10 +33,10 @@ export const DataContext = createContext<DataContent>(initialData);
 // 花火やユーザーの設定データを管理するProvider
 export function DataProvider({children}: {children: ReactNode}){
     const [userId, setUserId] = useState<string | null>(null); // ユーザーID
-    const [boothId, _setBoothId] = useState<string | null>(null); // 各ブースのID
+    const [boothId, setBoothId] = useState<string | null>(null); // 各ブースのID
     const [fireworkType, setFireworkType] = useState<0 | 1 | 2 | 3>(1);// 花火のセットアップの種類
-    const [sparksType, setSparksType] = useState<0 | 1 | 2>(0); // ユーザーが作成した花火のオリジナルデザイン
-    const [fireworkDesign, setFireworkDesign] = useState<Blob | null>(null); // 火花のセットアップの種類
+    const [sparksType, setSparksType] = useState<0 | 1 | 2>(0); // 火花のセットアップの種類
+    const [fireworkDesign, setFireworkDesign] = useState<Blob | null>(null); // ユーザーが作成した花火のオリジナルデザイン
 
     // userIdを初期化する
     useEffect(() => {
@@ -57,6 +59,7 @@ export function DataProvider({children}: {children: ReactNode}){
             value={{
                 userId,
                 boothId,
+                setBoothId,
                 fireworkType,
                 setFireworkType,
                 sparksType,
