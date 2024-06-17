@@ -17,7 +17,7 @@ export default function App(){
                 <Route path="/map" element={<MapPage/>} />
                 <Route path="/scan-qr" element={<QRPage/>}/>
                 <Route path="/enter-lottery" element={<LotteryPage/>}/>
-                <Route path="/hanabi-submit" element={<HanabiDataSubmission/>}/>
+                <Route path="/submit-firework" element={<HanabiDataSubmission/>}/>
                 <Route path="/*" element={<div>パスエラー</div>}/>
             </Routes>
         </BrowserRouter>
