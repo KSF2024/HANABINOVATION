@@ -16,7 +16,7 @@ export default function LotteryConfirmationPage(){
                     flexDirection: "column"
                 }}
             >
-                <Typography variant="h4" sx={{padding: "1rem"}}>
+                <Typography variant="h4" sx={{padding: "2rem"}}>
                     抽選応募確認
                 </Typography>
 

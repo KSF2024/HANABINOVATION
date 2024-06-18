@@ -20,9 +20,15 @@ export default function LotteryPage(){
         <FooterPage>
             <Container
                 maxWidth="sm"
-                sx={{pt: 3}}
+                sx={{p: "2rem"}}
                 style={{ height: "100%" }}
             >
+                <Typography
+                    variant="h4"
+                    style={{ textAlign: "center" }}
+                >
+                    抽選応募
+                </Typography>
                 <Box
                     component="form"
                     onSubmit={postFormData}
@@ -33,12 +39,6 @@ export default function LotteryPage(){
                         height: "100%"
                     }}
                 >
-                    <Typography
-                        variant="h4"
-                        style={{ textAlign: "center" }}
-                    >
-                        抽選応募
-                    </Typography>
                     <Stack
                         spacing={3}
                         style={{
