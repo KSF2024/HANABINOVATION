@@ -5,6 +5,7 @@ import MapPage from "./pages/MapPage";
 import QRPage from "./pages/QRPage";
 import LotteryPage from "./pages/LotteryPage";
 import LotteryConfirmationPage from "./components/LotteryConfirmationPage";
+import LotteryEntryGuidePage from "./pages/LotteryEntryGuidePage";
 
 export default function App(){
     return (
@@ -14,9 +15,10 @@ export default function App(){
                 <Route path="/:boothId/create-firework"/>
                 <Route path="/:boothId/capture-firework" element={<PhotoPage/>}/>
                 <Route path="/firework-show" element={<HanabiPage/>}/>
-                <Route path="/map" element={<MapPage/>} />
+                <Route path="/map" element={<MapPage/>}/>
                 <Route path="/scan-qr" element={<QRPage/>}/>
                 <Route path="/enter-lottery" element={<LotteryPage/>}/>
+                <Route path="/enter-guide" element={<LotteryEntryGuidePage/>}/>
                 <Route path="/enter" element={<LotteryConfirmationPage/>}/>
                 <Route path="/*" element={<div>パスエラー</div>}/>
             </Routes>
