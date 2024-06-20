@@ -144,3 +144,9 @@ export function getBoothColor(boothId: string): string | null{
     if(!validateBoothId(boothId)) return null;
     return SCHOOL_DATA[boothId].color;
 }
+
+export const LOTTERY_EVENTS: string[] = [
+    "7/13(土) 14:00～",
+    "7/14(日) 14:00～"
+];
+

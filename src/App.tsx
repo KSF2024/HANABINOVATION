@@ -3,11 +3,9 @@ import PhotoPage from "./pages/PhotoPage";
 import HanabiPage from "./pages/HanabiPage";
 import MapPage from "./pages/MapPage";
 import QRPage from "./pages/QRPage";
-import LotteryPage from "./pages/LotteryPage";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-<ToastContainer />
+import LotteryRouter from "./components/LotteryRouter";
 
 export default function App(){
     return (
@@ -18,9 +16,9 @@ export default function App(){
                     <Route path="/:boothId/create-firework"/>
                     <Route path="/:boothId/capture-firework" element={<PhotoPage/>}/>
                     <Route path="/firework-show" element={<HanabiPage/>}/>
-                    <Route path="/map" element={<MapPage/>} />
+                    <Route path="/map" element={<MapPage/>}/>
                     <Route path="/scan-qr" element={<QRPage/>}/>
-                    <Route path="/enter-lottery" element={<LotteryPage/>}/>
+                    <Route path="/enter-lottery" element={<LotteryRouter/>}/>
                     <Route path="/*" element={<div>パスエラー</div>}/>
                 </Routes>
             </BrowserRouter>

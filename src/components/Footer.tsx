@@ -22,7 +22,7 @@ export default function Footer(){
                 navigate(value);
             }}
             sx={{
-                backgroundColor: "#1976d2" // フッターの背景色
+                backgroundColor: "#098FF0" // フッターの背景色
             }}
             style={{
                 height: "4rem"
