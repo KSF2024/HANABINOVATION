@@ -1,7 +1,7 @@
 import { ThemeProvider, createTheme } from "@mui/material";
 import Camera from "../components/Camera";
 import ButtonArea from "../components/ButtonArea";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { DataContext } from "../providers/DataProvider";
 import { useParams } from "react-router-dom";
 import CaptureFireworkCanvas from "../components/CaptureFireworkCanvas";
