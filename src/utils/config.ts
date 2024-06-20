@@ -112,7 +112,7 @@ export const SCHOOL_DATA: { [boothId: string]: SchoolInfo } = {
 };
 
 // ブースIDのリスト
-const BOOTH_ID_LIST: string[] = Object.keys(SCHOOL_DATA);
+export const BOOTH_ID_LIST: string[] = Object.keys(SCHOOL_DATA);
 
 // 正しいブースIDかどうかを確かめる関数
 export function validateBoothId(boothId: string): boolean{
@@ -149,4 +149,3 @@ export const LOTTERY_EVENTS: string[] = [
     "7/13(土) 14:00～",
     "7/14(日) 14:00～"
 ];
-

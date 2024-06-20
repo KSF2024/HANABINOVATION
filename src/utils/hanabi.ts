@@ -1,4 +1,5 @@
-import { Star } from "./types";
+import { hexToRgba } from "./modules";
+import { Spark, Star } from "./types";
 
 export function generateStars(imageData: ImageData, angle: number = 0, interval: number = 10, radius: number = 5): Star[]{
     const stars: Star[] = [];
@@ -54,4 +55,133 @@ function rotatePoint(x: number, y: number, width: number, height: number, angle:
     let finalY = rotatedY + centerY;
 
     return { x: finalX, y: finalY };
+}
+
+// starデータからキャンバスに点を描画する関数
+export function drawStar(ctx: CanvasRenderingContext2D, star: Star, alpha?: number, scale: number = 1){
+    // スケーリングされた座標と半径
+    const scaledX: number = star.x * scale;
+    const scaledY: number = star.y * scale;
+    const scaledRadius: number = star.radius * scale;
+
+    // 色の設定
+    const starAlpha: number = (alpha) ? Math.min(star.color.alpha, alpha): star.color.alpha;
+    const color: string = `rgba(${[star.color.red, star.color.green, star.color.blue, starAlpha / 255]})`;
+    ctx.fillStyle = color;
+
+    // 星の描画
+    ctx.beginPath();
+    ctx.arc(scaledX, scaledY, scaledRadius, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.closePath();
+}
+
+// 火花データを生成する関数
+export function generateSparks(sparkType: number, colorCode: string, initialX: number, initialY: number): Spark[]{
+    const result: Spark[] = [];
+
+    const amount: number = 30; // 火花の数
+    const standardRadius: number = 5; // 火花の大きさ
+    const color = hexToRgba(colorCode, 255);
+
+    // 火花データを生成する
+    switch(sparkType){
+        case 2: // 雫型
+            generateDropSparks();
+            break;
+        case 1: // 線型
+            generateLineSparks();
+            break;
+        case 0: // 丸型
+        default:
+            generateNormalSparks();
+    }
+
+    // 丸型の火花を生成する関数
+    function generateNormalSparks(){
+        for(let i: number = 0; i < amount; i++){
+            const direction: number = ((360 / amount) * i) / Math.PI; // 火花の向き(ラジアン)
+            const newOuterSpark: Spark = {
+                color,
+                x: initialX,
+                y: initialY,
+                standardRadius,
+                radius: standardRadius,
+                direction,
+                movementType: 2,
+                sparkType: 0
+            };
+            const newInnerSpark: Spark = {
+                color,
+                x: initialX,
+                y: initialY,
+                standardRadius,
+                radius: standardRadius * 0.9,
+                direction,
+                movementType: 1,
+                sparkType: 0
+            };
+
+            result.push(newOuterSpark);
+            result.push(newInnerSpark);
+        }
+    }
+
+    // 線型の火花を生成する関数
+    function generateLineSparks(){
+        for(let i: number = 0; i < amount; i++){
+            const direction: number = ((360 / amount) * i) / Math.PI; // 火花の向き(ラジアン)
+            const newSpark: Spark = {
+                color,
+                x: initialX,
+                y: initialY,
+                standardRadius: standardRadius * 0.5,
+                radius: standardRadius,
+                direction,
+                movementType: 2,
+                sparkType: 1
+            };
+            result.push(newSpark);
+        }
+
+        return result;
+    }
+
+    // 雫型の火花を生成する関数
+    function generateDropSparks(){
+        for(let i: number = 0; i < amount; i++){
+            const direction: number = ((360 / amount) * i) / Math.PI; // 火花の向き(ラジアン)
+            const newSpark: Spark = {
+                color,
+                x: initialX,
+                y: initialY,
+                standardRadius,
+                radius: standardRadius,
+                direction,
+                movementType: 2,
+                sparkType: 2
+            };
+            result.push(newSpark);
+        }
+
+        return result;
+    }
+
+    return result;
+}
+
+// sparkデータからキャンバスに点を描画する関数
+export function drawSpark(ctx: CanvasRenderingContext2D, spark: Spark, alpha?: number, scale: number = 1){
+    // スケーリングされた半径
+    const scaledRadius: number = spark.radius * scale;
+
+    // 色の設定
+    const sparkAlpha: number = (alpha || spark.color.alpha) / 255;
+    ctx.fillStyle = `rgba(${spark.color.red},${spark.color.green},${spark.color.blue},${sparkAlpha})`;
+
+    // 火花の描画
+    ctx.beginPath();
+    ctx.arc(spark.x, spark.y, scaledRadius, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.closePath();
 }

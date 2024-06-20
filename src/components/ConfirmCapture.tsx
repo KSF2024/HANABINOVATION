@@ -1,12 +1,15 @@
-import { Button, Paper, Typography } from "@mui/material";
+import { Button, Grid, Paper, Typography } from "@mui/material";
 import { useContext, useEffect, useRef } from "react";
 import { CaptureContext } from "../providers/CaptureProvider";
 import { FireworksContext } from "../providers/FireworkProvider";
 import { CameraContext } from "../providers/CameraProvider";
 import { ModalContext } from "../providers/ModalProvider";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export default function ConfirmCapture(){
+    const navigate = useNavigate();
+
     // 撮影処理用のcontext
     const {
         mergedCanvas,
@@ -50,16 +53,17 @@ export default function ConfirmCapture(){
     function showCongratulations(){
         const toastTexts: string[] = ["花火の撮影ありがとうございます！", "このメッセージをクリックすると「花火大会」に参加することができます。", "他の人の作った花火も見てみましょう！"];
         toast.info(
-            <div
+            (<div
                 onClick={() => {
                     // toastメッセージがクリックされた場合、花火大会画面へ遷移する
-                    location.href = "../firework-show";
+                    navigate("/firework-show");
                 }}
             >
                 {toastTexts.map((text, index) => (
                     <div key={index}>{text}</div>
                 ))}
-            </div>
+            </div>),
+            {autoClose: false}
         );
     }
 
@@ -109,26 +113,30 @@ export default function ConfirmCapture(){
                         overflow: "hidden"
                     }}
                 />
-                <div
-                    style={{
-                        display: "flex",
+                <Grid
+                    container
+                    spacing={8}
+                    sx={{
                         justifyContent: "center"
                     }}
                 >
-                    <Button
-                        variant="contained"
-                        sx={{ mr: 5 }}
-                        onClick={takePhoto}
-                    >
-                        はい
-                    </Button>
-                    <Button
-                        variant="outlined"
-                        onClick={finishConfirmTakePhoto}
-                    >
-                        いいえ
-                    </Button>
-                </div>
+                    <Grid item>
+                        <Button
+                            variant="contained"
+                            onClick={takePhoto}
+                        >
+                            はい
+                        </Button>
+                    </Grid>
+                    <Grid item>
+                        <Button
+                            variant="outlined"
+                            onClick={finishConfirmTakePhoto}
+                        >
+                            いいえ
+                        </Button>
+                    </Grid>
+                </Grid>
             </div>
         </Paper>
     )

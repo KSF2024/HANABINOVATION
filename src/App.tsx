@@ -6,6 +6,8 @@ import QRPage from "./pages/QRPage";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import LotteryRouter from "./components/LotteryRouter";
+import DesignPage from "./pages/DesignPage";
+import ErrorPage from "./pages/ErrorPage";
 
 export default function App(){
     return (
@@ -13,17 +15,16 @@ export default function App(){
             <BrowserRouter>
                 <Routes>
                     <Route path="/"/>
-                    <Route path="/:boothId/create-firework"/>
+                    <Route path="/:boothId/create-firework" element={<DesignPage/>}/>
                     <Route path="/:boothId/capture-firework" element={<PhotoPage/>}/>
                     <Route path="/firework-show" element={<HanabiPage/>}/>
                     <Route path="/map" element={<MapPage/>}/>
                     <Route path="/scan-qr" element={<QRPage/>}/>
                     <Route path="/enter-lottery" element={<LotteryRouter/>}/>
-                    <Route path="/*" element={<div>パスエラー</div>}/>
+                    <Route path="/*" element={<ErrorPage/>}/>
                 </Routes>
             </BrowserRouter>
             <ToastContainer
-                autoClose={false}
                 draggable
                 closeOnClick
                 theme="colored"

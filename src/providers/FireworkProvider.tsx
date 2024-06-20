@@ -1,10 +1,8 @@
 import { createContext, ReactNode, useState, useEffect, useRef, useContext } from 'react';
-import { ImageInfo, RisingAfterImage, RisingStars, Spark, Star } from '../utils/types';
-import { generateStars } from '../utils/hanabi';
+import { ImageInfo, RisingAfterImage, RisingStars, Size, Spark, Star } from '../utils/types';
+import { generateStars, generateSparks, drawStar, drawSpark } from '../utils/hanabi';
 import { DataContext } from './DataProvider';
-import { getBoothColor, getImageSrc } from '../utils/config';
-import { ulid } from "ulidx";
-import { calculateDistance, findIntersection, hexToRgba, sleep } from '../utils/modules';
+import { calculateDistance, findIntersection, getImageData, hexToRgba, sleep, getBoothColor, getImageSrc } from '../utils/modules';
 
 /* 型定義 */
 // contextに渡すデータの型
@@ -51,7 +49,7 @@ export function FireworksProvider({children}: {children: ReactNode}){
 
     // 花火の設定情報
     const [fireworkPhase, setFireworkPhase] = useState<number>(0); // 花火アニメーションの段階(0: 半透明, 1: 打ち上げ, 2: 爆発, 3: 撮影待機)
-    const [fireworkSize, setFireworkSize] = useState<{width: number, height: number}>({width: 0, height: 0}); // 花火の幅
+    const [fireworkSize, setFireworkSize] = useState<Size>({width: 0, height: 0}); // 花火の幅
     const [launchAngle, setLaunchAngle] = useState<number>(0); // 花火の打ち上げ角度 (デフォルト0度)
     const [fireworkPosition, setFireworkPosition] = useState<{gapX: number, gapY: number}>({gapX: 0, gapY: 0}); // 花火が打ち上がる位置
     const [positionToggle, setPositionToggle] = useState<boolean>(false); // 花火が打ちあがる位置をトグルで切り替えるためのstate
@@ -82,58 +80,6 @@ export function FireworksProvider({children}: {children: ReactNode}){
 
 
     /* 花火(Star)用関数定義 */
-    // 画像からImageDataを作成する関数
-    async function getImageData(image: string): Promise<ImageInfo>{
-        return new Promise<ImageInfo>((resolve, _rejects) => {
-            // canvas要素を作成
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-
-            // 画像を読み込み、canvasに描画
-            const img = new Image();
-            const newId: string = ulid();
-            img.onload = () => {
-                if (!ctx) return;
-
-                // 元の画像の比率を保持したまま横幅を300pxに設定
-                const originalWidth = img.width;
-                const originalHeight = img.height;
-                const newWidth = Math.min(window.innerWidth, window.innerHeight) * 0.7;
-                const newHeight = (originalHeight * newWidth) / originalWidth;
-
-                // canvasの大きさを新しい大きさに合わせる
-                canvas.width = newWidth;
-                canvas.height = newHeight;
-
-                // 画像のリサイズと中心点の調整をして描画
-                ctx.drawImage(img, 0, 0, newWidth, newHeight);
-
-                // ImageDataオブジェクトを取得
-                const newImageData: ImageData = ctx.getImageData(0, 0, newWidth, newHeight);
-                
-                const result: ImageInfo = {
-                    id: newId,
-                    imageData: newImageData,
-                    width: newWidth,
-                    height: newHeight
-                };
-                resolve(result);
-            };
-            img.src = image;
-        });
-    }
-
-    // starデータからキャンバスに点を描画する関数
-    function drawStar(ctx: CanvasRenderingContext2D, star: Star, alpha?: number){
-        const starAlpha: number = (alpha) ? Math.min(star.color.alpha, alpha): star.color.alpha;
-        const color: string = `rgba(${[star.color.red, star.color.green, star.color.blue, starAlpha / 255]})`;
-        ctx.fillStyle = color;
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.closePath();
-    }
-
     // 花火を爆発させるアニメーション
     function burstFireworks(initialX: number, initialY: number){
         const renderingStars: Star[] = starsRef.current; // 花火の完成予想図
@@ -185,7 +131,6 @@ export function FireworksProvider({children}: {children: ReactNode}){
             });
             // 花火のアニメーションが終了したら、アニメーションを停止する
             setFireworkAnimationFrameId(null);
-            console.log("fireworks finished")
             return;
         }else{
             // 次のフレームを要求
@@ -203,110 +148,6 @@ export function FireworksProvider({children}: {children: ReactNode}){
 
 
     /* 花火(Spark)用関数定義 */
-    // 火花データを生成する関数
-    function generateSparks(sparkType: number, colorCode: string, initialX: number, initialY: number): Spark[]{
-        const result: Spark[] = [];
-
-        const amount: number = 30; // 火花の数
-        const standardRadius: number = 5; // 火花の大きさ
-        const color = hexToRgba(colorCode, 255);
-
-        // 火花データを生成する
-        switch(sparkType){
-            case 2: // 雫型
-                generateDropSparks();
-                break;
-            case 1: // 線型
-                generateLineSparks();
-                break;
-            case 0: // 丸型
-            default:
-                generateNormalSparks();
-        }
-
-        // 丸型の火花を生成する関数
-        function generateNormalSparks(){
-            for(let i: number = 0; i < amount; i++){
-                const direction: number = ((360 / amount) * i) / Math.PI; // 火花の向き(ラジアン)
-                const newOuterSpark: Spark = {
-                    color,
-                    x: initialX,
-                    y: initialY,
-                    standardRadius,
-                    radius: standardRadius,
-                    direction,
-                    movementType: 2,
-                    sparkType: 0
-                };
-                const newInnerSpark: Spark = {
-                    color,
-                    x: initialX,
-                    y: initialY,
-                    standardRadius,
-                    radius: standardRadius * 0.9,
-                    direction,
-                    movementType: 1,
-                    sparkType: 0
-                };
-
-                result.push(newOuterSpark);
-                result.push(newInnerSpark);
-            }
-        }
-
-        // 線型の火花を生成する関数
-        function generateLineSparks(){
-            for(let i: number = 0; i < amount; i++){
-                const direction: number = ((360 / amount) * i) / Math.PI; // 火花の向き(ラジアン)
-                const newSpark: Spark = {
-                    color,
-                    x: initialX,
-                    y: initialY,
-                    standardRadius: standardRadius * 0.5,
-                    radius: standardRadius,
-                    direction,
-                    movementType: 2,
-                    sparkType: 1
-                };
-                result.push(newSpark);
-            }
-
-            return result;
-        }
-
-        // 雫型の火花を生成する関数
-        function generateDropSparks(){
-            for(let i: number = 0; i < amount; i++){
-                const direction: number = ((360 / amount) * i) / Math.PI; // 火花の向き(ラジアン)
-                const newSpark: Spark = {
-                    color,
-                    x: initialX,
-                    y: initialY,
-                    standardRadius,
-                    radius: standardRadius,
-                    direction,
-                    movementType: 2,
-                    sparkType: 2
-                };
-                result.push(newSpark);
-            }
-
-            return result;
-        }
-
-        return result;
-    }
-
-    // sparkデータからキャンバスに点を描画する関数
-    function drawSpark(ctx: CanvasRenderingContext2D, spark: Spark, alpha?: number){
-        const sparkAlpha: number = (alpha || spark.color.alpha) / 255;
-        ctx.fillStyle = `rgba(${spark.color.red},${spark.color.green},${spark.color.blue},${sparkAlpha})`;
-        ctx.beginPath();
-        ctx.arc(spark.x, spark.y, spark.radius, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.closePath();
-    }
-
     // 火花を爆発させるアニメーション
     function burstSparks(initialX: number, initialY: number){
         const speed: number = 10;
@@ -412,7 +253,6 @@ export function FireworksProvider({children}: {children: ReactNode}){
         if(isFinishedSparksAnimation.current){
             // 花火のアニメーションが終了したら、アニメーションを停止する
             setSparksAnimationFrameId(null);
-            console.log("sparks finished")
             return;
         }else{
             // 次のフレームを要求
@@ -742,8 +582,8 @@ export function FireworksProvider({children}: {children: ReactNode}){
         let initialX: number =  0;
         let initialY: number =  0;
         if(canvasRef.current){
-            initialX = canvasRef.current.width / 2 + (fireworkPosition.gapX || 0);
-            initialY = canvasRef.current.height / 3 + (fireworkPosition.gapY || 0);
+            initialX = canvasRef.current.clientWidth / 2 + (fireworkPosition.gapX || 0);
+            initialY = canvasRef.current.clientHeight / 3 + (fireworkPosition.gapY || 0);
         }
         return { initialX, initialY };
     }
