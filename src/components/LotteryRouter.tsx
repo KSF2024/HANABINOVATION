@@ -4,8 +4,8 @@ import LotteryPage from "../pages/LotteryPage";
 import LotteryEntryGuidePage from "../pages/LotteryEntryGuidePage";
 
 export default function LotteryRouter(){
-    const [ isApplied, setisApplied ] = useState(false);
-    const [ canApply, setcanApply ] = useState(true);
+    const [ isApplied, _setIsApplied ] = useState(false);
+    const [ canApply, _setCanApply ] = useState(true);
 
     return (isApplied) ? (
         <LotteryConfirmationPage/>

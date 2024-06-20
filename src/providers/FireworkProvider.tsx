@@ -519,61 +519,6 @@ export function FireworksProvider({children}: {children: ReactNode}){
     }
 
     /* 花火&火花用共通関数定義 */
-    // 花火と火花が消えていくアニメーション
-    function fadeFireworksAndSparks(){
-        if(!starsRef.current) return;
-        const speed: number = 10;
-
-        setStars((prevStars) => {
-            // 新しい花火の星の透明度を計算して更新
-            const updatedStars = prevStars.map((star) => {
-                const newAlpha: number = Math.max(Math.round(star.color.alpha - speed), 0); // 透明度が負にならないようにする
-                return {...star, color: {...star.color, alpha: newAlpha}};
-            });
-
-            isFinishedFireworkAnimation.current = prevStars.every((star) => {
-                // 全ての花火の星の透明度が0以下になったらアニメーションを停止
-                return star.color.alpha <= 0;
-            })
-
-            const result = updatedStars;
-            return result;
-        });
-
-        setSparks((prevSparks) => {
-            // 新しい火花の透明度を計算して更新
-            const updatedStars = prevSparks.map((spark) => {
-                const newAlpha: number = Math.max(Math.round(spark.color.alpha - speed), 0); // 透明度が負にならないようにする
-                return {...spark, alpha: newAlpha};
-            });
-
-            isFinishedSparksAnimation.current = prevSparks.every((sparks) => {
-                // 全ての火花の透明度が0以下になったらアニメーションを停止
-                return sparks.color.alpha <= 0;
-            })
-
-            const result = updatedStars;
-            return result;
-        });
-
-        if(isFinishedFireworkAnimation.current){
-            // 花火のアニメーションが終了したら、アニメーションを停止する
-            setFireworkAnimationFrameId(null);
-            return;
-        }else{
-            // 次のフレームを要求
-            const newAnimationFrameId: number = requestAnimationFrame(fadeFireworksAndSparks);
-            setFireworkAnimationFrameId(newAnimationFrameId);
-        }
-    }
-
-    // 花火を消滅させるアニメーションを開始する
-    function startFadeAnimation(){
-        const newAnimationFrameId: number = requestAnimationFrame(() => fadeFireworksAndSparks());
-        setFireworkAnimationFrameId(newAnimationFrameId);
-        isFinishedFireworkAnimation.current = false;
-    }
-
     // 花火を打ち上げる中心点を求める関数
     function getInitialPosition(): {
         initialX: number;
