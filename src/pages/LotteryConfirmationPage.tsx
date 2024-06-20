@@ -1,5 +1,5 @@
 import { Typography, Button, Box, Grid } from "@mui/material";
-import FooterPage from "./FooterPage";
+import FooterPage from "../components/FooterPage";
 import { LOTTERY_EVENTS } from "../utils/config";
 
 const userName: string = "user";

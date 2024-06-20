@@ -3,9 +3,7 @@ import PhotoPage from "./pages/PhotoPage";
 import HanabiPage from "./pages/HanabiPage";
 import MapPage from "./pages/MapPage";
 import QRPage from "./pages/QRPage";
-import LotteryPage from "./pages/LotteryPage";
-import LotteryConfirmationPage from "./components/LotteryConfirmationPage";
-import LotteryEntryGuidePage from "./pages/LotteryEntryGuidePage";
+import LotteryRouter from "./components/LotteryRouter";
 
 export default function App(){
     return (
@@ -17,9 +15,7 @@ export default function App(){
                 <Route path="/firework-show" element={<HanabiPage/>}/>
                 <Route path="/map" element={<MapPage/>}/>
                 <Route path="/scan-qr" element={<QRPage/>}/>
-                <Route path="/enter-lottery" element={<LotteryPage/>}/>
-                <Route path="/enter-guide" element={<LotteryEntryGuidePage/>}/>
-                <Route path="/enter" element={<LotteryConfirmationPage/>}/>
+                <Route path="/enter-lottery" element={<LotteryRouter/>}/>
                 <Route path="/*" element={<div>パスエラー</div>}/>
             </Routes>
         </BrowserRouter>
