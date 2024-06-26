@@ -1,8 +1,7 @@
-import Camera from "../components/Camera";
 import { Box } from "@mui/material";
 import QRCodeReader from "../images/QRCodeReader.png"
 import QRScanner from "react-qr-scanner";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import FooterPage from "../components/FooterPage";
 
 export default function QRPage(){
@@ -19,53 +18,65 @@ export default function QRPage(){
       console.error(err);
     };
 
+    // react-qr-scannerがobject-fit: "container"なので"cover"に変更する。
+    useEffect(() => {
+        const video = document.querySelector(".qr-video video") as HTMLVideoElement;
+        if (video) {
+            video.style.objectFit = "cover";
+            video.style.width = "100%";
+            video.style.height = "100%";
+        }
+    }, []);
+
     return(
-        <>
-            <FooterPage>
-                <Box
-                    sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "center",
+        <FooterPage>
+            <Box
+                sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    width: "100%",
+                    height: "100%",
+                    textAlign: "center",
+                    position: "relative",
+                    overflow: "hidden"
+                }}
+            >
+                <div 
+                    className="qr-video"
+                    style={{
                         width: "100%",
                         height: "100vh",
-                        textAlign: "center",
-                        position: "absolute",
-                        zIndex: "1"
+                        zIndex: "1",
+                        position: "absolute"
                     }}
                 >
                     <QRScanner
                         delay={300}
                         onError={handleError}
                         onScan={handleScan}
-                        style={{ width: '100%', height: "100vh" }}
+                        style={{width: "100%", height: "100vh"}}
                     />
                     {result && (
                         <Box sx={{ marginTop: 2 }}>
                             <p>スキャン結果: {result}</p>
                         </Box>
                     )}
-                </Box>
-                <Box sx={{
+                </div>
+                <div 
+                    style={{
                         width: "100%",
-                        height: "100vh",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        textAlign: "center",
-                        position: "absolute",
-                        zIndex: "2"
+                        height: "20rem",
+                        zIndex: "2",
+                        position: "relative"
                     }}
                 >
                     <img 
                         src={QRCodeReader}
                         alt="qrcode_reader"
-                        style={{height: "20rem", paddingBottom: "5rem"}}
                     >
                     </img>
-                </Box>
-            </FooterPage>
-        </>
+                </div>
+            </Box>
+        </FooterPage>
     )
 }
