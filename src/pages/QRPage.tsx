@@ -5,12 +5,12 @@ import { useState, useEffect } from "react";
 import FooterPage from "../components/FooterPage";
 import { BOOTH_ID_LIST, SCHOOL_DATA } from "../utils/config";
 
-type QrData = { text: string } | null;
+type QrResult = { text: string } | null;
 
 export default function QRPage(){
     const [result, setResult] = useState<string>('');
 
-    function handleScan(data: QrData){
+    function handleScan(data: QrResult){
         if(data){
             setResult(data.text);
         }
