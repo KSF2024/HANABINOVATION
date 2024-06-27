@@ -58,3 +58,15 @@ export type RisingStars = {
     afterImageStars: RisingAfterImage[],
     goalPositions: Point
 }
+
+// データベースに登録された花火データの型
+export type FireworksData = {
+    [boothId: string]: FireworkData;
+}
+
+export type FireworkData = {
+    createdAt?: number; // データが登録された日時
+    fireworkType: number; // 花火のセットアップの種類(0の場合はオリジナルデザインを使用)
+    fireworkDesign: Blob; // ユーザーが作成した花火のオリジナルデザイン
+    sparksType: number; // 火花のセットアップの種類
+}

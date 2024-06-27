@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import PhotoPage from "./pages/PhotoPage";
-import HanabiPage from "./pages/HanabiPage";
+import FireworksDisplayPage from "./pages/FireworksDisplayPage";
 import MapPage from "./pages/MapPage";
 import QRPage from "./pages/QRPage";
 import { ToastContainer } from 'react-toastify';
@@ -17,7 +17,7 @@ export default function App(){
                     <Route path="/"/>
                     <Route path="/:boothId/create-firework" element={<DesignPage/>}/>
                     <Route path="/:boothId/capture-firework" element={<PhotoPage/>}/>
-                    <Route path="/firework-show" element={<HanabiPage/>}/>
+                    <Route path="/firework-show" element={<FireworksDisplayPage/>}/>
                     <Route path="/map" element={<MapPage/>}/>
                     <Route path="/scan-qr" element={<QRPage/>}/>
                     <Route path="/enter-lottery" element={<LotteryRouter/>}/>

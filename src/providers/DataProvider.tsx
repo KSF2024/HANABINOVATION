@@ -1,5 +1,6 @@
 import { createContext, ReactNode, useState, useEffect } from 'react';
 import { ulid } from "ulidx";
+import { FireworksData } from '../utils/types';
 
 /* 型定義 */
 // contextに渡すデータの型
@@ -38,6 +39,11 @@ export function DataProvider({children}: {children: ReactNode}){
     const [sparksType, setSparksType] = useState<0 | 1 | 2>(0); // 火花のセットアップの種類
     const [fireworkDesign, setFireworkDesign] = useState<Blob | null>(null); // ユーザーが作成した花火のオリジナルデザイン
 
+    // データベースのデータを管理する
+    const [ postedFireworksData, setPostedFireworksData ] = useState<FireworksData>({});
+    const [ isApplied, _setIsApplied ] = useState(false);
+    const [ canApply, _setCanApply ] = useState(false);
+
     // userIdを初期化する
     useEffect(() => {
         let result: string = "";
@@ -53,6 +59,12 @@ export function DataProvider({children}: {children: ReactNode}){
         }
         setUserId(result);
     }, []);
+
+    // userIdが初期化できたら、現在登録済みの花火データを取得する
+    useEffect(() => {
+        if(!userId) return;
+        console.log("userId: ", userId)
+    }, [userId]);
 
     return (
         <DataContext.Provider

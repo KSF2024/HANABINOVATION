@@ -8,11 +8,11 @@ export default function LotteryRouter(){
     const [ canApply, _setCanApply ] = useState(true);
 
     return (isApplied) ? (
-        <LotteryConfirmationPage/>
-      ) : ((canApply) ? (
-        <LotteryPage/>
-      ) : (
-        <LotteryEntryGuidePage/>
-      )
+            <LotteryConfirmationPage/>
+        ) : ((canApply) ? (
+            <LotteryPage/>
+        ) : (
+            <LotteryEntryGuidePage/>
+        )
     )
 };
