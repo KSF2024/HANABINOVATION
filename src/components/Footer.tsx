@@ -6,6 +6,8 @@ import QrCode2Icon from "@mui/icons-material/QrCode2";
 import AdsClickIcon from "@mui/icons-material/AdsClick";
 import { styled } from "@mui/system"
 import HanabiIcon from "../images/hanabi.png"
+import { useContext } from "react";
+import { DataContext } from "../providers/DataProvider";
 
 const CustomBottomNavigationAction = styled(BottomNavigationAction)({
     color: "white" // アイコンとラベルの色
@@ -13,6 +15,7 @@ const CustomBottomNavigationAction = styled(BottomNavigationAction)({
 
 export default function Footer(){
     const navigate = useNavigate();
+    const { boothId } = useContext(DataContext);
 
     return (
         <BottomNavigation
@@ -29,32 +32,30 @@ export default function Footer(){
             }}
         >
             <CustomBottomNavigationAction
-                value="/001/capture-firework" // TODO ブースIDの指定
+                value={`/${boothId}/capture-firework`}
                 label="再撮影"
                 icon={<CameraAltIcon/>}
             />
             <CustomBottomNavigationAction
-                value="/firework-show"
+                value={`/${boothId}/show-fireworks`}
                 label="花火大会"
                 icon={<img src={HanabiIcon} alt="Hanabi" style={{ width: 24, height: 24 }}/>}
             /> 
             <CustomBottomNavigationAction
-                value="/map?booth=001" // TODO ブースIDの指定
+                value={`/${boothId}/map`}
                 label="マップ"
                 icon={<MapIcon/>}
             />
             <CustomBottomNavigationAction
-                value="/scan-qr"
+                value={`/${boothId}/scan-qr`}
                 label="QR読取"
                 icon={<QrCode2Icon/>}
             />
-            {false && (
-                <CustomBottomNavigationAction
-                    value="/enter-lottery"
-                    label="抽選応募"
-                    icon={<AdsClickIcon/>}
-                />
-            )}
+            <CustomBottomNavigationAction
+                value={`/${boothId}/enter-lottery`}
+                label="抽選応募"
+                icon={<AdsClickIcon/>}
+            />
         </BottomNavigation>
     )
 }

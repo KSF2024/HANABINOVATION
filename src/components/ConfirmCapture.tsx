@@ -6,9 +6,11 @@ import { CameraContext } from "../providers/CameraProvider";
 import { ModalContext } from "../providers/ModalProvider";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { DataContext } from "../providers/DataProvider";
 
 export default function ConfirmCapture(){
     const navigate = useNavigate();
+    const { boothId } = useContext(DataContext);
 
     // 撮影処理用のcontext
     const {
@@ -56,7 +58,7 @@ export default function ConfirmCapture(){
             (<div
                 onClick={() => {
                     // toastメッセージがクリックされた場合、花火大会画面へ遷移する
-                    navigate("/firework-show");
+                    navigate(`/${boothId}/show-fireworks`);
                 }}
             >
                 {toastTexts.map((text, index) => (

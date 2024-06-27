@@ -17,10 +17,10 @@ export default function App(){
                     <Route path="/"/>
                     <Route path="/:boothId/create-firework" element={<DesignPage/>}/>
                     <Route path="/:boothId/capture-firework" element={<PhotoPage/>}/>
-                    <Route path="/firework-show" element={<FireworksDisplayPage/>}/>
-                    <Route path="/map" element={<MapPage/>}/>
-                    <Route path="/scan-qr" element={<QRPage/>}/>
-                    <Route path="/enter-lottery" element={<LotteryRouter/>}/>
+                    <Route path="/:boothId/show-fireworks" element={<FireworksDisplayPage/>}/>
+                    <Route path="/:boothId/map" element={<MapPage/>}/>
+                    <Route path="/:boothId/scan-qr" element={<QRPage/>}/>
+                    <Route path="/:boothId/enter-lottery" element={<LotteryRouter/>}/>
                     <Route path="/*" element={<ErrorPage/>}/>
                 </Routes>
             </BrowserRouter>
