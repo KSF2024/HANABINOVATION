@@ -12,7 +12,7 @@ const containerStyle: CSSProperties = {
     justifyContent: "center",
     alignItems: "center",
     width: "100%",
-    margin: "0.5rem 0"
+    margin: "0.3rem 0"
 };
 
 function getPrimaryCanvasSize(): number{
@@ -258,7 +258,7 @@ export default function PickUpSetUp(){
                 flexGrow: 1,
                 display: "flex",
                 flexDirection: "column",
-                justifyContent: "center",
+                justifyContent: "space-evenly",
                 alignItems: "center"
             }}
         >
@@ -273,7 +273,6 @@ export default function PickUpSetUp(){
                 }}
             />
             <div>
-                
                 <div style={containerStyle}>
                     <IconButton
                         style={{ margin: "1rem" }}
@@ -307,7 +306,7 @@ export default function PickUpSetUp(){
                         <ArrowForwardIosIcon/>
                     </IconButton>
                 </div>
-                <div style={{...containerStyle, marginTop: "1.5rem"}}>
+                <div style={containerStyle}>
                     <IconButton
                             style={{ margin: "1rem" }}
                             onClick={() => {
