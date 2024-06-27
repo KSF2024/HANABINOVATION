@@ -4,18 +4,19 @@ import QRScanner from "react-qr-scanner";
 import { useState, useEffect } from "react";
 import FooterPage from "../components/FooterPage";
 
-export default function QRPage(){
+type QrData = { text: string } | null;
 
+export default function QRPage(){
     const [result, setResult] = useState<string>('');
 
-    const handleScan = (data: any) => {
-      if (data) {
-        setResult(data.text);
-      }
+    function handleScan(data: QrData){
+        if(data){
+            setResult(data.text);
+        }
     };
-  
-    const handleError = (err: any) => {
-      console.error(err);
+
+    function handleError(err: any){
+        console.error(err);
     };
 
     // react-qr-scannerがobject-fit: "container"なので"cover"に変更する。
@@ -72,7 +73,7 @@ export default function QRPage(){
                 >
                     <img 
                         src={QRCodeReader}
-                        alt="qrcode_reader"
+                        alt="qr_code_reader"
                     >
                     </img>
                 </div>
