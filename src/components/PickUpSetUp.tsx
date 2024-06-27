@@ -3,6 +3,9 @@ import { DataContext } from "../providers/DataProvider";
 import { getAllImageData, getBoothColor, getCtxFromCanvas } from "../utils/modules";
 import { drawSpark, drawStar, generateSparks, generateStars } from "../utils/hanabi";
 import { Size, Spark, Star } from "../utils/types";
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import { IconButton } from "@mui/material";
 
 const containerStyle: CSSProperties = {
     display: "flex",
@@ -270,7 +273,16 @@ export default function PickUpSetUp(){
                 }}
             />
             <div>
+                
                 <div style={containerStyle}>
+                    <IconButton
+                        style={{ margin: "1rem" }}
+                        onClick={() => {
+                            setFireworkType((prev) => (((prev - 1 + 3) % 3) || 3)  as 1 | 2 | 3);
+                        }}
+                    >
+                        <ArrowBackIosNewIcon/>
+                    </IconButton>
                     {[1, 2, 3].map((value, index) => (
                         <canvas
                             key={index}
@@ -286,8 +298,24 @@ export default function PickUpSetUp(){
                             onClick={() => setFireworkType(value as 1 | 2 | 3)}
                         />
                     ))}
+                    <IconButton
+                        style={{ margin: "1rem" }}
+                        onClick={() => {
+                            setFireworkType((prev) => (((prev + 1) % 3) || 3) as 1 | 2 | 3);
+                        }}
+                    >
+                        <ArrowForwardIosIcon/>
+                    </IconButton>
                 </div>
                 <div style={{...containerStyle, marginTop: "1.5rem"}}>
+                    <IconButton
+                            style={{ margin: "1rem" }}
+                            onClick={() => {
+                                setSparksType((prev) => ((prev - 1 + 3) % 3) as 0 | 1 | 2);
+                            }}
+                        >
+                        <ArrowBackIosNewIcon/>
+                    </IconButton>
                     {[0, 1, 2].map((value, index) => (
                         <canvas
                             key={index}
@@ -303,6 +331,14 @@ export default function PickUpSetUp(){
                             onClick={() => setSparksType(value as 0 | 1 | 2)}
                         />
                     ))}
+                    <IconButton
+                        style={{ margin: "1rem" }}
+                        onClick={() => {
+                            setSparksType((prev) => ((prev + 1) % 3) as 0 | 1 | 2);
+                        }}
+                    >
+                        <ArrowForwardIosIcon/>
+                    </IconButton>
                 </div>
             </div>
         </div>
