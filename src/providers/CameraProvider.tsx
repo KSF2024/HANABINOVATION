@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useState, useRef } from 'react';
+import { ReactNode, createContext, useState, useRef } from "react";
 
 /* 型定義 */
 // contextに渡すデータの型

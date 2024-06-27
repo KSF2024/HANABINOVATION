@@ -1,8 +1,8 @@
-import { createContext, ReactNode, useState, useEffect, useRef, useContext } from 'react';
-import { ImageInfo, RisingAfterImage, RisingStars, Size, Spark, Star } from '../utils/types';
-import { generateStars, generateSparks, drawStar, drawSpark } from '../utils/hanabi';
-import { DataContext } from './DataProvider';
-import { calculateDistance, findIntersection, getImageData, hexToRgba, sleep, getBoothColor, getImageSrc } from '../utils/modules';
+import { createContext, ReactNode, useState, useEffect, useRef, useContext } from "react";
+import { ImageInfo, RisingAfterImage, RisingStars, Size, Spark, Star } from "../utils/types";
+import { generateStars, generateSparks, drawStar, drawSpark } from "../utils/hanabi";
+import { DataContext } from "./DataProvider";
+import { calculateDistance, findIntersection, getImageData, hexToRgba, sleep, getBoothColor, getImageSrc } from "../utils/modules";
 
 /* 型定義 */
 // contextに渡すデータの型
@@ -718,7 +718,7 @@ export function FireworksProvider({children}: {children: ReactNode}){
         // Canvasコンテキストを取得
         const canvas = canvasRef.current;
         if (!canvas) return;
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext("2d");
         if (!ctx) return;
 
         // Canvasをクリア
@@ -750,7 +750,7 @@ export function FireworksProvider({children}: {children: ReactNode}){
         if(fireworkPhase === 0){
             const canvas = canvasRef.current;
             if (!canvas) return;
-            const ctx = canvas.getContext('2d');
+            const ctx = canvas.getContext("2d");
             if (!ctx) return;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             if(!imageData) return;

@@ -54,8 +54,8 @@ export const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms));
 export async function getImageData(image: string): Promise<ImageInfo>{
     return new Promise<ImageInfo>((resolve, _rejects) => {
         // canvas要素を作成
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
 
         // 画像を読み込み、canvasに描画
         const img = new Image();
@@ -138,6 +138,6 @@ export async function getAllImageData(boothId: string, setupList: number[]): Pro
 // canvas要素からctxを取得する関数
 export function getCtxFromCanvas(canvasElement: HTMLCanvasElement | null): CanvasRenderingContext2D  | null{
     if (!canvasElement) return null;;
-    const ctx = canvasElement.getContext('2d');
+    const ctx = canvasElement.getContext("2d");
     return ctx;
 }

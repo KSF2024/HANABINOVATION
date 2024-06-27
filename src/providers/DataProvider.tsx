@@ -1,6 +1,7 @@
-import { createContext, ReactNode, useState, useEffect } from 'react';
+import { createContext, ReactNode, useState, useEffect } from "react";
 import { ulid } from "ulidx";
-import { FireworksData } from '../utils/types';
+import { FireworksData } from "../utils/types";
+import { getFireworksByUserId } from "../utils/apiClient";
 
 /* 型定義 */
 // contextに渡すデータの型
@@ -41,8 +42,9 @@ export function DataProvider({children}: {children: ReactNode}){
 
     // データベースのデータを管理する
     const [ postedFireworksData, setPostedFireworksData ] = useState<FireworksData>({});
-    const [ isApplied, _setIsApplied ] = useState(false);
-    const [ canApply, _setCanApply ] = useState(false);
+    const [ isPostedFirework, setIsPostedFirework ] = useState<boolean>(false);
+    const [ isApplied, setIsApplied ] = useState<boolean>(false);
+    const [ canApply, setCanApply ] = useState<boolean>(false);
 
     // userIdを初期化する
     useEffect(() => {
@@ -64,6 +66,9 @@ export function DataProvider({children}: {children: ReactNode}){
     useEffect(() => {
         if(!userId) return;
         console.log("userId: ", userId)
+        // getFireworksByUserId(userId).then(data => {
+        //     console.log(data);
+        // });
     }, [userId]);
 
     return (

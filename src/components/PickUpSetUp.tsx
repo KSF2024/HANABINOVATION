@@ -3,8 +3,8 @@ import { DataContext } from "../providers/DataProvider";
 import { getAllImageData, getBoothColor, getCtxFromCanvas } from "../utils/modules";
 import { drawSpark, drawStar, generateSparks, generateStars } from "../utils/hanabi";
 import { Size, Spark, Star } from "../utils/types";
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { IconButton } from "@mui/material";
 
 const containerStyle: CSSProperties = {
