@@ -6,7 +6,6 @@ import FooterPage from "../components/FooterPage";
 import { BOOTH_ID_LIST, SCHOOL_DATA } from "../utils/config";
 
 export default function QRPage(){
-
     type QrData = { boothId:string, schoolName: string } | null;
     const [qrText, setQrText] = useState<string>('');
     const [checkSchoolName, setCheckSchoolName] = useState<string>('');
