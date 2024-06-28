@@ -7,8 +7,8 @@ import { BOOTH_ID_LIST, SCHOOL_DATA } from "../utils/config";
 
 export default function QRPage(){
     type QrData = { boothId:string, schoolName: string } | null;
-    const [qrText, setQrText] = useState<string>('');
-    const [checkSchoolName, setCheckSchoolName] = useState<string>('');
+    const [qrText, setQrText] = useState<string>("");
+    const [checkSchoolName, setCheckSchoolName] = useState<string>("");
     const [qrData, setQrData] = useState<QrData>(null);
 
     const handleScan = (data: any) => {
