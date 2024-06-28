@@ -14,12 +14,12 @@ export default function QRPage(){
 
     const handleScan = (data: any) => {
         if (data) {
-          setQrText(data.text);
+            setQrText(data.text);
         }
     };
-  
+
     function handleError(err: any) {
-      console.error(err);
+        console.error(err);
     };
 
     function getQrData(qrText:string): QrData {
