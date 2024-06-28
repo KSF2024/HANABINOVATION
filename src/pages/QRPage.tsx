@@ -13,7 +13,6 @@ function handleError(err: any) {
 
 export default function QRPage(){
     const [qrText, setQrText] = useState<string>("");
-    const [checkSchoolName, setCheckSchoolName] = useState<string>("");
     const [qrData, setQrData] = useState<QrData>(null);
 
     const handleScan = (data: any) => {
@@ -34,8 +33,7 @@ export default function QRPage(){
                 const checkBoothId = match[1];
 
                 if(BOOTH_ID_LIST.includes(checkBoothId)) {
-                    setCheckSchoolName(SCHOOL_DATA[checkBoothId]?.schoolName);
-                    return { boothId: checkBoothId, schoolName: checkSchoolName };
+                    return { boothId: checkBoothId, schoolName: SCHOOL_DATA[checkBoothId].schoolName };
                 }
             }
         }
@@ -53,8 +51,9 @@ export default function QRPage(){
     }, []);
 
     useEffect(() => {
-        if(getQrData(qrText)) {
-            setQrData(getQrData(qrText))
+        const gottenQrData: QrData = getQrData(qrText);
+        if(gottenQrData) {
+            setQrData(gottenQrData);
         }
         
     }, [qrText]);
@@ -117,7 +116,7 @@ export default function QRPage(){
                         }}
                     >
                         <div style={{textAlign: "center", }}>
-                            {checkSchoolName + "の花火を作成しますか？"}
+                            {qrData.schoolName + "の花火を作成しますか？"}
                         </div>
                         <div>
                             <Button sx={{}}>はい</Button>
