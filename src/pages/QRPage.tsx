@@ -5,8 +5,13 @@ import { useState, useEffect } from "react";
 import FooterPage from "../components/FooterPage";
 import { BOOTH_ID_LIST, SCHOOL_DATA } from "../utils/config";
 
+type QrData = { boothId: string, schoolName: string } | null;
+
+function handleError(err: any) {
+    console.error(err);
+};
+
 export default function QRPage(){
-    type QrData = { boothId:string, schoolName: string } | null;
     const [qrText, setQrText] = useState<string>("");
     const [checkSchoolName, setCheckSchoolName] = useState<string>("");
     const [qrData, setQrData] = useState<QrData>(null);
@@ -17,12 +22,7 @@ export default function QRPage(){
         }
     };
 
-    function handleError(err: any) {
-        console.error(err);
-    };
-
-    function getQrData(qrText:string): QrData {
-
+    function getQrData(qrText: string): QrData {
         const checkPattern: RegExp = /^https:\/\/hanabinovation\.org\/[^\/]+\/create-firework\/$/;
         const checkUrl: boolean = checkPattern.test(qrText);
 
