@@ -108,16 +108,18 @@ export default function QRPage(){
                     </img>
                 </div>
                 {qrData && (
-                    <div style={{
-                        width: "100%",
-                        height: "100vh",
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        zIndex: "3",
-                        position: "absolute",
-                    }}>
+                    <div
+                        style={{
+                            width: "100%",
+                            height: "100vh",
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            zIndex: "3",
+                            position: "absolute"
+                        }}
+                    >
                         <div
                             style={{
                                 width: "18.0625rem",
@@ -134,13 +136,14 @@ export default function QRPage(){
                                     花火を作成しますか？
                                 </div>
                             </div>
-                            <div style={{
+                            <div
+                                style={{
                                     paddingTop: "1rem",
                                     display: "flex",
                                     justifyContent: "center",
                                     gap: "1.5rem",
-                                    }}
-                                >
+                                }}
+                            >
                                 <Button 
                                     onClick={ () => goToBoothDesignPage(qrData.boothId)}
                                     sx={{
@@ -156,7 +159,6 @@ export default function QRPage(){
                                         border: "0.1rem solid white",
                                         backgroundColor: "#098FF0",
                                         color: "#FFFFFF"
-                                        
                                     }}
                                 >
                                     いいえ
