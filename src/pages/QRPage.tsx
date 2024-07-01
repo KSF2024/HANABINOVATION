@@ -108,39 +108,61 @@ export default function QRPage(){
                     </img>
                 </div>
                 {qrData && (
-                    <div 
+                    <div style={{
+                        width: "100%",
+                        height: "100vh",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        zIndex: "3",
+                        position: "absolute",
+                    }}>
+                    <div
                         style={{
-                            top: "40%",
-                            left: "3rem",
                             width: "18.0625rem",
                             height: "9.375rem",
-                            position: "absolute",
                             backgroundColor: "#FFFFFF",
-                            color: "black",
-                            zIndex: "3",
-                            textAlign: "center"
+                            color: "black"
                         }}
                     >
                         <div style={{textAlign: "center", paddingTop: "2rem"}}>
-                            {qrData.schoolName + "の花火を作成しますか？"}
+                            <div>
+                                {qrData.schoolName + "の"}
+                            </div>
+                            <div>
+                                花火を作成しますか？
+                            </div>
                         </div>
-                        <div style={{paddingTop: "1rem"}}>
+                        <div style={{
+                                paddingTop: "1rem",
+                                display: "flex",
+                                justifyContent: "center",
+                                gap: "1.5rem",
+                                }}
+                            >
                             <Button 
                                 onClick={ () => goToBoothDesignPage(qrData.boothId)}
                                 sx={{
-                                    border: "0.1rem solid black"
+                                    border: "0.1rem solid white",
+                                    backgroundColor: "#098FF0",
+                                    color: "#FFFFFF"
                                 }}
                             >
                                 はい
                             </Button>
                             <Button 
                                 sx={{
-                                    border: "0.1rem solid black"
+                                    border: "0.1rem solid white",
+                                    backgroundColor: "#098FF0",
+                                    color: "#FFFFFF"
+                                    
                                 }}
                             >
                                 いいえ
                             </Button>
                         </div>
+                    </div>
                     </div>
                 )}
             </Box>
