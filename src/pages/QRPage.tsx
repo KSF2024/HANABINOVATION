@@ -118,51 +118,51 @@ export default function QRPage(){
                         zIndex: "3",
                         position: "absolute",
                     }}>
-                    <div
-                        style={{
-                            width: "18.0625rem",
-                            height: "9.375rem",
-                            backgroundColor: "#FFFFFF",
-                            color: "black"
-                        }}
-                    >
-                        <div style={{textAlign: "center", paddingTop: "2rem"}}>
-                            <div>
-                                {qrData.schoolName + "の"}
+                        <div
+                            style={{
+                                width: "18.0625rem",
+                                height: "9.375rem",
+                                backgroundColor: "#FFFFFF",
+                                color: "black"
+                            }}
+                        >
+                            <div style={{textAlign: "center", paddingTop: "2rem"}}>
+                                <div>
+                                    {qrData.schoolName + "の"}
+                                </div>
+                                <div>
+                                    花火を作成しますか？
+                                </div>
                             </div>
-                            <div>
-                                花火を作成しますか？
+                            <div style={{
+                                    paddingTop: "1rem",
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    gap: "1.5rem",
+                                    }}
+                                >
+                                <Button 
+                                    onClick={ () => goToBoothDesignPage(qrData.boothId)}
+                                    sx={{
+                                        border: "0.1rem solid white",
+                                        backgroundColor: "#098FF0",
+                                        color: "#FFFFFF"
+                                    }}
+                                >
+                                    はい
+                                </Button>
+                                <Button 
+                                    sx={{
+                                        border: "0.1rem solid white",
+                                        backgroundColor: "#098FF0",
+                                        color: "#FFFFFF"
+                                        
+                                    }}
+                                >
+                                    いいえ
+                                </Button>
                             </div>
                         </div>
-                        <div style={{
-                                paddingTop: "1rem",
-                                display: "flex",
-                                justifyContent: "center",
-                                gap: "1.5rem",
-                                }}
-                            >
-                            <Button 
-                                onClick={ () => goToBoothDesignPage(qrData.boothId)}
-                                sx={{
-                                    border: "0.1rem solid white",
-                                    backgroundColor: "#098FF0",
-                                    color: "#FFFFFF"
-                                }}
-                            >
-                                はい
-                            </Button>
-                            <Button 
-                                sx={{
-                                    border: "0.1rem solid white",
-                                    backgroundColor: "#098FF0",
-                                    color: "#FFFFFF"
-                                    
-                                }}
-                            >
-                                いいえ
-                            </Button>
-                        </div>
-                    </div>
                     </div>
                 )}
             </Box>
