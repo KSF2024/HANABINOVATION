@@ -4,6 +4,7 @@ import QRScanner from "react-qr-scanner";
 import { useState, useEffect } from "react";
 import FooterPage from "../components/FooterPage";
 import { BOOTH_ID_LIST, SCHOOL_DATA } from "../utils/config";
+import { useNavigate } from 'react-router-dom';
 
 type QrData = { boothId: string, schoolName: string } | null;
 
@@ -14,11 +15,16 @@ function handleError(err: any) {
 export default function QRPage(){
     const [qrText, setQrText] = useState<string>("");
     const [qrData, setQrData] = useState<QrData>(null);
+    const navigate = useNavigate();
 
     const handleScan = (data: any) => {
         if (data) {
             setQrText(data.text);
         }
+    };
+
+    const goToBoothDesignPage = ( boothId: string ) => {
+        navigate("/" + boothId + "/create-firework");
     };
 
     function getQrData(qrText: string): QrData {
@@ -115,12 +121,25 @@ export default function QRPage(){
                             textAlign: "center"
                         }}
                     >
-                        <div style={{textAlign: "center", }}>
+                        <div style={{textAlign: "center", paddingTop: "2rem"}}>
                             {qrData.schoolName + "の花火を作成しますか？"}
                         </div>
-                        <div>
-                            <Button sx={{}}>はい</Button>
-                            <Button sx={{}}>いいえ</Button>
+                        <div style={{paddingTop: "1rem"}}>
+                            <Button 
+                                onClick={ () => goToBoothDesignPage(qrData.boothId)}
+                                sx={{
+                                    border: "0.1rem solid black"
+                                }}
+                            >
+                                はい
+                            </Button>
+                            <Button 
+                                sx={{
+                                    border: "0.1rem solid black"
+                                }}
+                            >
+                                いいえ
+                            </Button>
                         </div>
                     </div>
                 )}
