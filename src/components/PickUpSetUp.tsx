@@ -15,7 +15,7 @@ const containerStyle: CSSProperties = {
     margin: "0.3rem 0"
 };
 
-function getPrimaryCanvasSize(): number{
+export function getPrimaryCanvasSize(): number{
     const maxWidth: number = window.innerHeight * 0.4;
     const width: number = window.innerWidth * 0.8;
     if(maxWidth > width){
