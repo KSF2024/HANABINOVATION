@@ -70,8 +70,3 @@ export type FireworkData = {
     fireworkDesign: Blob; // ユーザーが作成した花火のオリジナルデザイン
     sparksType: number; // 火花のセットアップの種類
 }
-
-export interface ApiResponse<T> {
-    statusCode: number;
-    body: T | { message: string };
-}

@@ -1,5 +1,5 @@
-import axios, { AxiosRequestConfig } from "axios";
-import { ApiResponse, FireworksData } from "./types";
+import axios from "axios";
+import { FireworksData } from "./types";
 
 // API呼び出し用のURLを定義する
 const API_ENDPOINT: string = "https://vfml5unckb.execute-api.ap-northeast-1.amazonaws.com/dev/api/v1";
@@ -13,15 +13,15 @@ export async function getFireworksByUserId(userId: string): Promise<FireworksDat
     const url: string = `${API_ENDPOINT}/fireworks/${userId}`;
 
     try {
-        const response = await axios.get<ApiResponse<FireworksData>>(url);
+        const response = await axios.get<FireworksData>(url);
 
-        if (response.data.statusCode === 200) {
-            result = response.data.body as FireworksData;
-        }else if(response.data.statusCode === 404) {
-            console.log(response.data.body.message);
+        if (response.status === 200) {
+            result = response.data;
+        }else if(response.status === 404) {
+            console.log("404 Error: ", response);
             result = null;
         }else{
-            throw new Error(response.data.body.message as string || "Unexpected error");
+            throw new Error(JSON.stringify(response) || "Unexpected error");
         }
     }catch(error){
         console.error("Error fetching fireworks data:", error);
