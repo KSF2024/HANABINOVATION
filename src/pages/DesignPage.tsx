@@ -1,9 +1,8 @@
 import { Box, Button, Typography } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import { DataContext } from "../providers/DataProvider";
 import PickUpSetUp from "../components/PickUpSetUp";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import DrawFirework from "../components/DrawFirework";
 import { BOOTH_ID_LIST } from "../utils/config";
 import ErrorPage from "./ErrorPage";
@@ -12,15 +11,14 @@ import { toast } from "react-toastify";
 export default function DesignPage(){
     const navigate = useNavigate();
     const [ isDrawing, setIsDrawing ] = useState<boolean>(false); // 「自分で描く」中かどうか
-    const { boothId } = useParams(); // URLからブースIDを取得する
 
     // データを管理するためのcontext
     const {
-        setBoothId,
         isPostedFirework
     } = useContext(DataContext);
 
-    // 取得したブースIDを保存する
+    const { boothId } = useParams();
+    const { setBoothId } = useContext(DataContext);
     useEffect(() => {
         if(boothId) setBoothId(boothId);
     }, [boothId]);

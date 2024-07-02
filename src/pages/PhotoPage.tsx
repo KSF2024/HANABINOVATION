@@ -3,13 +3,13 @@ import Camera from "../components/Camera";
 import ButtonArea from "../components/ButtonArea";
 import { useContext, useEffect } from "react";
 import { DataContext } from "../providers/DataProvider";
-import { useParams } from "react-router-dom";
 import CaptureFireworkCanvas from "../components/CaptureFireworkCanvas";
 import { ModalContext } from "../providers/ModalProvider";
 import ConfirmCapture from "../components/ConfirmCapture";
 import { BOOTH_ID_LIST } from "../utils/config";
 import ErrorPage from "./ErrorPage";
 import { toast } from "react-toastify";
+import { useParams } from "react-router-dom";
 
 /* 定数定義 */
 export const ICON_SIZE: string = "5rem"; // ボタンの大きさ
@@ -40,13 +40,12 @@ export default function PhotoPage(){
     // モーダルメニュー用のコンテキスト
     const { Modal } = useContext(ModalContext);
 
-    const { boothId } = useParams();
-
     const {
-        setBoothId,
         isPostedFirework
     } = useContext(DataContext);
 
+    const { boothId } = useParams();
+    const { setBoothId } = useContext(DataContext);
     useEffect(() => {
         if(boothId) setBoothId(boothId);
     }, [boothId]);
@@ -54,7 +53,6 @@ export default function PhotoPage(){
     // 初回案内を行う
     useEffect(() => {
         // 既に撮影を終えたブースなら、初回案内メッセージは表示しない
-        console.log({isPostedFirework})
         if(isPostedFirework === null || isPostedFirework) return;
 
         // 初回アクセスの場合、案内メッセージを表示する
