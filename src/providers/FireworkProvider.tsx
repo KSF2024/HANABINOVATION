@@ -76,7 +76,6 @@ export function FireworksProvider({children}: {children: ReactNode}){
 
         if(!newImageSrc) return;
         setImageSrc(newImageSrc);
-        setFireworkPhase(0);
     }
 
 

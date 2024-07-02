@@ -102,7 +102,11 @@ export default function ConfirmCapture(){
     function showCongratulations(){
         const toastTexts: string[] = ["花火の撮影ありがとうございます！", "このメッセージをクリックすると「花火大会」に参加することができます。", "他の人の作った花火も見てみましょう！"];
         toast.info(
-            createDivElements(toastTexts, () => { navigate(`/${boothId}/show-fireworks`) }),
+            createDivElements(toastTexts, () => {
+                isTakingPhoto.current = false; // 撮影ボタンの処理が終わったことを記録する
+                setFireworkPhase(0); // 花火を半透明の初期表示状態に戻す
+                navigate(`/${boothId}/show-fireworks`)
+            }),
             {autoClose: false}
         );
     }
