@@ -15,6 +15,11 @@ type DataContent = {
     setSparksType: React.Dispatch<React.SetStateAction<0 | 1 | 2>>;
     fireworkDesign: Blob | null;
     setFireworkDesign: React.Dispatch<React.SetStateAction<Blob | null>>;
+    isPostedFirework: boolean;
+    isApplied: boolean;
+    setIsApplied: React.Dispatch<React.SetStateAction<boolean>>;
+    canApply: boolean;
+
 };
 
 /* Provider */
@@ -27,7 +32,11 @@ const initialData: DataContent = {
     sparksType: 0,
     setSparksType: () => 0,
     fireworkDesign: null,
-    setFireworkDesign: () => null
+    setFireworkDesign: () => null,
+    isPostedFirework: false,
+    isApplied: false,
+    setIsApplied: () => {},
+    canApply: false
 };
 
 export const DataContext = createContext<DataContent>(initialData);
@@ -44,7 +53,7 @@ export function DataProvider({children}: {children: ReactNode}){
     const [ postedFireworksData, setPostedFireworksData ] = useState<FireworksData>({});
     const [ isPostedFirework, setIsPostedFirework ] = useState<boolean>(false);
     const [ isApplied, setIsApplied ] = useState<boolean>(false);
-    const [ canApply, setCanApply ] = useState<boolean>(false);
+    const [ canApply, setCanApply ] = useState<boolean>(true); // TODO 初期状態の修正
 
     // userIdを初期化する
     useEffect(() => {
@@ -83,7 +92,11 @@ export function DataProvider({children}: {children: ReactNode}){
                 sparksType,
                 setSparksType,
                 fireworkDesign,
-                setFireworkDesign
+                setFireworkDesign,
+                isPostedFirework,
+                isApplied,
+                setIsApplied,
+                canApply
             }}
         >
             {children}

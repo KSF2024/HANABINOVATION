@@ -64,9 +64,21 @@ export type FireworksData = {
     [boothId: string]: FireworkData;
 }
 
+// データベースとやりとりするための花火データのの型
 export type FireworkData = {
     createdAt?: number; // データが登録された日時
     fireworkType: number; // 花火のセットアップの種類(0の場合はオリジナルデザインを使用)
     fireworkDesign?: Blob; // ユーザーが作成した花火のオリジナルデザイン
     sparksType: number; // 火花のセットアップの種類
+}
+
+// 応募データの型
+export type Profile = {
+    userId: string, // ユーザーID
+    userName: string; // ユーザー名
+    email: string; // メールアドレス
+    telephone?: string; // 電話番号
+    age?: number; // 年齢
+    schoolName?: string; // 学校名
+    schoolGrade?: number; // 学年
 }

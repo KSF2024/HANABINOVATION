@@ -1,11 +1,22 @@
 import { Typography, Button, Box, Grid } from "@mui/material";
 import FooterPage from "../components/FooterPage";
 import { LOTTERY_EVENTS } from "../utils/config";
+import { useEffect, useState } from "react";
 
 const userName: string = "user";
 const lotteryNumber: string = "0123";
 
-export default function LotteryConfirmationPage(){
+export default function LotteryConfirmationPage({setIsRevising}: {
+    setIsRevising: React.Dispatch<React.SetStateAction<boolean>>;
+}){
+    const [ userName, setUserName ] = useState<string>("");
+    const [ lotteryNumber, setLotteryNumber ] = useState<string>("");
+
+    // 初回レンダリング時、応募情報を取得する
+    useEffect(() => {
+        
+    }, []);
+
     return (
         <FooterPage>
             <Box
@@ -46,6 +57,7 @@ export default function LotteryConfirmationPage(){
                                 color="primary"
                                 variant="contained"
                                 sx={{width: "fit-content"}}
+                                onClick={() => setIsRevising(true)}
                             >
                                 応募修正
                             </Button>

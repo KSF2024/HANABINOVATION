@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { DataContext } from "../providers/DataProvider";
 import { postFirework } from "../utils/apiClient";
 import { FireworkData } from "../utils/types";
+import { createDivElements } from "../utils/elementGenerator";
 
 export default function ConfirmCapture(){
     const navigate = useNavigate();
@@ -73,11 +74,7 @@ export default function ConfirmCapture(){
                 "回線状況を見直しの上、再度お試しください。"
             ]
             toast.error(
-                (<div>
-                    {errorTexts.map((text, index) => (
-                        <div key={index}>{text}</div>
-                    ))}
-                </div>),
+                createDivElements(errorTexts),
                 {autoClose: false}
             );
             return false;
@@ -105,16 +102,7 @@ export default function ConfirmCapture(){
     function showCongratulations(){
         const toastTexts: string[] = ["花火の撮影ありがとうございます！", "このメッセージをクリックすると「花火大会」に参加することができます。", "他の人の作った花火も見てみましょう！"];
         toast.info(
-            (<div
-                onClick={() => {
-                    // toastメッセージがクリックされた場合、花火大会画面へ遷移する
-                    navigate(`/${boothId}/show-fireworks`);
-                }}
-            >
-                {toastTexts.map((text, index) => (
-                    <div key={index}>{text}</div>
-                ))}
-            </div>),
+            createDivElements(toastTexts, () => { navigate(`/${boothId}/show-fireworks`) }),
             {autoClose: false}
         );
     }

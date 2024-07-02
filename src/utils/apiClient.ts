@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import { FireworkData, FireworksData } from "./types";
+import { FireworkData, FireworksData, Profile } from "./types";
 
 // API呼び出し用のURLを定義する
 const API_ENDPOINT: string = "https://vfml5unckb.execute-api.ap-northeast-1.amazonaws.com/dev/api/v1";
@@ -44,6 +44,18 @@ export async function postFirework(userId: string, boothId: string, fireworkData
 
     try{
         const response = await axios.post(url, message);
+        return response;
+    }catch(error){
+        return null;
+    }
+}
+
+// 応募データを登録する関数
+export async function postProfile(profile: Profile): Promise<AxiosResponse | null>{
+    const url: string = `${API_ENDPOINT}/profiles`;
+
+    try{
+        const response = await axios.post(url, profile);
         return response;
     }catch(error){
         return null;
