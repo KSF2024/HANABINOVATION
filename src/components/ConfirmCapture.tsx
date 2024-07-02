@@ -18,7 +18,8 @@ export default function ConfirmCapture(){
         boothId,
         fireworkType,
         sparksType,
-        fireworkDesign
+        fireworkDesign,
+        setIsPostedFirework
     } = useContext(DataContext);
 
     // 撮影処理用のcontext
@@ -43,6 +44,7 @@ export default function ConfirmCapture(){
                 finishConfirmTakePhoto();
                 return;
             }
+            setIsPostedFirework(true); // 花火データを登録済みとして管理する
             saveCapturedImage(); // 撮影写真を保存する
             showCongratulations(); // 花火大会への案内メッセージを送信する
             finishConfirmTakePhoto(); // 撮影写真の確認処理を終了する

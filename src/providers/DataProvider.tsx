@@ -17,6 +17,7 @@ type DataContent = {
     fireworkDesign: Blob | null;
     setFireworkDesign: React.Dispatch<React.SetStateAction<Blob | null>>;
     isPostedFirework: boolean | null;
+    setIsPostedFirework: React.Dispatch<React.SetStateAction<boolean | null>>;
     isApplied: boolean;
     setIsApplied: React.Dispatch<React.SetStateAction<boolean>>;
     canApply: boolean;
@@ -35,6 +36,7 @@ const initialData: DataContent = {
     fireworkDesign: null,
     setFireworkDesign: () => null,
     isPostedFirework: null,
+    setIsPostedFirework: () => {},
     isApplied: false,
     setIsApplied: () => {},
     canApply: false,
@@ -124,6 +126,7 @@ export function DataProvider({children}: {children: ReactNode}){
                 fireworkDesign,
                 setFireworkDesign,
                 isPostedFirework,
+                setIsPostedFirework,
                 isApplied,
                 setIsApplied,
                 canApply,
