@@ -16,7 +16,7 @@ type DataContent = {
     setSparksType: React.Dispatch<React.SetStateAction<0 | 1 | 2>>;
     fireworkDesign: Blob | null;
     setFireworkDesign: React.Dispatch<React.SetStateAction<Blob | null>>;
-    isPostedFirework: boolean;
+    isPostedFirework: boolean | null;
     isApplied: boolean;
     setIsApplied: React.Dispatch<React.SetStateAction<boolean>>;
     canApply: boolean;
@@ -34,7 +34,7 @@ const initialData: DataContent = {
     setSparksType: () => 0,
     fireworkDesign: null,
     setFireworkDesign: () => null,
-    isPostedFirework: false,
+    isPostedFirework: null,
     isApplied: false,
     setIsApplied: () => {},
     canApply: false,
@@ -53,7 +53,7 @@ export function DataProvider({children}: {children: ReactNode}){
 
     // データベースのデータを管理する
     const [ postedFireworksData, setPostedFireworksData ] = useState<FireworksData | null>(null);
-    const [ isPostedFirework, setIsPostedFirework ] = useState<boolean>(false);
+    const [ isPostedFirework, setIsPostedFirework ] = useState<boolean | null>(null);
     const [ isApplied, setIsApplied ] = useState<boolean>(false);
     const [ canApply, setCanApply ] = useState<boolean>(false);
     const [ registration, setRegistration ] = useState<Registration | null>(null);

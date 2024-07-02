@@ -43,7 +43,8 @@ export default function PhotoPage(){
     const { boothId } = useParams();
 
     const {
-        setBoothId
+        setBoothId,
+        isPostedFirework
     } = useContext(DataContext);
 
     useEffect(() => {
@@ -52,8 +53,9 @@ export default function PhotoPage(){
 
     // 初回案内を行う
     useEffect(() => {
-        const isSubmitted: boolean = false; // TODO 既に撮影を終えたブースかどうかを取得する処理
-        if(isSubmitted) return;
+        // 既に撮影を終えたブースなら、初回案内メッセージは表示しない
+        console.log({isPostedFirework})
+        if(isPostedFirework === null || isPostedFirework) return;
 
         // 初回アクセスの場合、案内メッセージを表示する
         const toastTexts: string[] = ["撮影ボタンを押して、デザインした花火を打ち上げましょう！"];
@@ -64,7 +66,7 @@ export default function PhotoPage(){
                 ))}
             </div>)
         );
-    }, []);
+    }, [isPostedFirework]);
 
     return (
         (BOOTH_ID_LIST.includes(boothId || "")) ? (

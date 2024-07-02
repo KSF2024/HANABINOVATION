@@ -16,7 +16,8 @@ export default function DesignPage(){
 
     // データを管理するためのcontext
     const {
-        setBoothId
+        setBoothId,
+        isPostedFirework
     } = useContext(DataContext);
 
     // 取得したブースIDを保存する
@@ -26,8 +27,8 @@ export default function DesignPage(){
 
     // 初回案内を行う
     useEffect(() => {
-        const isSubmitted: boolean = false; // TODO 既に撮影を終えたブースかどうかを取得する処理
-        if(isSubmitted) return;
+        // 既に撮影を終えたブースなら、初回案内メッセージは表示しない
+        if(isPostedFirework === null || isPostedFirework) return;
 
         // 初回アクセスの場合、案内メッセージを表示する
         const toastTexts: string[] = ["HANABINOVATIONへようこそ！", "あなただけの花火をデザインして、学園祭の思い出を彩りましょう！", "スタンプラリーを制覇して、抽選会に参加しましょう！"];
@@ -38,7 +39,7 @@ export default function DesignPage(){
                 ))}
             </div>
         );
-    }, []);
+    }, [isPostedFirework]);
 
     return (
         (BOOTH_ID_LIST.includes(boothId || "")) ? (
