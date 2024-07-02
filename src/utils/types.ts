@@ -67,6 +67,6 @@ export type FireworksData = {
 export type FireworkData = {
     createdAt?: number; // データが登録された日時
     fireworkType: number; // 花火のセットアップの種類(0の場合はオリジナルデザインを使用)
-    fireworkDesign: Blob; // ユーザーが作成した花火のオリジナルデザイン
+    fireworkDesign?: Blob; // ユーザーが作成した花火のオリジナルデザイン
     sparksType: number; // 火花のセットアップの種類
 }

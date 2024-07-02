@@ -1,5 +1,5 @@
-import axios from "axios";
-import { FireworksData } from "./types";
+import axios, { AxiosResponse } from "axios";
+import { FireworkData, FireworksData } from "./types";
 
 // API呼び出し用のURLを定義する
 const API_ENDPOINT: string = "https://vfml5unckb.execute-api.ap-northeast-1.amazonaws.com/dev/api/v1";
@@ -30,4 +30,22 @@ export async function getFireworksByUserId(userId: string): Promise<FireworksDat
     }
 
     return result;
+}
+
+// 花火データを登録する関数
+export async function postFirework(userId: string, boothId: string, fireworkData: FireworkData): Promise<AxiosResponse | null>{
+    const message = {
+        userId,
+        boothId,
+        fireworksData: fireworkData
+    };
+
+    const url: string = `${API_ENDPOINT}/fireworks`;
+
+    try{
+        const response = await axios.post(url, message);
+        return response;
+    }catch(error){
+        return null;
+    }
 }

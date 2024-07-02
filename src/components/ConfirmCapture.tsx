@@ -7,10 +7,18 @@ import { ModalContext } from "../providers/ModalProvider";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { DataContext } from "../providers/DataProvider";
+import { postFirework } from "../utils/apiClient";
+import { FireworkData } from "../utils/types";
 
 export default function ConfirmCapture(){
     const navigate = useNavigate();
-    const { boothId } = useContext(DataContext);
+    const {
+        userId,
+        boothId,
+        fireworkType,
+        sparksType,
+        fireworkDesign
+    } = useContext(DataContext);
 
     // 撮影処理用のcontext
     const {
@@ -28,10 +36,52 @@ export default function ConfirmCapture(){
 
     // 撮影写真を保存し、撮影処理を行う関数
     function takePhoto(){
-        saveCapturedImage(); // 撮影写真を保存する
-        console.log("花火データ送信"); // TODO 花火データの送信処理
-        showCongratulations(); // 花火大会への案内メッセージを送信する
-        finishConfirmTakePhoto(); // 撮影写真の確認処理を終了する
+        submitFireworkData().then(res => { // 花火データの登録を行う
+            if(!res){
+                // エラーハンドリングを行う
+                finishConfirmTakePhoto();
+                return;
+            }
+            saveCapturedImage(); // 撮影写真を保存する
+            showCongratulations(); // 花火大会への案内メッセージを送信する
+            finishConfirmTakePhoto(); // 撮影写真の確認処理を終了する
+        })
+    }
+
+    // 花火データの登録を行う関数
+    async function submitFireworkData(): Promise<boolean>{
+        // 例外処理を行う
+        if(!userId) return false;
+        if(!boothId) return false;
+
+        // 花火データの作成を行う
+        const data: FireworkData = {
+            fireworkType,
+            sparksType,
+            ...(fireworkDesign && { fireworkDesign })
+        }
+
+        // 花火データの送信を行う
+        const response = await postFirework(userId, boothId, data);
+
+        // 花火データ送信のエラーハンドリングを行う
+        if(response){
+            return true;
+        }else{
+            const errorTexts: string[] = [
+                "申し訳ございません。花火データの登録に失敗しました。",
+                "回線状況を見直しの上、再度お試しください。"
+            ]
+            toast.error(
+                (<div>
+                    {errorTexts.map((text, index) => (
+                        <div key={index}>{text}</div>
+                    ))}
+                </div>),
+                {autoClose: false}
+            );
+            return false;
+        }
     }
 
     // 撮影写真を保存する関数

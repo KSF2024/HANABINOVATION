@@ -66,6 +66,7 @@ export function DataProvider({children}: {children: ReactNode}){
     useEffect(() => {
         if(!userId) return;
         console.log("userId: ", userId)
+        // TODO 回ったブースの取得処理
         // getFireworksByUserId(userId).then(data => {
         //     console.log(data);
         // });
