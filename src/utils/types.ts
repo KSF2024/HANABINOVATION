@@ -82,3 +82,9 @@ export type Profile = {
     schoolName?: string; // 学校名
     schoolGrade?: number; // 学年
 }
+
+// 応募受付データの型
+export type Registration = {
+    receipt: string; // 受付番号
+    userName: string; // ユーザー名
+}

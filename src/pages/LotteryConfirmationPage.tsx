@@ -1,7 +1,9 @@
 import { Typography, Button, Box, Grid } from "@mui/material";
 import FooterPage from "../components/FooterPage";
 import { LOTTERY_EVENTS } from "../utils/config";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { getRegistration } from "../utils/apiClient";
+import { DataContext } from "../providers/DataProvider";
 
 const userName: string = "user";
 const lotteryNumber: string = "0123";
@@ -9,13 +11,18 @@ const lotteryNumber: string = "0123";
 export default function LotteryConfirmationPage({setIsRevising}: {
     setIsRevising: React.Dispatch<React.SetStateAction<boolean>>;
 }){
+    const { userId } = useContext(DataContext);
     const [ userName, setUserName ] = useState<string>("");
     const [ lotteryNumber, setLotteryNumber ] = useState<string>("");
 
-    // 初回レンダリング時、応募情報を取得する
+    // ユーザーIDが取得出来たら、応募情報を取得する
     useEffect(() => {
-        
-    }, []);
+        if(!userId) return;
+        getRegistration(userId).then(res => {
+            setUserName(res?.userName || "");
+            setLotteryNumber(res?.receipt || "");
+        })
+    }, [userId]);
 
     return (
         <FooterPage>

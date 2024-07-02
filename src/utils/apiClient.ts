@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import { FireworkData, FireworksData, Profile } from "./types";
+import { FireworkData, FireworksData, Profile, Registration } from "./types";
 
 // API呼び出し用のURLを定義する
 const API_ENDPOINT: string = "https://vfml5unckb.execute-api.ap-northeast-1.amazonaws.com/dev/api/v1";
@@ -60,4 +60,29 @@ export async function postProfile(profile: Profile): Promise<AxiosResponse | nul
     }catch(error){
         return null;
     }
+}
+
+// 応募登録情報を取得する関数
+export async function getRegistration(userId: string): Promise<Registration | null>{
+    let result: Registration | null = null;
+    const url: string = `${API_ENDPOINT}/profiles/${userId}`;
+
+    try {
+        const response = await axios.get<Registration>(url);
+
+        if (response.status === 200) {
+            result = response.data;
+        }else if(response.status === 404) {
+            console.log("404 Error: ", response);
+            result = null;
+        }else{
+            throw new Error(JSON.stringify(response) || "Unexpected error");
+        }
+    }catch(error){
+        console.error("Error fetching registration data:", error);
+        // throw error;
+        result = null;
+    }
+
+    return result;
 }
