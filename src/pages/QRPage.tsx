@@ -155,9 +155,7 @@ export default function QRPage(){
                                     はい
                                 </Button>
                                 <Button
-                                    onClick={() =>{
-                                        
-                                    }}
+                                    onClick={() => {setQrData(null)}}
                                     sx={{
                                         border: "0.1rem solid white",
                                         backgroundColor: "#098FF0",
