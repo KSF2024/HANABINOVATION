@@ -145,7 +145,7 @@ export default function QRPage(){
                                 }}
                             >
                                 <Button 
-                                    onClick={ () => goToBoothDesignPage(qrData.boothId)}
+                                    onClick={() => goToBoothDesignPage(qrData.boothId)}
                                     sx={{
                                         border: "0.1rem solid white",
                                         backgroundColor: "#098FF0",
@@ -154,7 +154,10 @@ export default function QRPage(){
                                 >
                                     はい
                                 </Button>
-                                <Button 
+                                <Button
+                                    onClick={() =>{
+                                        
+                                    }}
                                     sx={{
                                         border: "0.1rem solid white",
                                         backgroundColor: "#098FF0",
