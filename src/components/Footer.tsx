@@ -48,13 +48,11 @@ export default function Footer(){
                 label="QR読取"
                 icon={<QrCode2Icon/>}
             />
-            {false && (
-                <CustomBottomNavigationAction
-                    value="/enter-lottery"
-                    label="抽選応募"
-                    icon={<AdsClickIcon/>}
-                />
-            )}
+            <CustomBottomNavigationAction
+                value="/enter-lottery"
+                label="抽選応募"
+                icon={<AdsClickIcon/>}
+            />
         </BottomNavigation>
     )
 }
