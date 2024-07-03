@@ -11,7 +11,7 @@ export default function DrawFirework({ previewCanvasRef }: {
     previewCanvasRef: React.RefObject<HTMLCanvasElement>;
 }){
     const [ paintTool, setPaintTool ] = useState<number>(0); // どのペイントツールを使っているか(0: ペン, 1: 消しゴム)
-    const [ boldness, setBoldness ] = useState<number>(3); // ペン/消しゴムの太さ
+    const [ thickness, setThickness ] = useState<number>(3); // ペン/消しゴムの太さ
     const [ color, setColor ] = useState<string>("#888888"); // ペンの色
 
     const { boothId } = useContext(DataContext); // ブースID
@@ -84,9 +84,9 @@ export default function DrawFirework({ previewCanvasRef }: {
                 ペンの太さ
                 <Slider
                     aria-label="bold"
-                    value={boldness}
+                    value={thickness}
                     onChange={(_event, value) => {
-                        if(typeof value === "number") setBoldness(value);
+                        if(typeof value === "number") setThickness(value);
                     }}
                     valueLabelDisplay="auto"
                     step={1}
