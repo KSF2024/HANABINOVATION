@@ -1,5 +1,5 @@
 import { Box, Button, Typography } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { DataContext } from "../providers/DataProvider";
 import PickUpSetUp from "../components/PickUpSetUp";
 import { useNavigate, useParams } from "react-router-dom";
@@ -14,9 +14,21 @@ export default function DesignPage(){
 
     // データを管理するためのcontext
     const {
-        isPostedFirework
+        isPostedFirework,
+        setFireworkDesign
     } = useContext(DataContext);
 
+    // ペイント機能用のstate類
+    const previewCanvasRef = useRef<HTMLCanvasElement>(null); // ペイント用canvas要素のref
+    function getBlobByCanvas(){ // canvasRefからBlobデータを取得する関数
+        const canvasElement: HTMLCanvasElement | null = previewCanvasRef.current;
+        if(!canvasElement) return;
+        canvasElement.toBlob((blob) => {
+            setFireworkDesign(blob);
+        });
+    }
+
+    // ブースIDを管理する
     const { boothId } = useParams();
     const { setBoothId } = useContext(DataContext);
     useEffect(() => {
@@ -57,7 +69,7 @@ export default function DesignPage(){
                     {isDrawing ? "あなただけのオリジナル花火を描きましょう！" : "好きな形の花火と火花を選んで、オリジナルの花火を作ろう！"}
                 </Typography>
                 {(isDrawing) ? (
-                    <DrawFirework/>
+                    <DrawFirework previewCanvasRef={previewCanvasRef}/>
                 ) : (
                     <PickUpSetUp/>
                 )}
@@ -81,7 +93,10 @@ export default function DesignPage(){
                     <Button
                         variant="contained"
                         style={{display: "block"}}
-                        onClick={() => navigate(`/${boothId}/capture-firework`)}
+                        onClick={() => {
+                            getBlobByCanvas();
+                            navigate(`/${boothId}/capture-firework`);
+                        }}
                     >
                         完成
                     </Button>

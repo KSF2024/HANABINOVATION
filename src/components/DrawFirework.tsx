@@ -1,12 +1,13 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { getPrimaryCanvasSize } from "./PickUpSetUp";
 import EditIcon from '@mui/icons-material/Edit';
 import { IconButton, Slider } from "@mui/material";
 import ClearIcon from "./../images/eraser.png"
 import { ICON_SIZE } from "../pages/PhotoPage";
 
-export default function DrawFirework(){
-    const previewCanvasRef = useRef<HTMLCanvasElement>(null); // ペイント用canvas要素のref
+export default function DrawFirework({ previewCanvasRef }: {
+    previewCanvasRef: React.RefObject<HTMLCanvasElement>;
+}){
     const [ paintTool, setPaintTool ] = useState<number>(0); // どのペイントツールを使っているか
     const [ boldness, setBoldness ] = useState<number>(3); // ペン/消しゴムの太さ
 
