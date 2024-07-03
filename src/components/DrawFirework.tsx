@@ -1,15 +1,27 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { getPrimaryCanvasSize } from "./PickUpSetUp";
 import EditIcon from '@mui/icons-material/Edit';
 import { IconButton, Slider } from "@mui/material";
 import ClearIcon from "./../images/eraser.png"
 import { ICON_SIZE } from "../pages/PhotoPage";
+import { DataContext } from "../providers/DataProvider";
+import { SCHOOL_DATA } from "../utils/config";
 
 export default function DrawFirework({ previewCanvasRef }: {
     previewCanvasRef: React.RefObject<HTMLCanvasElement>;
 }){
-    const [ paintTool, setPaintTool ] = useState<number>(0); // どのペイントツールを使っているか
+    const [ paintTool, setPaintTool ] = useState<number>(0); // どのペイントツールを使っているか(0: ペン, 1: 消しゴム)
     const [ boldness, setBoldness ] = useState<number>(3); // ペン/消しゴムの太さ
+    const [ color, setColor ] = useState<string>("#888888"); // ペンの色
+
+    const { boothId } = useContext(DataContext); // ブースID
+
+    // ブースIDからペンの色を取得する
+    useEffect(() => {
+        if(!boothId) return;
+        const newColor: string = SCHOOL_DATA[boothId]?.color || "";
+        if(newColor) setColor(newColor);
+    }, [boothId]);
 
     return (
         <div
