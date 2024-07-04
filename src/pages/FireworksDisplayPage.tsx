@@ -10,10 +10,10 @@ export default function FireworksDisplayPage(){
                     width: "100%",
                     height: "100%",
                 } : {
-                    width: '100%',
+                    width: "100%",
                     height: "100%",
-                    objectFit: 'cover',
-                    objectPosition: 'center',
+                    objectFit: "cover",
+                    objectPosition: "center"
                 }}
             />
         </FooterPage>
