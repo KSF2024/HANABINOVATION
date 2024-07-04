@@ -157,7 +157,7 @@ export async function convertBlobToImageData(blob: Blob){
 
             const ctx = canvas.getContext("2d");
             if (!ctx) {
-                reject(new Error('Failed to get canvas context'));
+                reject(new Error("Failed to get canvas context"));
                 return;
             }
 
@@ -168,7 +168,7 @@ export async function convertBlobToImageData(blob: Blob){
 
         img.onerror = (error) => {
             URL.revokeObjectURL(url);
-            reject(new Error('Failed to load image'));
+            reject(new Error("Failed to load image"));
         };
 
         img.src = url;

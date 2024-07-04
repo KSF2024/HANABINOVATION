@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { getPrimaryCanvasSize } from "./PickUpSetUp";
-import EditIcon from '@mui/icons-material/Edit';
+import EditIcon from "@mui/icons-material/Edit";
 import { IconButton, Slider } from "@mui/material";
 import ClearIcon from "./../images/eraser.png"
 import { ICON_SIZE } from "../pages/PhotoPage";
