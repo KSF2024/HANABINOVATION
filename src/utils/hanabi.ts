@@ -1,4 +1,4 @@
-import { hexToRgba } from "./modules";
+import { getBoothColor, getImageData, getImageSrc, hexToRgba } from "./modules";
 import { Spark, Star } from "./types";
 
 export function generateStars(imageData: ImageData, angle: number = 0, interval: number = 10, radius: number = 5): Star[]{
@@ -184,4 +184,37 @@ export function drawSpark(ctx: CanvasRenderingContext2D, spark: Spark, alpha?: n
     ctx.arc(spark.x, spark.y, scaledRadius, 0, Math.PI * 2);
     ctx.fill();
     ctx.closePath();
+}
+
+// 花火と火花を生成する関数
+export async function generateFirework(
+    boothId: string,
+    fireworkType: number,
+    fireworkDesign: Blob | null,
+    sparksType: number
+): Promise<{
+    stars: Star[];
+    sparks: Spark[];
+} | null>{
+    // 花火データを作成する
+    const imageSrc: string | null = getImageSrc(boothId, fireworkType as 0 | 1 | 2 | 3, fireworkDesign);
+    if(!imageSrc) return null;
+    const imageData: ImageData = (await getImageData(imageSrc)).imageData;
+
+    let interval: number | undefined = undefined;
+    let radius: number | undefined = undefined;
+    if(fireworkType === 0){ // TODO オリジナルデザインの場合の花火の星の間隔の修正
+        interval = undefined;
+        radius = undefined;
+    }
+
+    const stars: Star[] = generateStars(imageData, 0, interval, radius);
+
+    // 火花データを作成する
+    const sparksColor: string | null = getBoothColor(boothId) || "#888888";
+    const sparksInitialX: number = 0;
+    const sparksInitialY: number = 0; // TODO 火花の初期位置の修正
+    const sparks: Spark[] = generateSparks(sparksType, sparksColor, sparksInitialX, sparksInitialY);
+
+    return { stars, sparks };
 }

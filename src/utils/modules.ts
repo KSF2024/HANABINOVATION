@@ -141,36 +141,3 @@ export function getCtxFromCanvas(canvasElement: HTMLCanvasElement | null): Canva
     const ctx = canvasElement.getContext("2d");
     return ctx;
 }
-
-// BlobをImageDataに変換する関数
-export async function convertBlobToImageData(blob: Blob){
-    return new Promise((resolve, reject) => {
-        const img = new Image();
-        const url = URL.createObjectURL(blob);
-
-        img.onload = () => {
-            URL.revokeObjectURL(url);
-
-            const canvas = document.createElement("canvas");
-            canvas.width = img.width;
-            canvas.height = img.height;
-
-            const ctx = canvas.getContext("2d");
-            if (!ctx) {
-                reject(new Error("Failed to get canvas context"));
-                return;
-            }
-
-            ctx.drawImage(img, 0, 0);
-            const imageData = ctx.getImageData(0, 0, img.width, img.height);
-            resolve(imageData);
-        };
-
-        img.onerror = (error) => {
-            URL.revokeObjectURL(url);
-            reject(new Error("Failed to load image"));
-        };
-
-        img.src = url;
-    });
-}

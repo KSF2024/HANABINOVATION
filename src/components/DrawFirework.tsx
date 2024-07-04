@@ -5,7 +5,7 @@ import { IconButton, Slider } from "@mui/material";
 import ClearIcon from "./../images/eraser.png"
 import { ICON_SIZE } from "../pages/PhotoPage";
 import { DataContext } from "../providers/DataProvider";
-import { SCHOOL_DATA } from "../utils/config";
+import { getBoothColor } from "../utils/config";
 
 export default function DrawFirework({ previewCanvasRef }: {
     previewCanvasRef: React.RefObject<HTMLCanvasElement>;
@@ -19,7 +19,7 @@ export default function DrawFirework({ previewCanvasRef }: {
     // ブースIDからペンの色を取得する
     useEffect(() => {
         if(!boothId) return;
-        const newColor: string = SCHOOL_DATA[boothId]?.color || "";
+        const newColor = getBoothColor(boothId);
         if(newColor) setColor(newColor);
     }, [boothId]);
 
