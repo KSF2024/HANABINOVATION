@@ -1,7 +1,11 @@
+import { useContext } from "react";
 import FooterPage from "../components/FooterPage";
 import NightSky from "../images/night_sky.png";
+import { MultiFireworksContext } from "src/providers/MultiFireworksProvider";
 
 export default function FireworksDisplayPage(){
+    const { canvasRef } = useContext(MultiFireworksContext);
+
     return (
         <FooterPage>
             <img
@@ -17,6 +21,7 @@ export default function FireworksDisplayPage(){
                 }}
             />
             <canvas
+                ref={canvasRef}
                 style={{
                     zIndex: 10,
                     position: "absolute",

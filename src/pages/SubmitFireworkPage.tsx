@@ -3,6 +3,8 @@ import { OPENCAMPUS_DATE } from "../utils/config"
 import OPENCAMPUSIMAGE from "./../images/opencampus_06_15.png"
 
 export default function SubmitFireworkPage(){
+    // TODO 花火データ送信処理
+
     return <Box 
         sx={{
             width: "100%",
