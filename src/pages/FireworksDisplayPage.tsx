@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import FooterPage from "../components/FooterPage";
 import NightSky from "../images/night_sky.png";
-import { MultiFireworksContext } from "src/providers/MultiFireworksProvider";
+import { MultiFireworksContext } from "../providers/MultiFireworksProvider";
 
 export default function FireworksDisplayPage(){
     const { canvasRef } = useContext(MultiFireworksContext);

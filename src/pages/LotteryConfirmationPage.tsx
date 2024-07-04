@@ -1,6 +1,5 @@
 import { Typography, Button, Box, Grid } from "@mui/material";
 import FooterPage from "../components/FooterPage";
-import { LOTTERY_EVENTS } from "../utils/config";
 import { useContext } from "react";
 import { DataContext } from "../providers/DataProvider";
 import LotteryGuide from "../components/LotteryGuide";

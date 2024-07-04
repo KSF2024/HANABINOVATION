@@ -5,7 +5,7 @@ import { IconButton, Slider } from "@mui/material";
 import ClearIcon from "./../images/eraser.png"
 import { ICON_SIZE } from "../pages/PhotoPage";
 import { DataContext } from "../providers/DataProvider";
-import { getBoothColor } from "../utils/config";
+import { getBoothColor } from "../utils/modules";
 
 export default function DrawFirework({ previewCanvasRef }: {
     previewCanvasRef: React.RefObject<HTMLCanvasElement>;
