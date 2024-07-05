@@ -141,3 +141,15 @@ export function getCtxFromCanvas(canvasElement: HTMLCanvasElement | null): Canva
     const ctx = canvasElement.getContext("2d");
     return ctx;
 }
+
+// BoxAがBoxBに収まるようなランダムな位置を取得する関数
+export function getRandomPositionInBox(innerWidth: number, outerWidth: number): number{
+    // x座標の最小値と最大値を計算
+    const minX = innerWidth / 2;
+    const maxX = outerWidth - innerWidth / 2;
+
+    // 最小値と最大値の間でランダムなx座標を生成
+    const randomX = Math.random() * (maxX - minX) + minX;
+
+    return randomX;
+}

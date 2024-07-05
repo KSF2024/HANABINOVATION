@@ -3,6 +3,8 @@ import FooterPage from "../components/FooterPage";
 import NightSky from "../images/night_sky.png";
 import { MultiFireworksContext } from "../providers/MultiFireworksProvider";
 
+const footerHeight: number = 64;
+
 export default function FireworksDisplayPage(){
     const { canvasRef } = useContext(MultiFireworksContext);
 
@@ -22,14 +24,13 @@ export default function FireworksDisplayPage(){
             />
             <canvas
                 ref={canvasRef}
+                width={window.innerWidth}
+                height={window.innerHeight - footerHeight}
                 style={{
-                    zIndex: 10,
+                    zIndex: 1000,
                     position: "absolute",
                     top: "0",
-                    left: "0",
-                    width: "100%",
-                    height: "100%",
-                    maxHeight: "calc(100dvh - 4rem)"
+                    left: "0"
                 }}
             />
         </FooterPage>
