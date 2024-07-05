@@ -18,13 +18,13 @@ export async function getFireworksByUserId(userId: string): Promise<FireworksDat
         if (response.status === 200) {
             result = response.data;
         }else if(response.status === 404) {
-            console.log("404 Error: ", response);
+            console.log("404 Error: fireworks");
             result = null;
         }else{
             throw new Error(JSON.stringify(response) || "Unexpected error");
         }
     }catch(error){
-        console.error("Error fetching fireworks data:", error);
+        console.error("Error fetching fireworks data");
         // throw error;
         result = null;
     }
@@ -73,13 +73,13 @@ export async function getRegistration(userId: string): Promise<Registration | nu
         if (response.status === 200) {
             result = response.data;
         }else if(response.status === 404) {
-            console.log("404 Error: ", response);
+            console.log("404 Error: profiles");
             result = null;
         }else{
             throw new Error(JSON.stringify(response) || "Unexpected error");
         }
     }catch(error){
-        console.error("Error fetching registration data:", error);
+        console.error("Error fetching registration data");
         // throw error;
         result = null;
     }

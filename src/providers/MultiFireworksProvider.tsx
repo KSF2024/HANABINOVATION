@@ -140,6 +140,7 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
     useEffect(() => {
         // Canvasコンテキストを取得
         const canvas = canvasRef.current;
+        console.log(canvas)
         if (!canvas) return;
         const ctx = canvas.getContext("2d");
         if (!ctx) return;
