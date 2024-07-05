@@ -1,6 +1,6 @@
-import { createContext, ReactNode, useRef, useState } from "react";
+import { createContext, ReactNode, useEffect, useRef, useState } from "react";
 import { RisingStars, Size, Spark, Star } from "../utils/types";
-import { generateFirework, generateRisingStars } from "../utils/hanabi";
+import { drawSpark, drawStar, generateFirework, generateRisingStars } from "../utils/hanabi";
 import { ulid } from "ulidx";
 
 /* 型定義 */
@@ -57,11 +57,12 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
             initialBurstY
         } = getInitialPositions();
 
+        const fireworkId: string = ulid();
+
         // 花火+火花データを初期化する
         const firework = await generateFirework(boothId, fireworkType, fireworkDesign, sparksType, initialBurstX, initialBurstY);
         if(!firework) return;
         const { stars, sparks } = firework;
-        const fireworkId: string = ulid();
         setStarsObj(prev => {
             return {...prev, [fireworkId]: stars};
         });
@@ -129,6 +130,33 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
     async function fadeSparks(fireworkId: string){
         return;
     }
+
+    /* useEffect等 */
+    // starsやsparksが変更される度、再度キャンバスに描画する
+    useEffect(() => {
+        // Canvasコンテキストを取得
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
+
+        // Canvasをクリア
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // 火花を描画
+        Object.keys(sparksObj).forEach(id => {
+                for(const spark of sparksObj[id] || {}){
+                    drawSpark(ctx, spark);
+                }
+        });
+
+        // 花火の星を描画
+        Object.keys(sparksObj).forEach(id => {
+            for(const star of starsObj[id]  || {}){
+                drawStar(ctx, star, star.color.alpha); // TODO 花火の大きさの指定
+            }
+        });
+    }, [starsObj, sparksObj]);
 
     return (
         <MultiFireworksContext.Provider
