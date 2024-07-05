@@ -242,3 +242,10 @@ export function generateRisingStars(
 
     return { capitalStar, afterImageStars: [], goalPositions };
 }
+
+// 花火の星データ(花火が爆発した後)から、アニメーション開始時の花火の星(中央に集合した状態)のデータを取得する関数
+export function initializeStars(stars: Star[], initialX: number, initialY: number): Star[]{
+    return stars.map((star) => {
+        return {...star, x: initialX, y: initialY}
+    });
+}

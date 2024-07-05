@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useState, useEffect, useRef, useContext } from "react";
 import { ImageInfo, RisingAfterImage, RisingStars, Size, Spark, Star } from "../utils/types";
-import { generateStars, generateSparks, drawStar, drawSpark } from "../utils/hanabi";
+import { generateStars, generateSparks, drawStar, drawSpark, initializeStars } from "../utils/hanabi";
 import { DataContext } from "./DataProvider";
 import { calculateDistance, findIntersection, getImageData, hexToRgba, sleep, getBoothColor, getImageSrc } from "../utils/modules";
 
@@ -138,14 +138,6 @@ export function FireworksProvider({children}: {children: ReactNode}){
             setFireworkAnimationFrameId(newAnimationFrameId);
         }
     }
-
-    // 花火の星データ(花火が爆発した後)から、アニメーション開始時の花火の星(中央に集合した状態)のデータを取得する関数
-    function initializeStars(stars: Star[], initialX: number, initialY: number): Star[]{
-        return stars.map((star) => {
-            return {...star, x: initialX, y: initialY}
-        });
-    }
-
 
     /* 花火(Spark)用関数定義 */
     // 火花を爆発させるアニメーション
