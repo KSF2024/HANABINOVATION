@@ -132,6 +132,10 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
     }
 
     /* useEffect等 */
+    useEffect(() => {
+        animateFirework("HF5W2T", 1, null, 2);
+    }, []);
+
     // starsやsparksが変更される度、再度キャンバスに描画する
     useEffect(() => {
         // Canvasコンテキストを取得
@@ -143,20 +147,29 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
         // Canvasをクリア
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // 火花を描画
+        // 打ち上げ中の花火の星を描画する
+        Object.keys(risingStarsObj).forEach(id => {
+            const risingStars: RisingStars = risingStarsObj[id];
+            drawStar(ctx, risingStars.capitalStar);
+            risingStars.afterImageStars.forEach(afterImage => {
+                drawStar(ctx, afterImage.star);
+            });
+        });
+
+        // 火花を描画する
         Object.keys(sparksObj).forEach(id => {
                 for(const spark of sparksObj[id] || {}){
                     drawSpark(ctx, spark);
                 }
         });
 
-        // 花火の星を描画
+        // 花火の星を描画する
         Object.keys(sparksObj).forEach(id => {
             for(const star of starsObj[id]  || {}){
                 drawStar(ctx, star, star.color.alpha); // TODO 花火の大きさの指定
             }
         });
-    }, [starsObj, sparksObj]);
+    }, [starsObj, sparksObj, risingStarsObj]);
 
     return (
         <MultiFireworksContext.Provider
