@@ -1,5 +1,5 @@
 import { getBoothColor, getImageData, getImageSrc, hexToRgba } from "./modules";
-import { Spark, Star } from "./types";
+import { RisingStars, Spark, Star } from "./types";
 
 export function generateStars(imageData: ImageData, angle: number = 0, interval: number = 10, radius: number = 5): Star[]{
     const stars: Star[] = [];
@@ -191,7 +191,9 @@ export async function generateFirework(
     boothId: string,
     fireworkType: number,
     fireworkDesign: Blob | null,
-    sparksType: number
+    sparksType: number,
+    initialX: number,
+    initialY: number
 ): Promise<{
     stars: Star[];
     sparks: Spark[];
@@ -212,9 +214,31 @@ export async function generateFirework(
 
     // 火花データを作成する
     const sparksColor: string | null = getBoothColor(boothId) || "#888888";
-    const sparksInitialX: number = 0;
-    const sparksInitialY: number = 0; // TODO 火花の初期位置の修正
-    const sparks: Spark[] = generateSparks(sparksType, sparksColor, sparksInitialX, sparksInitialY);
+    const sparks: Spark[] = generateSparks(sparksType, sparksColor, initialX, initialY);
 
     return { stars, sparks };
+}
+
+// 打ち上げ用花火の星データを作成する関数
+export function generateRisingStars(
+    boothId: string,
+    initialRiseX: number,
+    initialRiseY: number,
+    initialBurstX: number,
+    initialBurstY: number,
+): RisingStars{
+    // 色データを取得する
+    const colorCode: string = getBoothColor(boothId) || "#888888";
+    const color = hexToRgba(colorCode, 255);
+
+    // 花火を打ち上げる目標点を求める
+    const goalPositions = { x: initialBurstX, y: initialBurstY };
+
+    // 花火を打ち上げる始点を求める
+    const { x, y } = { x: initialRiseX, y: initialRiseY };
+
+    // 打ち上げ用の花火の星を作成する
+    const capitalStar: Star = { color, x, y, radius: 5 };
+
+    return { capitalStar, afterImageStars: [], goalPositions };
 }
