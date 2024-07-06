@@ -10,15 +10,25 @@ import { getFireworks } from "../utils/apiClient";
 type MultiFireworksContent = {
     canvasRef: React.RefObject<HTMLCanvasElement>;
     animateFirework(boothId: string, fireworkType: number, fireworkDesign: Blob | null, sparksType: number): Promise<void>;
+    pageMode: string | null;
+    setPageMode: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
 /* Provider */
 const initialData: MultiFireworksContent = {
     canvasRef: {} as React.RefObject<HTMLCanvasElement>,
-    animateFirework: () => Promise.resolve()
+    animateFirework: () => Promise.resolve(),
+    pageMode: null,
+    setPageMode: () => {}
 };
 
 export const MultiFireworksContext = createContext<MultiFireworksContent>(initialData);
+
+// 花火大会で、花火を打ち上げるランダムな間隔を取得する関数
+function getRandomInterval(): number{
+    // ランダムな秒数（0.5秒から3秒）
+    return Math.floor(Math.random() * 3000) + 500;
+}
 
 // 花火やユーザーの設定データを管理するProvider
 export function MultiFireworksProvider({children}: {children: ReactNode}){
@@ -32,7 +42,8 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
     const [risingStarsObj, setRisingStarsObj] = useState<{[id: string]: RisingStars}>({}); // 打ちあがる際の花火の星(アニメーション用)
 
     // 花火大会用花火データ
-    const [fireworksData, setFireworksData] = useState<FireworkTypeInfo[]>([]);
+    const [fireworksData, setFireworksData] = useState<FireworkTypeInfo[] | null>(null);
+    const intervalRef = useRef<number | null>(null);
 
     /* その他関数定義 */
     // 花火の打ち上げ初期位置・爆発中心位置を求める関数
@@ -85,7 +96,7 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
 
     /* 花火アニメーション用関数定義 */
     // 花火を打ち上げ->爆発->消滅させるアニメーションを実行する関数
-    async function animateFirework(boothId: string, fireworkType: number, fireworkDesign: Blob | null, sparksType: number){
+    async function animateFirework(boothId: string | null, fireworkType: number, fireworkDesign: Blob | null, sparksType: number){
         // 位置データを初期化する
         const {
             initialRiseX,
@@ -550,12 +561,13 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
         });
     }
 
-    /* データ関係の関数定義 */
+    /* 花火大会用の関数定義 */
     // データベースから花火データを取得し、打ち上げる関数
     async function initializeFireworksData(){
         const msAgo: number = 0;
         const response = await getFireworks(msAgo);
         if(!response) return;
+
         const newFireworksData: FireworkTypeInfo[] = [];
         Object.keys(response).forEach(userId => {
             const userData = response[userId];
@@ -574,10 +586,66 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
         setFireworksData(newFireworksData);
     }
 
+    // ランダムな間隔で関数を実行する関数
+    function startRandomInterval(func: () => void){
+        if(intervalRef.current) clearInterval(intervalRef.current); // 既存のタイマーをクリア
+
+        const interval = getRandomInterval();
+
+        intervalRef.current = setTimeout(() => {
+            // 指定された関数を実行する
+            func();
+
+            // 再度ランダムな間隔でタイマーをセット
+            startRandomInterval(func);
+        }, interval);
+    };
+
     /* useEffect等 */
+    // 花火大会用データを初期化する関数
     useEffect(() => {
-        animateFirework("5HGS6W", 3, null, 0);
-    }, []);
+        switch(pageMode){
+            case "show-fireworks":
+                initializeFireworksData();
+                break;
+            default:
+                setFireworksData(null);
+                break;
+        }
+    }, [pageMode]);
+
+    // 花火大会用処理
+    // 花火データを元に、打ち上げアニメーションをループさせる
+    useEffect(() => {
+        if(fireworksData){
+            const animationFunc = () => {
+                if(fireworksData.length > 0){
+                    // 取得した花火データの中からランダムに1つ選ぶ
+                    const randomIndex: number = Math.floor(Math.random() * fireworksData.length);
+                    const {
+                        boothId,
+                        fireworkType,
+                        fireworkDesign,
+                        sparksType
+                    } = fireworksData[randomIndex];
+
+                    // 花火のアニメーションを実行する
+                    animateFirework(boothId, fireworkType, fireworkDesign, sparksType);
+                }else{
+                    // ダミーの花火データで、花火のアニメーションを実行する
+                    const sparksType: number = Math.floor(Math.random() * 3);
+                    animateFirework(null, 1, null, sparksType);
+                }
+            }
+
+            // 打ち上げアニメーションをループさせる
+            startRandomInterval(animationFunc);
+        }
+
+        return () => {
+            if(intervalRef.current) clearInterval(intervalRef.current);
+        };
+    }, [fireworksData]);
 
     // starsやsparksが変更される度、再度キャンバスに描画する
     useEffect(() => {
@@ -624,7 +692,9 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
         <MultiFireworksContext.Provider
             value={{
                 canvasRef,
-                animateFirework
+                animateFirework,
+                pageMode,
+                setPageMode
             }}
         >
             {children}

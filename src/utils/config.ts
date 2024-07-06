@@ -28,6 +28,7 @@ import image9_3 from "./../images/松山デザイナー専門学校/3.png";
 import image10_1 from "./../images/河原医療大学校 新居浜校/1.png";
 import image10_2 from "./../images/河原医療大学校 新居浜校/2.png";
 import image10_3 from "./../images/河原医療大学校 新居浜校/3.png";
+import kawahara from "./../images/kawahara.png";
 
 type SchoolInfo = {
     schoolName: string; // 学校名
@@ -41,6 +42,12 @@ type OpencampusDate = {
     url: string; //オープンキャンパスのurl
     date: string; //オープンキャンパスの日付
 }[];
+
+// サンプル花火データ
+export const SAMPLE_DATA = {
+    color: "#FF0000",
+    imageSrc: kawahara
+}
 
 // 各学校の設定データ
 export const SCHOOL_DATA: { [boothId: string]: SchoolInfo } = {

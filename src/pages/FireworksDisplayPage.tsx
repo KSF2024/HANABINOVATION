@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import FooterPage from "../components/FooterPage";
 import NightSky from "../images/night_sky.png";
 import { MultiFireworksContext } from "../providers/MultiFireworksProvider";
@@ -6,7 +6,14 @@ import { MultiFireworksContext } from "../providers/MultiFireworksProvider";
 const footerHeight: number = 64;
 
 export default function FireworksDisplayPage(){
-    const { canvasRef } = useContext(MultiFireworksContext);
+    const {
+        canvasRef,
+        setPageMode
+    } = useContext(MultiFireworksContext);
+
+    useEffect(() => {
+        setPageMode("show-fireworks");
+    }, []);
 
     return (
         <FooterPage>

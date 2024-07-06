@@ -1,3 +1,4 @@
+import { SAMPLE_DATA } from "./config";
 import { getBoothColor, getImageData, getImageSrc, hexToRgba } from "./modules";
 import { Point, RisingStars, Spark, Star } from "./types";
 
@@ -212,7 +213,7 @@ export function drawSpark(ctx: CanvasRenderingContext2D, spark: Spark, alpha?: n
 
 // 花火と火花を生成する関数
 export async function generateFirework(
-    boothId: string,
+    boothId: string | null,
     fireworkType: number,
     fireworkDesign: Blob | null,
     sparksType: number,
@@ -222,8 +223,10 @@ export async function generateFirework(
     stars: Star[];
     sparks: Spark[];
 } | null>{
+
     // 花火データを作成する
-    const imageSrc: string | null = getImageSrc(boothId, fireworkType as 0 | 1 | 2 | 3, fireworkDesign);
+    const imageSrc: string | null = (boothId) ? getImageSrc(boothId, fireworkType as 0 | 1 | 2 | 3, fireworkDesign) : SAMPLE_DATA.imageSrc;
+
     if(!imageSrc) return null;
     const imageData: ImageData = (await getImageData(imageSrc)).imageData;
 
@@ -237,7 +240,7 @@ export async function generateFirework(
     const stars: Star[] = generateStars(imageData, 0, interval, radius);
 
     // 火花データを作成する
-    const sparksColor: string | null = getBoothColor(boothId) || "#888888";
+    const sparksColor: string | null = (boothId) ? (getBoothColor(boothId) || "#888888") : SAMPLE_DATA.color;
     const sparks: Spark[] = generateSparks(sparksType, sparksColor, initialX, initialY);
 
     return { stars, sparks };
@@ -245,14 +248,14 @@ export async function generateFirework(
 
 // 打ち上げ用花火の星データを作成する関数
 export function generateRisingStars(
-    boothId: string,
+    boothId: string | null,
     initialRiseX: number,
     initialRiseY: number,
     initialBurstX: number,
     initialBurstY: number,
 ): RisingStars{
     // 色データを取得する
-    const colorCode: string = getBoothColor(boothId) || "#888888";
+    const colorCode: string = (boothId) ? (getBoothColor(boothId) || "#888888") : SAMPLE_DATA.color;
     const color = hexToRgba(colorCode, 255);
 
     // 花火を打ち上げる目標点を求める
