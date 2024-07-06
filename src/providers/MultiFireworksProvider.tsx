@@ -103,8 +103,22 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
         // 花火を爆発させる
         await burstFirework(fireworkId, stars, sparks, initialBurstX, initialBurstY);
 
+        await sleep(100);
+
         // 花火を消滅させる
-        // await fadeFirework(fireworkId);
+        await fadeFirework(fireworkId);
+
+        // 花火データを消去する
+        setStarsObj(prevStarsObj => {
+            const {[fireworkId]: _, ...rest} = prevStarsObj;
+            return rest;
+        });
+
+        // 火花データを消去する
+        setSparksObj(prevSparksObj => {
+            const {[fireworkId]: _, ...rest} = prevSparksObj;
+            return rest;
+        });
 
         return;
     }
@@ -286,7 +300,7 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
                     // 加速度が0に近づいたら、アニメーションを停止する
                     isFinishedAnimation = prevStars.every((star, index) => {
                         const renderingStar: Star = goalStars[index];
-                        const fireworkSize: number = getFireworkSize();
+                        const fireworkSize: number = 300;
                         const renderingX: number = renderingStar.x - fireworkSize / 2 + initialX;
                         const renderingY: number = renderingStar.y - fireworkSize / 2 + initialY;
                         const dx: number = (renderingX - star.x) / speed;
@@ -298,21 +312,6 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
                 });
 
                 if(isFinishedAnimation){
-                    // アニメーションが停止したら、スターの位置を最終位置に修正する
-                    setStarsObj(prevStarsObj => {
-                        const prevStars: Star[] = prevStarsObj[fireworkId].stars;
-
-                        // スターの最終位置を計算して更新
-                        const updatedStars = prevStars.map((star, index) => {
-                            const renderingStar: Star = goalStars[index];
-                            const fireworkSize: number = getFireworkSize();
-                            const renderingX: number = renderingStar.x - fireworkSize / 2 + initialX;
-                            const renderingY: number = renderingStar.y - fireworkSize / 2 + initialY;
-                            return {...star, x: renderingX, y: renderingY};
-                        });
-                        return {...prevStarsObj, [fireworkId]: {...prevStarsObj[fireworkId], stars: updatedStars}};
-                    });
-
                     // 花火のアニメーションが終了したら、アニメーションを停止する
                     if(frameId) cancelAnimationFrame(frameId);
                     frameId = null;
@@ -460,13 +459,40 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
 
     // 花火を消滅させる関数
     async function fadeStars(fireworkId: string){
+        const speed: number = 10; // 花火が消えていく速度
+
         // 花火消滅アニメーションを開始する
         return new Promise<void>((resolve) => {
             let frameId: number | null = null;
             let isFinishedAnimation: boolean = false;
 
             function fadeAnimation(){
+                setStarsObj((prevStarsObj) => {
+                    const prevStars: Star[] = prevStarsObj[fireworkId].stars;
 
+                    // 新しい花火の星の透明度を計算して更新
+                    const updatedStars = prevStars.map((star) => {
+                        const newAlpha: number = Math.max(star.color.alpha - speed, 0); // 透明度が負にならないようにする
+                        return {...star, color: {...star.color, alpha: newAlpha}};
+                    });
+
+                    isFinishedAnimation = updatedStars.every((star) => {
+                        // 全ての花火の星の透明度が0以下になったらアニメーションを停止させる
+                        return (Number(star.color.alpha) || 0) <= 0;
+                    })
+
+                    return {...prevStarsObj, [fireworkId]: {...prevStarsObj[fireworkId], stars: updatedStars}};
+                });
+
+                if(isFinishedAnimation){
+                    // 花火のアニメーションが終了したら、アニメーションを停止する
+                    if(frameId) cancelAnimationFrame(frameId);
+                    frameId = null;
+                    resolve();
+                }else{
+                    // 次のフレームを要求
+                    frameId = requestAnimationFrame(fadeAnimation);
+                }
             };
 
             frameId = requestAnimationFrame(fadeAnimation);
@@ -475,13 +501,42 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
 
     // 火花を消滅させる関数
     async function fadeSparks(fireworkId: string){
-        // 花火消滅アニメーションを開始する
+        const speed: number = 10; // 火花が消えていく速度
+
+        // 火花消滅アニメーションを開始する
         return new Promise<void>((resolve) => {
             let frameId: number | null = null;
             let isFinishedAnimation: boolean = false;
 
             function fadeAnimation(){
+                setSparksObj((prevSparksObj) => {
+                    const prevSparks: Spark[] = prevSparksObj[fireworkId];
 
+                    // 新しい火花の透明度を計算して更新
+                    const updatedStars = prevSparks.map((spark) => {
+                        const newAlpha: number = Math.max(spark.color.alpha - speed, 0); // 透明度が負にならないようにする
+                        return {...spark, color: {...spark.color, alpha: newAlpha}};
+                    });
+
+                    isFinishedAnimation = prevSparks.every((sparks) => {
+                        // 全ての火花の透明度が0以下になったらアニメーションを停止
+                        // if(sparks.color.alpha !== 0) console.log(sparks.color)
+                        return sparks.color.alpha <= 0;
+                    })
+
+                    const result = {...prevSparksObj, [fireworkId]: updatedStars};
+                    return result;
+                });
+
+                if(isFinishedAnimation){
+                    // 火花のアニメーションが終了したら、アニメーションを停止する
+                    if(frameId) cancelAnimationFrame(frameId);
+                    frameId = null;
+                    resolve();
+                }else{
+                    // 次のフレームを要求
+                    frameId = requestAnimationFrame(fadeAnimation);
+                }
             };
 
             frameId = requestAnimationFrame(fadeAnimation);
@@ -490,7 +545,7 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
 
     /* useEffect等 */
     useEffect(() => {
-        animateFirework("94VPFZ", 3, null, 2);
+        animateFirework("5HGS6W", 3, null, 0);
     }, []);
 
     // starsやsparksが変更される度、再度キャンバスに描画する
@@ -516,7 +571,7 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
         // 火花を描画する
         Object.keys(sparksObj).forEach(id => {
             for(const spark of sparksObj[id]){
-                drawSpark(ctx, spark, undefined);
+                drawSpark(ctx, spark);
             }
         });
 
