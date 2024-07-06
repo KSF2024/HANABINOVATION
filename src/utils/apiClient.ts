@@ -1,11 +1,40 @@
 import axios, { AxiosResponse } from "axios";
-import { FireworkData, FireworksData, Profile, Registration } from "./types";
+import { FireworkData, FireworksData, HoleFireworksData, Profile, Registration } from "./types";
 
 // API呼び出し用のURLを定義する
 const API_ENDPOINT: string = "https://vfml5unckb.execute-api.ap-northeast-1.amazonaws.com/dev/api/v1";
 const WS_ENDPOINT: string = "wss://pcg2x1k5lj.execute-api.ap-northeast-1.amazonaws.com/dev/";
 // const API_ENDPOINT: string = "https://hanabinovation.org/api/v1";
 // const WS_ENDPOINT: string = "wss://hanabinovation.org/api/v1/websocket";
+
+// 全ユーザーの花火データを取得する関数
+export async function getFireworks(msAgo: number = 0): Promise<HoleFireworksData | null>{
+    let result: HoleFireworksData | null = null;
+    const url: string = `${API_ENDPOINT}/fireworks`;
+
+    // 指定のミリ秒前に作成されたデータのみを取得する
+    let query: string = "";
+    if(msAgo){
+        const createdAfter: number = new Date().getTime() - msAgo;
+        query = `?createdAfter=${createdAfter}`;
+    }
+
+    try {
+        const response = await axios.get<HoleFireworksData>(url);
+
+        if (response.status === 200) {
+            result = response.data;
+        }else{
+            throw new Error(JSON.stringify(response) || "Unexpected error");
+        }
+    }catch(error){
+        console.error("Error fetching fireworks data");
+        // throw error;
+        result = null;
+    }
+
+    return result;
+}
 
 // ユーザーIDを元に花火データを取得する関数
 export async function getFireworksByUserId(userId: string): Promise<FireworksData | null>{

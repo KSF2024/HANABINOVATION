@@ -1,18 +1,21 @@
 import { createContext, ReactNode, useEffect, useRef, useState } from "react";
-import { Point, RisingAfterImage, RisingStars, Spark, Star } from "../utils/types";
+import { FireworkTypeInfo, Point, RisingAfterImage, RisingStars, Spark, Star } from "../utils/types";
 import { drawSpark, drawStar, generateFirework, generateRisingStars, initializeStars } from "../utils/hanabi";
 import { ulid } from "ulidx";
 import { getRandomPositionInBox, sleep } from "../utils/modules";
+import { getFireworks } from "../utils/apiClient";
 
 /* 型定義 */
 // contextに渡すデータの型
 type MultiFireworksContent = {
     canvasRef: React.RefObject<HTMLCanvasElement>;
+    animateFirework(boothId: string, fireworkType: number, fireworkDesign: Blob | null, sparksType: number): Promise<void>;
 };
 
 /* Provider */
 const initialData: MultiFireworksContent = {
-    canvasRef: {} as React.RefObject<HTMLCanvasElement>
+    canvasRef: {} as React.RefObject<HTMLCanvasElement>,
+    animateFirework: () => Promise.resolve()
 };
 
 export const MultiFireworksContext = createContext<MultiFireworksContent>(initialData);
@@ -21,11 +24,15 @@ export const MultiFireworksContext = createContext<MultiFireworksContent>(initia
 export function MultiFireworksProvider({children}: {children: ReactNode}){
     /* state類 */
     const canvasRef = useRef<HTMLCanvasElement>(null); // アニメーション用Canvas要素の参照
+    const [pageMode, setPageMode] = useState<string | null>(null); // 現在どのページを開いているか
 
     // 花火データ
     const [starsObj, setStarsObj] = useState<{[id: string]: {stars: Star[], initialPosition: Point}}>({}); // 花火の星(アニメーション用)
     const [sparksObj, setSparksObj] = useState<{[id: string]: Spark[]}>({}); // 花火の火花(アニメーション用)
     const [risingStarsObj, setRisingStarsObj] = useState<{[id: string]: RisingStars}>({}); // 打ちあがる際の花火の星(アニメーション用)
+
+    // 花火大会用花火データ
+    const [fireworksData, setFireworksData] = useState<FireworkTypeInfo[]>([]);
 
     /* その他関数定義 */
     // 花火の打ち上げ初期位置・爆発中心位置を求める関数
@@ -543,6 +550,30 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
         });
     }
 
+    /* データ関係の関数定義 */
+    // データベースから花火データを取得し、打ち上げる関数
+    async function initializeFireworksData(){
+        const msAgo: number = 0;
+        const response = await getFireworks(msAgo);
+        if(!response) return;
+        const newFireworksData: FireworkTypeInfo[] = [];
+        Object.keys(response).forEach(userId => {
+            const userData = response[userId];
+            Object.keys(userData).forEach(boothId => {
+                const boothData = userData[boothId];
+                const newData: FireworkTypeInfo = {
+                    boothId,
+                    fireworkType: boothData.fireworkType,
+                    fireworkDesign: boothData.fireworkDesign || null,
+                    sparksType: boothData.sparksType
+                };
+                newFireworksData.push(newData);
+            });
+        });
+
+        setFireworksData(newFireworksData);
+    }
+
     /* useEffect等 */
     useEffect(() => {
         animateFirework("5HGS6W", 3, null, 0);
@@ -592,7 +623,8 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
     return (
         <MultiFireworksContext.Provider
             value={{
-                canvasRef
+                canvasRef,
+                animateFirework
             }}
         >
             {children}

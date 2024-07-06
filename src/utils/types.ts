@@ -59,7 +59,20 @@ export type RisingStars = {
     goalPositions: Point
 }
 
+// 花火アニメーションを開始するために必要な花火の情報
+export type FireworkTypeInfo = {
+    boothId: string;
+    fireworkType: number;
+    fireworkDesign: Blob | null;
+    sparksType: number;
+}
+
 // データベースに登録された花火データの型
+export type HoleFireworksData = {
+    [userId: string]: FireworksData;
+}
+
+// データベースに登録された特定のユーザーが登録した花火データの型
 export type FireworksData = {
     [boothId: string]: FireworkData;
 }
