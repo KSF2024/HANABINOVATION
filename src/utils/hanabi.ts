@@ -1,7 +1,12 @@
 import { getBoothColor, getImageData, getImageSrc, hexToRgba } from "./modules";
-import { RisingStars, Spark, Star } from "./types";
+import { Point, RisingStars, Spark, Star } from "./types";
 
-export function generateStars(imageData: ImageData, angle: number = 0, interval: number = 10, radius: number = 5): Star[]{
+export function generateStars(
+    imageData: ImageData,
+    angle: number = 0,
+    interval: number = 10,
+    radius: number = 5
+): Star[]{
     const stars: Star[] = [];
     const data = imageData.data;
     const width: number = imageData.width;
@@ -58,11 +63,30 @@ function rotatePoint(x: number, y: number, width: number, height: number, angle:
 }
 
 // starデータからキャンバスに点を描画する関数
-export function drawStar(ctx: CanvasRenderingContext2D, star: Star, alpha?: number, scale: number = 1){
+export function drawStar(
+    ctx: CanvasRenderingContext2D,
+    star: Star,
+    alpha?: number,
+    option?: {
+        scale: number,
+        initialPosition?: Point
+    }
+){
     // スケーリングされた座標と半径
-    const scaledX: number = star.x * scale;
-    const scaledY: number = star.y * scale;
-    const scaledRadius: number = star.radius * scale;
+    const {
+        scaledX,
+        scaledY
+    } = (option && option.scale !==1) ? ((option.initialPosition) ? {
+        scaledX: star.x + (option.initialPosition.x - star.x) * option.scale,
+        scaledY: star.y + (option.initialPosition.y - star.y) * option.scale
+    } : {
+        scaledX: star.x * option.scale,
+        scaledY: star.y * option.scale
+    }) : {
+        scaledX: star.x,
+        scaledY: star.y
+    }
+    const scaledRadius: number = star.radius * (option?.scale || 1);
 
     // 色の設定
     const starAlpha: number = (alpha) ? Math.min(star.color.alpha, alpha): star.color.alpha;

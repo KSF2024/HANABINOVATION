@@ -81,7 +81,7 @@ export default function PickUpSetUp(){
         newStars.forEach((star) => {
             star.x += initialX;
             star.y += initialY;
-            drawStar(ctx, star, 255, scale);
+            drawStar(ctx, star, 255, {scale});
         })
     }
 

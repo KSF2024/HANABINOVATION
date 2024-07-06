@@ -172,15 +172,6 @@ export function FireworksProvider({children}: {children: ReactNode}){
                 let newX: number = spark.x + dx;
                 let newY: number = spark.y + dy;
 
-                // 新しい火花の位置が最終位置を超えているなら、最終位置にグリッドする
-                // const newDistance: number = Math.sqrt(Math.pow(initialX - newX, 2) + Math.pow((initialY - newY), 2)); // 中心点からの距離
-                // if(newDistance >= goalDistance){
-                //     const goalX: number = initialX + Math.cos(spark.direction) * goalDistance;
-                //     const goalY: number = initialY + Math.sin(spark.direction) * goalDistance;
-                //     newX = goalX;
-                //     newY = goalY;
-                // }
-
                 if(spark.sparkType === 1){
                     // 線型火花の残像を追加する
                     const innerDistance: number = goalDistance * outerDifference; // 内側の距離
