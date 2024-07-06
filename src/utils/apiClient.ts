@@ -8,16 +8,17 @@ const WS_ENDPOINT: string = "wss://pcg2x1k5lj.execute-api.ap-northeast-1.amazona
 // const WS_ENDPOINT: string = "wss://hanabinovation.org/api/v1/websocket";
 
 // 全ユーザーの花火データを取得する関数
-export async function getFireworks(msAgo: number = 0): Promise<HoleFireworksData | null>{
+export async function getFireworks(msAgo?: number): Promise<HoleFireworksData | null>{
     let result: HoleFireworksData | null = null;
-    const url: string = `${API_ENDPOINT}/fireworks`;
 
     // 指定のミリ秒前に作成されたデータのみを取得する
     let query: string = "";
-    if(msAgo){
-        const createdAfter: number = new Date().getTime() - msAgo;
+    if(msAgo !== undefined){
+        const createdAfter = new Date(Date.now() - msAgo).toISOString(); // ISO8601形式の日時データ
         query = `?createdAfter=${createdAfter}`;
     }
+
+    const url: string = `${API_ENDPOINT}/fireworks${query}`;
 
     try {
         const response = await axios.get<HoleFireworksData>(url);
