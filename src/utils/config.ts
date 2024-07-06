@@ -45,7 +45,7 @@ type OpencampusDate = {
 
 // サンプル花火データ
 export const SAMPLE_DATA = {
-    color: "#FF0000",
+    color: "#FFFFFF",
     imageSrc: kawahara
 }
 
