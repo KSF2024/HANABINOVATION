@@ -231,6 +231,7 @@ export default function PickUpSetUp(){
             const ctx = getCtxFromCanvas(canvasElement);
             if(!ctx) return;
             if(!canvasElement) return;
+            ctx.clearRect(0, 0, secondaryCanvasSize, secondaryCanvasSize);
             previewFireworks(ctx, fireworkImages[index], secondaryCanvasSize, fireworkSize);
         });
     }, [fireworkImages]);
