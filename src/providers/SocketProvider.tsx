@@ -17,6 +17,9 @@ const initialData: Context = {
 
 export const SocketContext = createContext<Context>(initialData);
 
+// websocket接続を実施するページ
+const supportedPages: string[] = ["show-fireworks", "announce-winners", "simultaneously-raise"];
+
 // websocketを管理するプロバイダー
 export function SocketProvider({children}: {children: ReactNode}){
     /* state, context */
@@ -30,6 +33,12 @@ export function SocketProvider({children}: {children: ReactNode}){
     /* useEffect */
     // WebSocket関連の処理は副作用なので、useEffect内で実装
     useEffect(() => {
+        if(!(pageMode && supportedPages.includes(pageMode))) return () => {
+            if(!socketRef.current) return;
+            socketRef.current.close();
+            socketRef.current.removeEventListener('message', onMessage);
+        };
+
         // WebSocketオブジェクトを生成しサーバとの接続を開始
         let websocket: WebSocket = new WebSocket(WS_ENDPOINT);
         console.log("websocket:", websocket);
@@ -63,7 +72,7 @@ export function SocketProvider({children}: {children: ReactNode}){
             websocket.removeEventListener('message', onMessage);
             console.log("websocket接続が切れました");
         }
-    }, [])
+    }, [pageMode])
 
     // websocketのeventを監視する
     // addEventListenerを設定したタイミングの状態しか取得できないようなので、useEffect経由で状態を無理矢理取得する
