@@ -1,6 +1,7 @@
 import { createContext, ReactNode, useContext, useEffect, useRef, useState } from 'react';
 import { WS_ENDPOINT } from '../utils/apiClient';
 import { MultiFireworksContext } from './MultiFireworksProvider';
+import { FireworkTypeInfo } from '../utils/types';
 
 /* 型定義 */
 // contextに渡すデータの型
@@ -22,7 +23,8 @@ export function SocketProvider({children}: {children: ReactNode}){
     const socketRef = useRef<WebSocket | null>(null);
     const {
         pageMode,
-        animateFirework
+        animateFirework,
+        pushFireworksData
     } = useContext(MultiFireworksContext);
 
     /* useEffect */
@@ -113,7 +115,10 @@ export function SocketProvider({children}: {children: ReactNode}){
         const fireworkType: number = data.fireworksData.fireworkType;
         const fireworkDesign: Blob | null = data.fireworksData.fireworkDesign || null;
         const sparksType: number = data.fireworksData.sparksType;
+        const newFireworkData: FireworkTypeInfo = { boothId, fireworkType, fireworkDesign, sparksType };
+
         animateFirework(boothId, fireworkType, fireworkDesign, sparksType);
+        pushFireworksData(newFireworkData);
     }
 
     // 現在開いているのが当選者発表画面なら、当選者の作成した花火を一斉打ち上げする関数
