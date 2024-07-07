@@ -9,7 +9,7 @@ import { getFireworks } from "../utils/apiClient";
 // contextに渡すデータの型
 type MultiFireworksContent = {
     canvasRef: React.RefObject<HTMLCanvasElement>;
-    animateFirework(boothId: string, fireworkType: number, fireworkDesign: Blob | null, sparksType: number): Promise<void>;
+    animateFirework(boothId: string | null, fireworkType: number, fireworkDesign: Blob | null, sparksType: number): Promise<void>;
     pageMode: string | null;
     setPageMode: React.Dispatch<React.SetStateAction<string | null>>;
     pushFireworksData(data: FireworkTypeInfo): void;

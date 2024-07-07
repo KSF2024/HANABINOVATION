@@ -89,8 +89,12 @@ export function SocketProvider({children}: {children: ReactNode}){
                     showFirework(response.data);
                     break;
                 case "draw-lottery":
+                    // 当選者の花火を、当選者発表画面に打ち上げる
+                    drawLottery(response.data);
                     break;
                 case "send-fireworks":
+                    // 送信された花火を、花火受信画面に打ち上げる
+                    sendFireworks(response.data);
                     break;
                 default:
                     break;
@@ -106,10 +110,22 @@ export function SocketProvider({children}: {children: ReactNode}){
         if(pageMode !== "show-fireworks") return;
         console.log("show firework")
         const boothId: string = data.boothId;
-        const fireworkType: number = data.fireworkType;
-        const fireworkDesign: Blob | null = data.fireworkDesign || null;
-        const sparksType: number = data.sparksType;
+        const fireworkType: number = data.fireworksData.fireworkType;
+        const fireworkDesign: Blob | null = data.fireworksData.fireworkDesign || null;
+        const sparksType: number = data.fireworksData.sparksType;
         animateFirework(boothId, fireworkType, fireworkDesign, sparksType);
+    }
+
+    // 現在開いているのが当選者発表画面なら、当選者の作成した花火を一斉打ち上げする関数
+    function drawLottery(data: any){
+        if(pageMode !== "announce-winners") return;
+        console.log("draw lottery")
+    }
+
+    // 現在開いているのが花火受信画面なら、花火送信機能で送信された花火を一斉打ち上げする関数
+    function sendFireworks(data: any){
+        if(pageMode !== "simultaneously-raise") return;
+        console.log("send fireworks")
     }
 
 
