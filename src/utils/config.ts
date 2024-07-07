@@ -35,12 +35,21 @@ type SchoolInfo = {
     fireworksImages: {0: string, 1: string, 2: string}; // 花火の画像
     positionX: number; // マップ上のブースの位置(横軸)
     positionY: number; // マップ上のブースの位置(縦軸)
+    MapData: MapInfo;
 }
 
 type OpencampusDate = {
     url: string; //オープンキャンパスのurl
     date: string; //オープンキャンパスの日付
 }[];
+
+type MapInfo = {
+    positionPinX: number;
+    positionPinY: number;
+    schoolNameX: number;
+    schoolNameY: number;
+    schoolNameWidth: number;
+}
 
 // 各学校の設定データ
 export const SCHOOL_DATA: { [boothId: string]: SchoolInfo } = {
@@ -163,3 +172,63 @@ export const OPENCAMPUS_DATE: OpencampusDate[] = [
         {url: "https://kbc.kawahara.ac.jp/oc/2024-06-22/", date: "6/22"}
     ]
 ];
+
+export const mapData: {[schoolName:string]:MapInfo} = {
+    "kawaharaDenshi": {
+        positionPinX: 0,
+        positionPinY: 0,
+        schoolNameX: 0,
+        schoolNameY: 0,
+        schoolNameWidth: 0
+    },
+    "kawaharaGaigoKankouSeika": {
+        positionPinX: 0,
+        positionPinY: 0,
+        schoolNameX: 0,
+        schoolNameY: 0,
+        schoolNameWidth: 0
+    },
+    "kawaharaIryou": {
+        positionPinX: 0,
+        positionPinY: 0,
+        schoolNameX: 0,
+        schoolNameY: 0,
+        schoolNameWidth: 0
+    },
+    "kawaharaIryouHukushi": {
+        positionPinX: 0,
+        positionPinY: 0,
+        schoolNameX: 0,
+        schoolNameY: 0,
+        schoolNameWidth: 0
+    },
+    "kawaharaBeauty": {
+        positionPinX: 0,
+        positionPinY: 0,
+        schoolNameX: 0,
+        schoolNameY: 0,
+        schoolNameWidth: 0
+    },
+    "kawaharaDesign": {
+        positionPinX: 0,
+        positionPinY: 0,
+        schoolNameX: 0,
+        schoolNameY: 0,
+        schoolNameWidth: 0
+    },
+    "matsuyamaDesigner": {
+        positionPinX: 0,
+        positionPinY: 0,
+        schoolNameX: 0,
+        schoolNameY: 0,
+        schoolNameWidth: 0
+    },
+    "kawaharaIryouNiihama": {
+        positionPinX: 0,
+        positionPinY: 0,
+        schoolNameX: 0,
+        schoolNameY: 0,
+        schoolNameWidth: 0
+    }
+}
+
