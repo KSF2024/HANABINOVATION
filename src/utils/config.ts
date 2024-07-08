@@ -112,7 +112,7 @@ export const SCHOOL_DATA: { [boothId: string]: SchoolInfo } = {
     },
     "HDE5W4": {
         schoolName: "松山デザイナー専門学校",
-        color: "#00FF00",
+        color: "#0000FF",
         fireworksImages: [image9_1, image9_2, image9_3],
         positionX: 0,
         positionY: 0
