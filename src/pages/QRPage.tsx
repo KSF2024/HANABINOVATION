@@ -75,7 +75,8 @@ export default function QRPage(){
                     height: "100%",
                     textAlign: "center",
                     position: "relative",
-                    overflow: "hidden"
+                    overflow: "hidden",
+                    backgroundColor: "black"
                 }}
             >
                 <div 
