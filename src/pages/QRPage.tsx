@@ -16,6 +16,7 @@ export default function QRPage(){
     const [qrText, setQrText] = useState<string>("");
     const [qrData, setQrData] = useState<QrData>(null);
     const navigate = useNavigate();
+    const [ scanKey, setScanKey ] = useState<number>(0);
 
     const handleScan = (data: any) => {
         if (data) {
@@ -54,7 +55,7 @@ export default function QRPage(){
             video.style.width = "100%";
             video.style.height = "100%";
         }
-    }, []);
+    }, [qrData]);
 
     useEffect(() => {
         const gottenQrData: QrData = getQrData(qrText);
@@ -87,7 +88,8 @@ export default function QRPage(){
                     }}
                 >
                     <QRScanner
-                        delay={300}
+                        key={scanKey}
+                        delay={3000}
                         onError={handleError}
                         onScan={handleScan}
                         style={{width: "100%", height: "100vh",}}
@@ -141,7 +143,7 @@ export default function QRPage(){
                                     paddingTop: "1rem",
                                     display: "flex",
                                     justifyContent: "center",
-                                    gap: "1.5rem",
+                                    gap: "1.5rem"
                                 }}
                             >
                                 <Button 
@@ -155,7 +157,7 @@ export default function QRPage(){
                                     はい
                                 </Button>
                                 <Button
-                                    onClick={() => {setQrData(null)}}
+                                    onClick={() => {setQrData(null), setScanKey(scanKey + 1), setQrText("")}}
                                     sx={{
                                         border: "0.1rem solid white",
                                         backgroundColor: "#098FF0",
