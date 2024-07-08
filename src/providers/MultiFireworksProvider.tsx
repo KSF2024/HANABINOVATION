@@ -9,9 +9,10 @@ import { getFireworks } from "../utils/apiClient";
 // contextに渡すデータの型
 type MultiFireworksContent = {
     canvasRef: React.RefObject<HTMLCanvasElement>;
-    animateFirework(boothId: string, fireworkType: number, fireworkDesign: Blob | null, sparksType: number): Promise<void>;
+    animateFirework(boothId: string | null, fireworkType: number, fireworkDesign: Blob | null, sparksType: number): Promise<void>;
     pageMode: string | null;
     setPageMode: React.Dispatch<React.SetStateAction<string | null>>;
+    pushFireworksData(data: FireworkTypeInfo): void;
 };
 
 /* Provider */
@@ -19,7 +20,8 @@ const initialData: MultiFireworksContent = {
     canvasRef: {} as React.RefObject<HTMLCanvasElement>,
     animateFirework: () => Promise.resolve(),
     pageMode: null,
-    setPageMode: () => {}
+    setPageMode: () => {},
+    pushFireworksData: () => {}
 };
 
 export const MultiFireworksContext = createContext<MultiFireworksContent>(initialData);
@@ -603,6 +605,13 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
         }, interval);
     };
 
+    // 花火大会用データを追加する関数
+    function pushFireworksData(data: FireworkTypeInfo){
+        setFireworksData(prev => {
+            return prev ? [...prev, data] : [data];
+        });
+    }
+
     /* useEffect等 */
     // 花火大会用データを初期化する関数
     useEffect(() => {
@@ -696,7 +705,8 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
                 canvasRef,
                 animateFirework,
                 pageMode,
-                setPageMode
+                setPageMode,
+                pushFireworksData
             }}
         >
             {children}
