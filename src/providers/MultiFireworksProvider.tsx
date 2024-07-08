@@ -49,7 +49,7 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
 
     // 花火大会用花火データ
     const [fireworksData, setFireworksData] = useState<FireworkTypeInfo[] | null>(null);
-    const intervalRef = useRef<NodeJS.Timeout | null>(null);
+    const intervalRef = useRef<number | null>(null);
 
     /* その他関数定義 */
     // 花火の打ち上げ初期位置・爆発中心位置を求める関数
@@ -602,13 +602,13 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
 
         const interval = getRandomInterval();
 
-        intervalRef.current = setTimeout(() => {
+        intervalRef.current = Number(setTimeout(() => {
             // 指定された関数を実行する
             func();
 
             // 再度ランダムな間隔でタイマーをセット
             startRandomInterval<T>(func);
-        }, interval);
+        }, interval));
     };
 
     // 花火大会用データを追加する関数
