@@ -1,7 +1,7 @@
-import { ReactNode, createContext, useRef, useContext, useState } from 'react';
+import { ReactNode, createContext, useRef, useContext, useState } from "react";
 import { saveAs } from "file-saver";
-import { CameraContext } from './CameraProvider';
-import { FireworksContext } from './FireworkProvider';
+import { CameraContext } from "./CameraProvider";
+import { FireworksContext } from "./FireworkProvider";
 
 
 /* 型定義 */
@@ -65,7 +65,7 @@ export function CaptureProvider({children}: {children: ReactNode}){
 
     // 現在の撮影用canvasをbase64として出力する関数
     function convertCanvasToBase64(canvasElement: HTMLCanvasElement): string | null{
-        const dataURL: string = canvasElement.toDataURL('image/png');
+        const dataURL: string = canvasElement.toDataURL("image/png");
         return dataURL;
     }
 
@@ -96,7 +96,7 @@ export function CaptureProvider({children}: {children: ReactNode}){
         canvasElement.height = canvasHeight;
 
         // 作成したcanvas要素にvideo要素の描画を貼り付けるためのctxを取得する
-        const canvasCtx: CanvasRenderingContext2D | null = canvasElement.getContext('2d');
+        const canvasCtx: CanvasRenderingContext2D | null = canvasElement.getContext("2d");
         if(!canvasCtx) return null;
 
         // アスペクト比や、カメラの位置を調整する
@@ -125,7 +125,7 @@ export function CaptureProvider({children}: {children: ReactNode}){
         // DataURLからBlobを作成
         const blob: Blob = dataURLToBlob(dataURL);
 
-        // 'file-saver'ライブラリを使ってダウンロード
+        // "file-saver"ライブラリを使ってダウンロード
         saveAs(blob, "screenshot.png");
     };
 

@@ -1,8 +1,8 @@
-import { createContext, ReactNode, useState, useEffect, useRef, useContext } from 'react';
-import { ImageInfo, RisingAfterImage, RisingStars, Size, Spark, Star } from '../utils/types';
-import { generateStars, generateSparks, drawStar, drawSpark } from '../utils/hanabi';
-import { DataContext } from './DataProvider';
-import { calculateDistance, findIntersection, getImageData, hexToRgba, sleep, getBoothColor, getImageSrc } from '../utils/modules';
+import { createContext, ReactNode, useState, useEffect, useRef, useContext } from "react";
+import { ImageInfo, RisingAfterImage, RisingStars, Size, Spark, Star } from "../utils/types";
+import { generateStars, generateSparks, drawStar, drawSpark, initializeStars } from "../utils/hanabi";
+import { DataContext } from "./DataProvider";
+import { calculateDistance, findIntersection, getImageData, hexToRgba, sleep, getBoothColor, getImageSrc } from "../utils/modules";
 
 /* 型定義 */
 // contextに渡すデータの型
@@ -139,14 +139,6 @@ export function FireworksProvider({children}: {children: ReactNode}){
         }
     }
 
-    // 花火の星データ(花火が爆発した後)から、アニメーション開始時の花火の星(中央に集合した状態)のデータを取得する関数
-    function initializeStars(stars: Star[], initialX: number, initialY: number): Star[]{
-        return stars.map((star) => {
-            return {...star, x: initialX, y: initialY}
-        });
-    }
-
-
     /* 花火(Spark)用関数定義 */
     // 火花を爆発させるアニメーション
     function burstSparks(initialX: number, initialY: number){
@@ -179,15 +171,6 @@ export function FireworksProvider({children}: {children: ReactNode}){
                 const dy: number = Math.sin(spark.direction + launchAngle) * speed;
                 let newX: number = spark.x + dx;
                 let newY: number = spark.y + dy;
-
-                // 新しい火花の位置が最終位置を超えているなら、最終位置にグリッドする
-                // const newDistance: number = Math.sqrt(Math.pow(initialX - newX, 2) + Math.pow((initialY - newY), 2)); // 中心点からの距離
-                // if(newDistance >= goalDistance){
-                //     const goalX: number = initialX + Math.cos(spark.direction) * goalDistance;
-                //     const goalY: number = initialY + Math.sin(spark.direction) * goalDistance;
-                //     newX = goalX;
-                //     newY = goalY;
-                // }
 
                 if(spark.sparkType === 1){
                     // 線型火花の残像を追加する
@@ -444,15 +427,6 @@ export function FireworksProvider({children}: {children: ReactNode}){
                     const dy: number = Math.sin(spark.direction + launchAngle) * speed;
                     let newX: number = spark.x + dx;
                     let newY: number = spark.y + dy;
-
-                    // 新しい火花の位置が最終位置を超えているなら、最終位置にグリッドする
-                    // const newDistance: number = Math.sqrt(Math.pow(initialX - newX, 2) + Math.pow((initialY - newY), 2)); // 中心点からの距離
-                    // if(newDistance >= goalDistance){
-                    //     const goalX: number = initialX + Math.cos(spark.direction) * goalDistance;
-                    //     const goalY: number = initialY + Math.sin(spark.direction) * goalDistance;
-                    //     newX = goalX;
-                    //     newY = goalY;
-                    // }
 
                     if(spark.sparkType === 1){
                         // 線型火花の残像を追加する
@@ -718,7 +692,7 @@ export function FireworksProvider({children}: {children: ReactNode}){
         // Canvasコンテキストを取得
         const canvas = canvasRef.current;
         if (!canvas) return;
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext("2d");
         if (!ctx) return;
 
         // Canvasをクリア
@@ -750,7 +724,7 @@ export function FireworksProvider({children}: {children: ReactNode}){
         if(fireworkPhase === 0){
             const canvas = canvasRef.current;
             if (!canvas) return;
-            const ctx = canvas.getContext('2d');
+            const ctx = canvas.getContext("2d");
             if (!ctx) return;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             if(!imageData) return;

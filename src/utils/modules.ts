@@ -54,8 +54,8 @@ export const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms));
 export async function getImageData(image: string): Promise<ImageInfo>{
     return new Promise<ImageInfo>((resolve, _rejects) => {
         // canvas要素を作成
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
 
         // 画像を読み込み、canvasに描画
         const img = new Image();
@@ -138,6 +138,26 @@ export async function getAllImageData(boothId: string, setupList: number[]): Pro
 // canvas要素からctxを取得する関数
 export function getCtxFromCanvas(canvasElement: HTMLCanvasElement | null): CanvasRenderingContext2D  | null{
     if (!canvasElement) return null;;
-    const ctx = canvasElement.getContext('2d');
+    const ctx = canvasElement.getContext("2d");
     return ctx;
+}
+
+// BoxAがBoxBに収まるようなランダムな位置を取得する関数
+export function getRandomPositionInBox(innerWidth: number, outerWidth: number): number{
+    // x座標の最小値と最大値を計算
+    const minX = innerWidth / 2;
+    const maxX = outerWidth - innerWidth / 2;
+
+    // 最小値と最大値の間でランダムなx座標を生成
+    const randomX = Math.random() * (maxX - minX) + minX;
+
+    return randomX;
+}
+
+// mp3を再生する関数
+export function playSound(soundSrc: string){
+    const audio = new Audio(soundSrc);
+    audio.play().catch(error => {
+        console.error('サウンドの再生に失敗しました:', error);
+    });
 }

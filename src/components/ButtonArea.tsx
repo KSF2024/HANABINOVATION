@@ -1,22 +1,27 @@
 import { useContext, useEffect } from "react";
 import { CameraContext } from "./../providers/CameraProvider";
 import DoubleCircleIcon from "./DoubleCircleIcon";
-import { Theme } from '@mui/material/styles';
-import { useMediaQuery } from '@mui/material';
-import IconButton from '@mui/material/IconButton';
-import CachedIcon from '@mui/icons-material/Cached';
-import CameraRear from '@mui/icons-material/CameraRear';
-import CameraFront from '@mui/icons-material/CameraFront';
-import Cameraswitch from '@mui/icons-material/Cameraswitch';
+import { Theme } from "@mui/material/styles";
+import { useMediaQuery } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import CachedIcon from "@mui/icons-material/Cached";
+import CameraRear from "@mui/icons-material/CameraRear";
+import CameraFront from "@mui/icons-material/CameraFront";
+import Cameraswitch from "@mui/icons-material/Cameraswitch";
 import { ICON_SIZE, ICON_COLOR, BUTTON_MARGIN } from "./../pages/PhotoPage";
 import { FireworksContext } from "../providers/FireworkProvider";
 import { DataContext } from "../providers/DataProvider";
 import { CaptureContext } from "../providers/CaptureProvider";
 import { ModalContext } from "../providers/ModalProvider";
+import { useNavigate } from "react-router-dom";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import HomeIcon from "@mui/icons-material/Home";
 
 // ボタン類のコンポーネント
 export default function ButtonArea({theme}: {theme: Theme}){
     /* useState等 */
+    const navigate = useNavigate();
+
     // アウトカメラ/インカメラを切り替えるためのcontext
     const {
         videoRef,
@@ -51,7 +56,8 @@ export default function ButtonArea({theme}: {theme: Theme}){
 
     // ブースIDを取得するためのcontext
     const {
-        boothId
+        boothId,
+        isPostedFirework
     } = useContext(DataContext);
 
 
@@ -96,82 +102,134 @@ export default function ButtonArea({theme}: {theme: Theme}){
 
 
     return (
-        <div
-            style={{
-                width: "100%",
-                display: "flex",
-                justifyContent: isMdScreen ? "center" : "space-evenly",
-                position: "absolute",
-                bottom: "1rem",
-                zIndex: "10"
-            }}
-        >
-            <IconButton
+        <>
+            <div
                 style={{
-                    margin: isMdScreen ?`0 ${BUTTON_MARGIN}` : "0"
-                }}
-                aria-label="reset-view"
-                color="primary"
-                onClick={() =>{
-                    if(isTakingPhoto.current) return; // 撮影ボタンの処理中なら、処理をやめる
-                    toggleFireworksPosition();
+                    width: "calc(100% - 2rem)",
+                    display: "flex",
+                    justifyContent: isPostedFirework ? "space-between" : "left",
+                    position: "absolute",
+                    top: "0",
+                    zIndex: "10",
+                    padding: "1rem"
                 }}
             >
-                <CachedIcon
+                <IconButton
                     style={{
-                        width: ICON_SIZE,
-                        height: ICON_SIZE
+                        margin: isMdScreen ? `0 ${BUTTON_MARGIN}` : "0"
                     }}
-                />
-            </IconButton>
-            <IconButton
+                    aria-label="back"
+                    color="primary"
+                    onClick={() =>{
+                        if(isTakingPhoto.current) return; // 撮影ボタンの処理中なら、処理をやめる
+                        navigate(`/${boothId}/create-firework/`);
+                    }}
+                >
+                    <ArrowBackIosNewIcon
+                        style={{
+                            width: `calc(${ICON_SIZE} * 0.8)`,
+                            height: `calc(${ICON_SIZE} * 0.8)`,
+                            opacity: 0.7
+                        }}
+                    />
+                </IconButton>
+                {isPostedFirework && (<IconButton
+                    style={{
+                        margin: isMdScreen ? `0 ${BUTTON_MARGIN}` : "0"
+                    }}
+                    aria-label="back"
+                    color="primary"
+                    onClick={() =>{
+                        if(isTakingPhoto.current) return; // 撮影ボタンの処理中なら、処理をやめる
+                        navigate(`/${boothId}/show-fireworks/`);
+                    }}
+                >
+                    <HomeIcon
+                        style={{
+                            width: `calc(${ICON_SIZE} * 0.8)`,
+                            height: `calc(${ICON_SIZE} * 0.8)`,
+                            opacity: 0.7
+                        }}
+                    />
+                </IconButton>)}
+            </div>
+            <div
                 style={{
-                    margin: isMdScreen ?`0 ${BUTTON_MARGIN}` : "0"
-                }}
-                aria-label="capture-display"
-                color="primary"
-                onClick={handleTakePhotoButton}
-            >
-                <DoubleCircleIcon
-                    width={ICON_SIZE}
-                    height={ICON_SIZE}
-                    color={ICON_COLOR}
-                />
-            </IconButton>
-            <IconButton
-                style={{
-                    margin: isMdScreen ?`0 ${BUTTON_MARGIN}` : "0"
-                }}
-                aria-label="switch-camera"
-                color="primary"
-                disabled={!enableBothCamera}
-                onClick={() => {
-                    switchCameraFacing(!isTakingPhoto.current);
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: isMdScreen ? "center" : "space-evenly",
+                    position: "absolute",
+                    bottom: "1rem",
+                    zIndex: "10"
                 }}
             >
-                {(cameraFacing === "out") ? (
-                    <CameraFront
+                <IconButton
+                    style={{
+                        margin: isMdScreen ?`0 ${BUTTON_MARGIN}` : "0"
+                    }}
+                    aria-label="reset-view"
+                    color="primary"
+                    onClick={() =>{
+                        if(isTakingPhoto.current) return; // 撮影ボタンの処理中なら、処理をやめる
+                        toggleFireworksPosition();
+                    }}
+                >
+                    <CachedIcon
                         style={{
                             width: ICON_SIZE,
                             height: ICON_SIZE
                         }}
                     />
-                ): ((cameraFacing === "in") ? (
-                    <CameraRear
-                        style={{
-                            width: ICON_SIZE,
-                            height: ICON_SIZE
-                        }}
+                </IconButton>
+                <IconButton
+                    style={{
+                        margin: isMdScreen ?`0 ${BUTTON_MARGIN}` : "0"
+                    }}
+                    aria-label="capture-display"
+                    color="primary"
+                    onClick={handleTakePhotoButton}
+                >
+                    <DoubleCircleIcon
+                        width={ICON_SIZE}
+                        height={ICON_SIZE}
+                        color={ICON_COLOR}
                     />
-                ): (
-                    <Cameraswitch
-                        style={{
-                            width: ICON_SIZE,
-                            height: ICON_SIZE
-                        }}
-                    />
-                ))}
-            </IconButton>
-        </div>
+                </IconButton>
+                <IconButton
+                    style={{
+                        margin: isMdScreen ?`0 ${BUTTON_MARGIN}` : "0"
+                    }}
+                    aria-label="switch-camera"
+                    color="primary"
+                    disabled={!enableBothCamera}
+                    onClick={() => {
+                        switchCameraFacing(!isTakingPhoto.current);
+                    }}
+                >
+                    {(cameraFacing === "out") ? (
+                        <CameraFront
+                            style={{
+                                width: ICON_SIZE,
+                                height: ICON_SIZE
+                            }}
+                        />
+                    ): ((cameraFacing === "in") ? (
+                        <CameraRear
+                            style={{
+                                width: ICON_SIZE,
+                                height: ICON_SIZE
+                            }}
+                        />
+                    ): (
+                        <Cameraswitch
+                            style={{
+                                width: ICON_SIZE,
+                                height: ICON_SIZE
+                            }}
+                        />
+                    ))}
+                </IconButton>
+            </div>
+        </>
     );
 };
