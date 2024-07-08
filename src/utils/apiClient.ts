@@ -124,6 +124,7 @@ export async function sendFireworks(userId: string): Promise<AxiosResponse | nul
 
     try{
         const response = await axios.post(url, data);
+        console.log("花火データを送信しました");
         return response;
     }catch(error){
         return null;

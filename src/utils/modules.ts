@@ -153,3 +153,11 @@ export function getRandomPositionInBox(innerWidth: number, outerWidth: number): 
 
     return randomX;
 }
+
+// mp3を再生する関数
+export function playSound(soundSrc: string){
+    const audio = new Audio(soundSrc);
+    audio.play().catch(error => {
+        console.error('サウンドの再生に失敗しました:', error);
+    });
+}

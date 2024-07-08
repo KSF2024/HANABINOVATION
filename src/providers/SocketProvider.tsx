@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useContext, useEffect, useRef, useState } from 'react';
 import { WS_ENDPOINT } from '../utils/apiClient';
 import { MultiFireworksContext } from './MultiFireworksProvider';
-import { FireworkData, FireworkTypeInfo } from '../utils/types';
+import { FireworkData, FireworksData, FireworkTypeInfo } from '../utils/types';
 
 /* 型定義 */
 // contextに渡すデータの型
@@ -143,8 +143,9 @@ export function SocketProvider({children}: {children: ReactNode}){
         if(pageMode !== "simultaneously-raise") return;
         console.log("send fireworks");
 
-        const fireworks: FireworkTypeInfo[] = Object.keys(data).map(boothId => {
-            const firework: FireworkData = data[boothId];
+        const fireworksData: FireworksData = data.fireworksData;
+        const fireworks: FireworkTypeInfo[] = Object.keys(fireworksData).map(boothId => {
+            const firework: FireworkData = fireworksData[boothId];
             const {
                 fireworkType,
                 fireworkDesign,

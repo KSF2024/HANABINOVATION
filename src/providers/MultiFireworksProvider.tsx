@@ -2,8 +2,10 @@ import { createContext, ReactNode, useEffect, useRef, useState } from "react";
 import { FireworkTypeInfo, Point, RisingAfterImage, RisingStars, Spark, Star } from "../utils/types";
 import { drawSpark, drawStar, generateFirework, generateRisingStars, initializeStars } from "../utils/hanabi";
 import { ulid } from "ulidx";
-import { getRandomPositionInBox, sleep } from "../utils/modules";
+import { getRandomPositionInBox, playSound, sleep } from "../utils/modules";
 import { getFireworks } from "../utils/apiClient";
+import raiseSE from "./../audio/打ち上げ花火1.mp3";
+import burstSE from "./../audio/打ち上げ花火2.mp3";
 
 /* 型定義 */
 // contextに渡すデータの型
@@ -29,9 +31,9 @@ const initialData: MultiFireworksContent = {
 export const MultiFireworksContext = createContext<MultiFireworksContent>(initialData);
 
 // 花火大会で、花火を打ち上げるランダムな間隔を取得する関数
-function getRandomInterval(): number{
+function getRandomInterval(minMs: number = 500, maxMs: number = 3000): number{
     // ランダムな秒数（0.5秒から3秒）
-    return Math.floor(Math.random() * 3000) + 500;
+    return Math.floor(Math.random() * maxMs) + minMs;
 }
 
 // 花火やユーザーの設定データを管理するProvider
@@ -100,7 +102,7 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
 
     /* 花火アニメーション用関数定義 */
     // 花火を打ち上げ->爆発->消滅させるアニメーションを実行する関数
-    async function animateFirework(boothId: string | null, fireworkType: number, fireworkDesign: Blob | null, sparksType: number){
+    async function animateFirework(boothId: string | null, fireworkType: number, fireworkDesign: Blob | null, sparksType: number, enableSound: number = 0){
         // 位置データを初期化する
         const {
             initialRiseX,
@@ -120,9 +122,11 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
         const risingStars: RisingStars = generateRisingStars(boothId, initialRiseX, initialRiseY, initialBurstX, initialBurstY);
 
         // 花火を打ち上げる
+        if(enableSound === 2) playSound(raiseSE);
         await raiseSparks(fireworkId, risingStars, initialRiseY);
 
         // 花火を爆発させる
+        if(enableSound) playSound(burstSE);
         await burstFirework(fireworkId, stars, sparks, initialBurstX, initialBurstY);
 
         await sleep(100);
@@ -615,12 +619,12 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
     }
 
     // intervalを一時中断し、別の処理を実行する関数
-    async function interruptInterval<T>(func: () => T){
+    async function interruptInterval<T>(func: () => T, interval: number = 3000){
         if(!intervalRef.current) return;
         clearInterval(intervalRef.current); // 既存のタイマーをクリア
         await sleep(500);
         func(); // 別の処理を実行する
-        await sleep(5000);
+        await sleep(interval);
         // 打ち上げアニメーションのループを再開する
         startRandomInterval<void>(animateRandomFirework);
     }
@@ -651,8 +655,8 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
     async function interruptFireworks(array: FireworkTypeInfo[]){
         // 受け取った花火データを一斉に打ち上げる関数
         function raiseSimultaneously(){
-            array.forEach(data => {
-                animateFirework(data.boothId, data.fireworkType, data.fireworkDesign, data.sparksType);
+            array.forEach((data, index) => {
+                animateFirework(data.boothId, data.fireworkType, data.fireworkDesign, data.sparksType, (index === 0) ? 2 : 1);
             });
         }
 
@@ -665,6 +669,7 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
     useEffect(() => {
         switch(pageMode){
             case "show-fireworks":
+            case "simultaneously-raise":
                 initializeFireworksData();
                 break;
             default:
