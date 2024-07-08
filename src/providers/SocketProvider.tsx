@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useContext, useEffect, useRef, useState } from 'react';
 import { WS_ENDPOINT } from '../utils/apiClient';
 import { MultiFireworksContext } from './MultiFireworksProvider';
-import { FireworkTypeInfo } from '../utils/types';
+import { FireworkData, FireworkTypeInfo } from '../utils/types';
 
 /* 型定義 */
 // contextに渡すデータの型
@@ -27,7 +27,8 @@ export function SocketProvider({children}: {children: ReactNode}){
     const {
         pageMode,
         animateFirework,
-        pushFireworksData
+        pushFireworksData,
+        interruptFireworks
     } = useContext(MultiFireworksContext);
 
     /* useEffect */
@@ -118,15 +119,16 @@ export function SocketProvider({children}: {children: ReactNode}){
 
     // 現在開いているのが花火大会画面なら、花火撮影機能で撮影された花火を即時画面上に打ち上げる関数
     function showFirework(data: any){
-        if(pageMode !== "show-fireworks") return;
-        console.log("show firework")
+        if(pageMode !== "show-fireworks" && pageMode !== "simultaneously-raise") return;
+        if(pageMode === "show-fireworks") console.log("show firework")
         const boothId: string = data.boothId;
-        const fireworkType: number = data.fireworksData.fireworkType;
-        const fireworkDesign: Blob | null = data.fireworksData.fireworkDesign || null;
-        const sparksType: number = data.fireworksData.sparksType;
+        const firework: FireworkData = data.fireworkData;
+        const fireworkType: number = firework.fireworkType;
+        const fireworkDesign: Blob | null = firework.fireworkDesign || null;
+        const sparksType: number = firework.sparksType;
         const newFireworkData: FireworkTypeInfo = { boothId, fireworkType, fireworkDesign, sparksType };
 
-        animateFirework(boothId, fireworkType, fireworkDesign, sparksType);
+        if(pageMode === "show-fireworks") animateFirework(boothId, fireworkType, fireworkDesign, sparksType);
         pushFireworksData(newFireworkData);
     }
 
@@ -139,9 +141,26 @@ export function SocketProvider({children}: {children: ReactNode}){
     // 現在開いているのが花火受信画面なら、花火送信機能で送信された花火を一斉打ち上げする関数
     function sendFireworks(data: any){
         if(pageMode !== "simultaneously-raise") return;
-        console.log("send fireworks")
-    }
+        console.log("send fireworks");
 
+        const fireworks: FireworkTypeInfo[] = Object.keys(data).map(boothId => {
+            const firework: FireworkData = data[boothId];
+            const {
+                fireworkType,
+                fireworkDesign,
+                sparksType
+            } = firework;
+            return {
+                boothId,
+                fireworkType,
+                fireworkDesign: fireworkDesign || null,
+                sparksType
+            };
+        });
+
+        // 花火大会モードを一時中断し、花火送信機能で送信された花火を一斉打ち上げする
+        interruptFireworks(fireworks);
+    }
 
     return (
         <SocketContext.Provider
