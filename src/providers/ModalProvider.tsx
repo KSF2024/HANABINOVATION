@@ -1,5 +1,5 @@
-import React, { createContext, ReactNode } from 'react';
-import { useModal, ModalWrapperProps } from 'react-hooks-use-modal';
+import { createContext, ReactNode } from "react";
+import { useModal, ModalWrapperProps } from "react-hooks-use-modal";
 
 type ModalData = {
     Modal: React.FC<ModalWrapperProps<Record<string, unknown>>>,
@@ -16,7 +16,7 @@ const initialData: ModalData = {
 export const ModalContext = createContext<ModalData>(initialData);
 
 export function ModalProvider({children}: {children: ReactNode}){
-    const [Modal, openModal, closeModal, _isOpenModal] = useModal('modal-root', {
+    const [Modal, openModal, closeModal, _isOpenModal] = useModal("modal-root", {
         preventScroll: true,
         focusTrapOptions : { 
             clickOutsideDeactivates : false

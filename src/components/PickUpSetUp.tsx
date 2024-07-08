@@ -3,16 +3,19 @@ import { DataContext } from "../providers/DataProvider";
 import { getAllImageData, getBoothColor, getCtxFromCanvas } from "../utils/modules";
 import { drawSpark, drawStar, generateSparks, generateStars } from "../utils/hanabi";
 import { Size, Spark, Star } from "../utils/types";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import { IconButton } from "@mui/material";
 
 const containerStyle: CSSProperties = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     width: "100%",
-    margin: "0.5rem 0"
+    margin: "0.3rem 0"
 };
 
-function getPrimaryCanvasSize(): number{
+export function getPrimaryCanvasSize(): number{
     const maxWidth: number = window.innerHeight * 0.4;
     const width: number = window.innerWidth * 0.8;
     if(maxWidth > width){
@@ -78,7 +81,7 @@ export default function PickUpSetUp(){
         newStars.forEach((star) => {
             star.x += initialX;
             star.y += initialY;
-            drawStar(ctx, star, 255, scale);
+            drawStar(ctx, star, 255, {scale});
         })
     }
 
@@ -228,6 +231,7 @@ export default function PickUpSetUp(){
             const ctx = getCtxFromCanvas(canvasElement);
             if(!ctx) return;
             if(!canvasElement) return;
+            ctx.clearRect(0, 0, secondaryCanvasSize, secondaryCanvasSize);
             previewFireworks(ctx, fireworkImages[index], secondaryCanvasSize, fireworkSize);
         });
     }, [fireworkImages]);
@@ -255,7 +259,7 @@ export default function PickUpSetUp(){
                 flexGrow: 1,
                 display: "flex",
                 flexDirection: "column",
-                justifyContent: "center",
+                justifyContent: "space-evenly",
                 alignItems: "center"
             }}
         >
@@ -271,6 +275,14 @@ export default function PickUpSetUp(){
             />
             <div>
                 <div style={containerStyle}>
+                    <IconButton
+                        style={{ margin: "1rem" }}
+                        onClick={() => {
+                            setFireworkType((prev) => (((prev - 1 + 3) % 3) || 3)  as 1 | 2 | 3);
+                        }}
+                    >
+                        <ArrowBackIosNewIcon/>
+                    </IconButton>
                     {[1, 2, 3].map((value, index) => (
                         <canvas
                             key={index}
@@ -286,8 +298,24 @@ export default function PickUpSetUp(){
                             onClick={() => setFireworkType(value as 1 | 2 | 3)}
                         />
                     ))}
+                    <IconButton
+                        style={{ margin: "1rem" }}
+                        onClick={() => {
+                            setFireworkType((prev) => (((prev + 1) % 3) || 3) as 1 | 2 | 3);
+                        }}
+                    >
+                        <ArrowForwardIosIcon/>
+                    </IconButton>
                 </div>
-                <div style={{...containerStyle, marginTop: "1.5rem"}}>
+                <div style={containerStyle}>
+                    <IconButton
+                            style={{ margin: "1rem" }}
+                            onClick={() => {
+                                setSparksType((prev) => ((prev - 1 + 3) % 3) as 0 | 1 | 2);
+                            }}
+                        >
+                        <ArrowBackIosNewIcon/>
+                    </IconButton>
                     {[0, 1, 2].map((value, index) => (
                         <canvas
                             key={index}
@@ -303,6 +331,14 @@ export default function PickUpSetUp(){
                             onClick={() => setSparksType(value as 0 | 1 | 2)}
                         />
                     ))}
+                    <IconButton
+                        style={{ margin: "1rem" }}
+                        onClick={() => {
+                            setSparksType((prev) => ((prev + 1) % 3) as 0 | 1 | 2);
+                        }}
+                    >
+                        <ArrowForwardIosIcon/>
+                    </IconButton>
                 </div>
             </div>
         </div>

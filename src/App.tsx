@@ -1,15 +1,15 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import PhotoPage from "./pages/PhotoPage";
-import HanabiPage from "./pages/HanabiPage";
+import FireworksDisplayPage from "./pages/FireworksDisplayPage";
 import MapPage from "./pages/MapPage";
 import QRPage from "./pages/QRPage";
-import LotteryPage from "./pages/LotteryPage";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import LotteryRouter from "./components/LotteryRouter";
 import DesignPage from "./pages/DesignPage";
 import ErrorPage from "./pages/ErrorPage";
-
-<ToastContainer />
+import FireworksReceiver from "./pages/FireworksReceiver";
+import SubmitFireworkPage from "./pages/SubmitFireworkPage";
 
 export default function App(){
     return (
@@ -19,10 +19,12 @@ export default function App(){
                     <Route path="/"/>
                     <Route path="/:boothId/create-firework" element={<DesignPage/>}/>
                     <Route path="/:boothId/capture-firework" element={<PhotoPage/>}/>
-                    <Route path="/firework-show" element={<HanabiPage/>}/>
-                    <Route path="/map" element={<MapPage/>} />
-                    <Route path="/scan-qr" element={<QRPage/>}/>
-                    <Route path="/enter-lottery" element={<LotteryPage/>}/>
+                    <Route path="/:boothId/show-fireworks" element={<FireworksDisplayPage/>}/>
+                    <Route path="/:boothId/map" element={<MapPage/>}/>
+                    <Route path="/:boothId/scan-qr" element={<QRPage/>}/>
+                    <Route path="/:boothId/enter-lottery" element={<LotteryRouter/>}/>
+                    <Route path="/receive-fireworks" element={<FireworksReceiver/>}/>
+                    <Route path="/send-fireworks" element={<SubmitFireworkPage/>}/>
                     <Route path="/*" element={<ErrorPage/>}/>
                 </Routes>
             </BrowserRouter>

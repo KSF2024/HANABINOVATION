@@ -1,5 +1,5 @@
-import { useContext } from 'react';
-import { FireworksContext } from '../providers/FireworkProvider';
+import { useContext } from "react";
+import { FireworksContext } from "../providers/FireworkProvider";
 
 export default function CaptureFireworkCanvas(){
     const { canvasRef } = useContext(FireworksContext);

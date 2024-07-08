@@ -1,5 +1,8 @@
-import { createContext, ReactNode, useState, useEffect } from 'react';
+import { createContext, ReactNode, useState, useEffect } from "react";
 import { ulid } from "ulidx";
+import { FireworksData, Registration } from "../utils/types";
+import { getFireworksByUserId, getRegistration } from "../utils/apiClient";
+import { BOOTH_ID_LIST } from "../utils/config";
 
 /* 型定義 */
 // contextに渡すデータの型
@@ -13,6 +16,12 @@ type DataContent = {
     setSparksType: React.Dispatch<React.SetStateAction<0 | 1 | 2>>;
     fireworkDesign: Blob | null;
     setFireworkDesign: React.Dispatch<React.SetStateAction<Blob | null>>;
+    isPostedFirework: boolean | null;
+    setIsPostedFirework: React.Dispatch<React.SetStateAction<boolean | null>>;
+    isApplied: boolean;
+    setIsApplied: React.Dispatch<React.SetStateAction<boolean>>;
+    canApply: boolean;
+    registration: Registration | null;
 };
 
 /* Provider */
@@ -25,7 +34,13 @@ const initialData: DataContent = {
     sparksType: 0,
     setSparksType: () => 0,
     fireworkDesign: null,
-    setFireworkDesign: () => null
+    setFireworkDesign: () => null,
+    isPostedFirework: null,
+    setIsPostedFirework: () => {},
+    isApplied: false,
+    setIsApplied: () => {},
+    canApply: false,
+    registration: null
 };
 
 export const DataContext = createContext<DataContent>(initialData);
@@ -37,6 +52,13 @@ export function DataProvider({children}: {children: ReactNode}){
     const [fireworkType, setFireworkType] = useState<0 | 1 | 2 | 3>(1);// 花火のセットアップの種類
     const [sparksType, setSparksType] = useState<0 | 1 | 2>(0); // 火花のセットアップの種類
     const [fireworkDesign, setFireworkDesign] = useState<Blob | null>(null); // ユーザーが作成した花火のオリジナルデザイン
+
+    // データベースのデータを管理する
+    const [ postedFireworksData, setPostedFireworksData ] = useState<FireworksData | null>(null);
+    const [ isPostedFirework, setIsPostedFirework ] = useState<boolean | null>(null);
+    const [ isApplied, setIsApplied ] = useState<boolean>(false);
+    const [ canApply, setCanApply ] = useState<boolean>(false);
+    const [ registration, setRegistration ] = useState<Registration | null>(null);
 
     // userIdを初期化する
     useEffect(() => {
@@ -54,6 +76,43 @@ export function DataProvider({children}: {children: ReactNode}){
         setUserId(result);
     }, []);
 
+    // userIdが初期化できたら、現在登録済みの花火データを取得する
+    useEffect(() => {
+        if(!userId) return;
+        console.log("userId: ", userId);
+
+        (async () => {
+            const fireworksData = await getFireworksByUserId(userId);
+            if(fireworksData){
+                // 現在登録済みの花火データを保存する
+                setPostedFireworksData(fireworksData);
+
+                // 全てのブースを回ったかどうかを取得する
+                const boothIdList: string[] = Object.keys(fireworksData); // 回ったことのあるブース一覧
+                const newCanApply: boolean = BOOTH_ID_LIST.every((value) => { // 全てのブースを回ったかどうか
+                    boothIdList.includes(value);
+                })
+                setCanApply(newCanApply);
+            }
+
+            // 応募済みかどうかを取得する
+            const registrationData = await getRegistration(userId);
+            if(registrationData){
+                setIsApplied(true); // 応募データが存在するなら、応募済みとして状態を管理する
+                setRegistration(registrationData);
+            }
+        })();
+    }, [userId]);
+
+    // userIdとboothIdと送信済み花火データが初期化出来たら、現在訪れているブースで花火を作成済みかどうかを取得する
+    useEffect(() => {
+        if(!userId) return;
+        if(!boothId) return;
+        if(!postedFireworksData) return;
+        const newIsPostedFirework: boolean = Boolean(postedFireworksData[boothId]);
+        setIsPostedFirework(newIsPostedFirework);
+    }, [userId, boothId, postedFireworksData]);
+
     return (
         <DataContext.Provider
             value={{
@@ -65,7 +124,13 @@ export function DataProvider({children}: {children: ReactNode}){
                 sparksType,
                 setSparksType,
                 fireworkDesign,
-                setFireworkDesign
+                setFireworkDesign,
+                isPostedFirework,
+                setIsPostedFirework,
+                isApplied,
+                setIsApplied,
+                canApply,
+                registration
             }}
         >
             {children}

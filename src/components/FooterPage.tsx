@@ -16,8 +16,8 @@ export default function FooterPage({ children }: {children: React.ReactNode}){
                     margin: 0
                 }}>
                     {children}
-                    <Footer/>
             </div>
+            <Footer/>
         </div>
     )
 }
