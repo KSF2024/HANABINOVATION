@@ -45,7 +45,7 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
 
     // 花火大会用花火データ
     const [fireworksData, setFireworksData] = useState<FireworkTypeInfo[] | null>(null);
-    const intervalRef = useRef<number | null>(null);
+    const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
     /* その他関数定義 */
     // 花火の打ち上げ初期位置・爆発中心位置を求める関数
