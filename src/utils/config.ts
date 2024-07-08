@@ -29,6 +29,8 @@ import image10_1 from "./../images/河原医療大学校 新居浜校/1.png";
 import image10_2 from "./../images/河原医療大学校 新居浜校/2.png";
 import image10_3 from "./../images/河原医療大学校 新居浜校/3.png";
 import kawahara from "./../images/kawahara.png";
+import openCampus1 from "./../images/オープンキャンパス/20240720OC_line-300x195.jpg";
+import openCampus2 from "./../images/オープンキャンパス/20240727OC_line-300x195.jpg";
 
 type SchoolInfo = {
     schoolName: string; // 学校名
@@ -38,10 +40,11 @@ type SchoolInfo = {
     positionY: number; // マップ上のブースの位置(縦軸)
 }
 
-type OpencampusDate = {
-    url: string; //オープンキャンパスのurl
-    date: string; //オープンキャンパスの日付
-}[];
+export type OpenCampusInfo = {
+    url: string; // オープンキャンパスのurl
+    title: string; // イベント名
+    imageSrc: string; // イメージ画像のパス
+};
 
 // サンプル花火データ
 export const SAMPLE_DATA = {
@@ -131,11 +134,17 @@ export const LOTTERY_EVENTS: string[] = [
     "7/14(日) 14:00～"
 ]
 
-export const OPENCAMPUS_DATE: OpencampusDate[] = [
-    [
-        {url: "https://kbc.kawahara.ac.jp/oc/2024-06-15/", date: "6/15"},
-    ],
-    [
-        {url: "https://kbc.kawahara.ac.jp/oc/2024-06-22/", date: "6/22"}
-    ]
+export const OPEN_CAMPUS_DATE: OpenCampusInfo[] = [
+    {
+        url: "https://kbc.kawahara.ac.jp/oc_event/20240720/",
+        // title: "7/20(土)夏フェスオープンキャンパス",
+        title: "7/20(土)",
+        imageSrc: openCampus1
+    },
+    {
+        url: "https://kbc.kawahara.ac.jp/oc_event/20240720/",
+        // title: "7/27(土)夏フェスオープンキャンパス",
+        title: "7/27(土)",
+        imageSrc: openCampus2
+    }
 ];

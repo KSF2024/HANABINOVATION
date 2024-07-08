@@ -1,9 +1,17 @@
 import { Box, Typography, Card, Button, CardContent, CardMedia } from "@mui/material"
-import { OPENCAMPUS_DATE } from "../utils/config"
-import OPENCAMPUSIMAGE from "./../images/opencampus_06_15.png"
+import { OPEN_CAMPUS_DATE } from "../utils/config"
+import { useContext, useEffect } from "react"
+import { sendFireworks } from "../utils/apiClient";
+import { DataContext } from "../providers/DataProvider";
 
 export default function SubmitFireworkPage(){
-    // TODO 花火データ送信処理
+    const { userId } = useContext(DataContext);
+
+    // ユーザーIDが取得できたら、花火受信画面に花火データを送信する
+    useEffect(() => {
+        if(!userId) return;
+        sendFireworks(userId);
+    }, [userId]);
 
     return <Box 
         sx={{
@@ -24,8 +32,8 @@ export default function SubmitFireworkPage(){
                 padding: "1rem"
             }}
         >
-            <div>花火データの送信、</div>
-            <div>ありがとうございました！</div>
+            花火データの送信、<br/>
+            ありがとうございました！
         </Typography>
 
         <Typography
@@ -69,25 +77,26 @@ export default function SubmitFireworkPage(){
                 display: "flex",
             }}
         >
-            {OPENCAMPUS_DATE.map((campusDate) =>(
-                <Card 
-                    sx={{
-                        width: "9.37rem",
-                        height: "7.93rem",
-                        marginRight: "0.68rem",
-                        padding: "0.3rem",
-                    }}
-                >
-                    <CardMedia
-                        component="img"
-                        image={OPENCAMPUSIMAGE}>
-                    </CardMedia>
-                    <a href={campusDate[0].url}>
-                        <CardContent>
-                            {campusDate[0].date}（土）オープンキャンパス
+            {OPEN_CAMPUS_DATE.map((campusDate, index) =>(
+                <a key={index} href={campusDate.url}>
+                    <Card 
+                        sx={{
+                            width: "9.37rem",
+                            height: "7.93rem",
+                            marginRight: "0.68rem",
+                            padding: "0.3rem",
+                        }}
+                    >
+                        <CardMedia
+                            component="img"
+                            image={campusDate.imageSrc}>
+                        </CardMedia>
+                        <CardContent sx={{p: 0, textAlign: "center"}}>
+                            {campusDate.title}
                         </CardContent>
-                    </a>
-                </Card>
+                        
+                    </Card>
+                </a>
             ))}
         </Box>
         <a href="https://kbc.kawahara.ac.jp/academics/it_cyber/">

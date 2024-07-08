@@ -13,7 +13,12 @@ export default function FireworksReceiver(){
     }, []);
 
     return (
-        <>
+        <div
+            style={{
+                width: "100%",
+                height: "100dvh"
+            }}
+        >
             <img
                 src={NightSky}
                 style={window.innerWidth > 960 ? {
@@ -37,6 +42,6 @@ export default function FireworksReceiver(){
                     left: "0"
                 }}
             />
-        </>
+        </div>
     )
 }

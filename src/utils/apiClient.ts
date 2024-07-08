@@ -116,3 +116,16 @@ export async function getRegistration(userId: string): Promise<Registration | nu
 
     return result;
 }
+
+// 花火データを送信する関数
+export async function sendFireworks(userId: string): Promise<AxiosResponse | null>{
+    const url: string = `${API_ENDPOINT}/sendFireworks`;
+    const data: { userId: string } = { userId };
+
+    try{
+        const response = await axios.post(url, data);
+        return response;
+    }catch(error){
+        return null;
+    }
+}
