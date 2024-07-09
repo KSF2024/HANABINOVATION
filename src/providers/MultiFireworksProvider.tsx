@@ -103,6 +103,7 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
     /* 花火アニメーション用関数定義 */
     // 花火を打ち上げ->爆発->消滅させるアニメーションを実行する関数
     async function animateFirework(boothId: string | null, fireworkType: number, fireworkDesign: string | null, sparksType: number, enableSound: number = 0){
+        if(boothId === "HF5W2T") console.log("data: ", {fireworkType, fireworkDesign, sparksType, enableSound})
         // 位置データを初期化する
         const {
             initialRiseX,
@@ -620,7 +621,7 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
     async function interruptInterval<T>(func: () => T, interval: number = 3000){
         if(!intervalRef.current) return;
         clearInterval(intervalRef.current); // 既存のタイマーをクリア
-        await sleep(500);
+        await sleep(1000);
         func(); // 別の処理を実行する
         await sleep(interval);
         // 打ち上げアニメーションのループを再開する
