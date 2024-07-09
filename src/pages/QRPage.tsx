@@ -5,7 +5,6 @@ import { useState, useEffect } from "react";
 import FooterPage from "../components/FooterPage";
 import { BOOTH_ID_LIST, SCHOOL_DATA } from "../utils/config";
 import { useNavigate } from 'react-router-dom';
-// import { toast } from "react-toastify";
 
 type QrData = { boothId: string, schoolName: string } | null;
 
@@ -15,9 +14,8 @@ function handleError(err: any) {
 
 export default function QRPage(){
     const [qrText, setQrText] = useState<string>("");
-    const [qrData, setQrData] = useState<QrData>(null);
+    const [qrData, setQrData] = useState<QrData | "send-fireworks">(null);
     const navigate = useNavigate();
-    const [ scanKey, setScanKey ] = useState<number>(0);
 
     const handleScan = (data: any) => {
         if (data) {
@@ -29,11 +27,12 @@ export default function QRPage(){
         navigate("/" + boothId + "/create-firework");
     };
 
-    function getQrData(qrText: string): QrData {
+    function getQrData(qrText: string): QrData | "send-fireworks" {
         const checkPattern: RegExp = /^https:\/\/hanabinovation\.org\/[^\/]+\/create-firework\/$/;
         const checkUrl: boolean = checkPattern.test(qrText);
+        const sendUrl: string = "https://hanabinovation.org/send-fireworks/"
 
-        if(checkUrl) {
+        if(checkUrl){
             const checkPatternBooth: RegExp = /^https:\/\/hanabinovation\.org\/([^\/]+)\/create-firework\/$/;
             const match = qrText.match(checkPatternBooth);
 
@@ -44,6 +43,8 @@ export default function QRPage(){
                     return { boothId: checkBoothId, schoolName: SCHOOL_DATA[checkBoothId].schoolName };
                 }
             }
+        }else if(qrText === sendUrl){
+
         }
         return null
     };
@@ -56,36 +57,15 @@ export default function QRPage(){
             video.style.width = "100%";
             video.style.height = "100%";
         }
-    }, [qrData]);
+    }, []);
 
     useEffect(() => {
-        const gottenQrData: QrData = getQrData(qrText);
+        const gottenQrData: QrData | "send-fireworks" = getQrData(qrText);
         if(gottenQrData) {
             setQrData(gottenQrData);
         }
         
     }, [qrText]);
-
-
-    // 外カメラを取得する
-    // const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
-    // useEffect(() => {
-    //     navigator.mediaDevices.enumerateDevices().then(devices => {
-    //         // toast.info(JSON.stringify(devices));
-    //         const videoDevices = devices.filter(device => device.kind === 'videoinput');
-    //         let backCamera = videoDevices[0]; // デフォルトで最初のカメラ
-
-    //         for (let device of videoDevices) {
-    //             if (device.label.toLowerCase().includes('back') || device.label.toLowerCase().includes('rear')) {
-    //                 backCamera = device;
-    //                 break;
-    //             }
-    //         }
-
-    //         // toast.info(JSON.stringify(backCamera));
-    //         setSelectedDeviceId(backCamera.deviceId);
-    //     });
-    // }, []);
 
     return(
         <FooterPage>
@@ -97,8 +77,7 @@ export default function QRPage(){
                     height: "100%",
                     textAlign: "center",
                     position: "relative",
-                    overflow: "hidden",
-                    backgroundColor: "black"
+                    overflow: "hidden"
                 }}
             >
                 <div 
@@ -111,21 +90,10 @@ export default function QRPage(){
                     }}
                 >
                     <QRScanner
-                        key={scanKey}
-                        delay={3000}
+                        delay={300}
                         onError={handleError}
                         onScan={handleScan}
-                        style={{width: "100%", height: "100vh"}}
-                        constraints={{
-                            // deviceId: selectedDeviceId || "",
-                            // video: { deviceId: selectedDeviceId },
-                            // video: { deviceId: { exact: selectedDeviceId } },
-                            // facingMode: "environment" // これで外カメラを指定
-                            video: { facingMode: "environment" },
-                            // video: { facingMode: { exact: "environment" } },
-                        } as any}
-                        // facingMode="environment"
-                        // facingMode={"rear" as any}
+                        style={{width: "100%", height: "100vh",}}
                     />
                 </div>
                 <div 
@@ -164,23 +132,35 @@ export default function QRPage(){
                             }}
                         >
                             <div style={{textAlign: "center", paddingTop: "2rem"}}>
-                                <div>
-                                    {qrData.schoolName + "の"}
-                                </div>
-                                <div>
-                                    花火を作成しますか？
-                                </div>
+                                ({qrData === "send-fireworks" ? (
+                                    <div>今まで作った花火をプロジェクターに投影しますか？</div>
+                                ) : (
+                                    <>
+                                        <div>
+                                            {qrData.schoolName + "の"}
+                                        </div>
+                                        <div>
+                                            花火を作成しますか？
+                                        </div>
+                                    </>
+                                )})
                             </div>
                             <div
                                 style={{
                                     paddingTop: "1rem",
                                     display: "flex",
                                     justifyContent: "center",
-                                    gap: "1.5rem"
+                                    gap: "1.5rem",
                                 }}
                             >
                                 <Button 
-                                    onClick={() => goToBoothDesignPage(qrData.boothId)}
+                                    onClick={() => {
+                                        if(qrData === "send-fireworks"){
+                                            navigate("/send-fireworks");
+                                        }else{
+                                            goToBoothDesignPage(qrData.boothId);
+                                        }
+                                    }}
                                     sx={{
                                         border: "0.1rem solid white",
                                         backgroundColor: "#098FF0",
@@ -190,7 +170,7 @@ export default function QRPage(){
                                     はい
                                 </Button>
                                 <Button
-                                    onClick={() => {setQrData(null), setScanKey(scanKey + 1), setQrText("")}}
+                                    onClick={() => {setQrData(null)}}
                                     sx={{
                                         border: "0.1rem solid white",
                                         backgroundColor: "#098FF0",
