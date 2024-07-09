@@ -1,5 +1,4 @@
 import { Box, Typography } from "@mui/material";
-import { LOTTERY_EVENTS } from "../utils/config";
 
 export default function LotteryGuide(){
     return (
@@ -13,21 +12,6 @@ export default function LotteryGuide(){
                 overflow: "auto"
             }}
         >
-
-            {/* <Typography sx={{fontSize: "1.5rem", fontWeight: "bold"}}>
-                抽選会
-            </Typography>
-
-            {LOTTERY_EVENTS.map((eventDate, index) => (
-                <Typography 
-                    key={index}
-                    sx={{
-                        fontSize: "1.45rem",
-                        fontWeight: "bold",
-                    }}>
-                    {eventDate}
-                </Typography>
-            ))} */}
 
             <Typography sx={{fontSize: "1.5rem", fontWeight: "bold"}}>
                 抽選で豪華景品が当たる！

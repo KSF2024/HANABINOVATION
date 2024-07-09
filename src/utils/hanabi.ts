@@ -4,10 +4,16 @@ import { Point, RisingStars, Spark, Star } from "./types";
 
 export function generateStars(
     imageData: ImageData,
+    fireworkType: number,
     angle: number = 0,
     interval: number = 10,
     radius: number = 5
 ): Star[]{
+    if(fireworkType === 0){
+        interval = 6;
+        radius = 3;
+    }
+
     const stars: Star[] = [];
     const data = imageData.data;
     const width: number = imageData.width;
@@ -215,7 +221,7 @@ export function drawSpark(ctx: CanvasRenderingContext2D, spark: Spark, alpha?: n
 export async function generateFirework(
     boothId: string | null,
     fireworkType: number,
-    fireworkDesign: Blob | null,
+    fireworkDesign: string | null,
     sparksType: number,
     initialX: number,
     initialY: number
@@ -230,14 +236,7 @@ export async function generateFirework(
     if(!imageSrc) return null;
     const imageData: ImageData = (await getImageData(imageSrc)).imageData;
 
-    let interval: number | undefined = undefined;
-    let radius: number | undefined = undefined;
-    if(fireworkType === 0){ // TODO オリジナルデザインの場合の花火の星の間隔の修正
-        interval = undefined;
-        radius = undefined;
-    }
-
-    const stars: Star[] = generateStars(imageData, 0, interval, radius);
+    const stars: Star[] = generateStars(imageData, fireworkType);
 
     // 火花データを作成する
     const sparksColor: string | null = (boothId) ? (getBoothColor(boothId) || "#888888") : SAMPLE_DATA.color;

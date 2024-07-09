@@ -122,9 +122,9 @@ export function SocketProvider({children}: {children: ReactNode}){
         if(pageMode !== "show-fireworks" && pageMode !== "simultaneously-raise") return;
         if(pageMode === "show-fireworks") console.log("show firework")
         const boothId: string = data.boothId;
-        const firework: FireworkData = data.fireworkData;
+        const firework: FireworkData = data.fireworksData;
         const fireworkType: number = firework.fireworkType;
-        const fireworkDesign: Blob | null = firework.fireworkDesign || null;
+        const fireworkDesign: string | null = firework.fireworkDesign || null;
         const sparksType: number = firework.sparksType;
         const newFireworkData: FireworkTypeInfo = { boothId, fireworkType, fireworkDesign, sparksType };
 
@@ -133,7 +133,7 @@ export function SocketProvider({children}: {children: ReactNode}){
     }
 
     // 現在開いているのが当選者発表画面なら、当選者の作成した花火を一斉打ち上げする関数
-    function drawLottery(data: any){
+    function drawLottery(_data: any){
         if(pageMode !== "announce-winners") return;
         console.log("draw lottery")
     }

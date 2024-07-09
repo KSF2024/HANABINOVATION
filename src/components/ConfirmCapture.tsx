@@ -61,7 +61,7 @@ export default function ConfirmCapture(){
         const data: FireworkData = {
             fireworkType,
             sparksType,
-            ...(fireworkDesign && { fireworkDesign })
+            ...(fireworkDesign.current && { fireworkDesign: fireworkDesign.current })
         }
 
         // 花火データの送信を行う

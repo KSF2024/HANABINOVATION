@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useState, useEffect } from "react";
+import { createContext, ReactNode, useState, useEffect, useRef } from "react";
 import { ulid } from "ulidx";
 import { FireworksData, Registration } from "../utils/types";
 import { getFireworksByUserId, getRegistration } from "../utils/apiClient";
@@ -14,14 +14,14 @@ type DataContent = {
     setFireworkType: React.Dispatch<React.SetStateAction<0 | 1 | 2 | 3>>;
     sparksType: 0 | 1 | 2;
     setSparksType: React.Dispatch<React.SetStateAction<0 | 1 | 2>>;
-    fireworkDesign: Blob | null;
-    setFireworkDesign: React.Dispatch<React.SetStateAction<Blob | null>>;
+    fireworkDesign: React.MutableRefObject<string | null>;
     isPostedFirework: boolean | null;
     setIsPostedFirework: React.Dispatch<React.SetStateAction<boolean | null>>;
     isApplied: boolean;
     setIsApplied: React.Dispatch<React.SetStateAction<boolean>>;
     canApply: boolean;
     registration: Registration | null;
+    postedFireworksData: FireworksData | null;
 };
 
 /* Provider */
@@ -33,14 +33,14 @@ const initialData: DataContent = {
     setFireworkType: () => 0,
     sparksType: 0,
     setSparksType: () => 0,
-    fireworkDesign: null,
-    setFireworkDesign: () => null,
+    fireworkDesign: {} as any,
     isPostedFirework: null,
     setIsPostedFirework: () => {},
     isApplied: false,
     setIsApplied: () => {},
     canApply: false,
-    registration: null
+    registration: null,
+    postedFireworksData: null
 };
 
 export const DataContext = createContext<DataContent>(initialData);
@@ -51,7 +51,7 @@ export function DataProvider({children}: {children: ReactNode}){
     const [boothId, setBoothId] = useState<string | null>(null); // 各ブースのID
     const [fireworkType, setFireworkType] = useState<0 | 1 | 2 | 3>(1);// 花火のセットアップの種類
     const [sparksType, setSparksType] = useState<0 | 1 | 2>(0); // 火花のセットアップの種類
-    const [fireworkDesign, setFireworkDesign] = useState<Blob | null>(null); // ユーザーが作成した花火のオリジナルデザイン
+    const fireworkDesign = useRef<string | null>(null); // ユーザーが作成した花火のオリジナルデザイン
 
     // データベースのデータを管理する
     const [ postedFireworksData, setPostedFireworksData ] = useState<FireworksData | null>(null);
@@ -124,13 +124,13 @@ export function DataProvider({children}: {children: ReactNode}){
                 sparksType,
                 setSparksType,
                 fireworkDesign,
-                setFireworkDesign,
                 isPostedFirework,
                 setIsPostedFirework,
                 isApplied,
                 setIsApplied,
                 canApply,
-                registration
+                registration,
+                postedFireworksData
             }}
         >
             {children}

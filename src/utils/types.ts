@@ -63,7 +63,7 @@ export type RisingStars = {
 export type FireworkTypeInfo = {
     boothId: string;
     fireworkType: number;
-    fireworkDesign: Blob | null;
+    fireworkDesign: string | null;
     sparksType: number;
 }
 
@@ -81,7 +81,7 @@ export type FireworksData = {
 export type FireworkData = {
     createdAt?: number; // データが登録された日時
     fireworkType: number; // 花火のセットアップの種類(0の場合はオリジナルデザインを使用)
-    fireworkDesign?: Blob; // ユーザーが作成した花火のオリジナルデザイン
+    fireworkDesign?: string; // ユーザーが作成した花火のオリジナルデザイン
     sparksType: number; // 火花のセットアップの種類
 }
 

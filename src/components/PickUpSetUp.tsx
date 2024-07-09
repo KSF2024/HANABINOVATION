@@ -65,10 +65,11 @@ export default function PickUpSetUp(){
         ctx: CanvasRenderingContext2D,
         imageData: ImageData,
         canvasSize: number,
-        fireworkSize: Size
+        fireworkSize: Size,
+        fireworkType: number
     ){
         // imageDataから花火の星を作成する
-        const newStars: Star[] = generateStars(imageData);
+        const newStars: Star[] = generateStars(imageData, fireworkType);
 
         // 花火の中心点を求める
         const defaultWidth: number = 300; // 花火の基本サイズ
@@ -202,6 +203,10 @@ export default function PickUpSetUp(){
         }
     }
 
+    useEffect(() => {
+        if(fireworkType === 0) setFireworkType(1);
+    }, []);
+
     // ブースIDが取得出来たら、花火の画像データを読み込む
     useEffect(() => {
         if(!boothId) return;
@@ -214,9 +219,10 @@ export default function PickUpSetUp(){
     // 画像データを読み込み終えたら、セットアップ選択用canvasに描画を行う
     useEffect(() => {
         if(fireworkImages.length <= 0) return;
+        const prevFireworkType: number = fireworkType || 1;
 
         const secondaryCanvasSize: number = getSecondaryCanvasSize();
-        const fireworkSize = getFireworkSize(fireworkType - 1);
+        const fireworkSize = getFireworkSize(prevFireworkType - 1);
 
         // 火花のセットアップ選択用描画を行う
         sparksCanvasRefs.current.forEach((canvasElement, index) => {
@@ -232,7 +238,7 @@ export default function PickUpSetUp(){
             if(!ctx) return;
             if(!canvasElement) return;
             ctx.clearRect(0, 0, secondaryCanvasSize, secondaryCanvasSize);
-            previewFireworks(ctx, fireworkImages[index], secondaryCanvasSize, fireworkSize);
+            previewFireworks(ctx, fireworkImages[index], secondaryCanvasSize, fireworkSize, prevFireworkType);
         });
     }, [fireworkImages]);
 
@@ -241,16 +247,17 @@ export default function PickUpSetUp(){
     useEffect(() => {
         if(fireworkImages.length <= 0) return;
         if(!previewCanvasRef.current) return;
+        const prevFireworkType: number = fireworkType || 1;
 
         const primaryCanvasSize: number = getPrimaryCanvasSize();
-        const fireworkSize = getFireworkSize(fireworkType - 1);
+        const fireworkSize = getFireworkSize(prevFireworkType - 1);
 
         // セットアップ確認ウィンドウ用描画を行う
         const mainCtx = getCtxFromCanvas(previewCanvasRef.current);
         if(!mainCtx) return;
         mainCtx.clearRect(0, 0, primaryCanvasSize, primaryCanvasSize);
         previewSparks(mainCtx, sparksType, primaryCanvasSize);
-        previewFireworks(mainCtx, fireworkImages[fireworkType - 1], primaryCanvasSize, fireworkSize);
+        previewFireworks(mainCtx, fireworkImages[prevFireworkType - 1], primaryCanvasSize, fireworkSize, prevFireworkType);
     }, [fireworkImages, fireworkType, sparksType]);
 
     return (
