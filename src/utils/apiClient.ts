@@ -1,6 +1,5 @@
 import axios, { AxiosResponse } from "axios";
 import { FireworkData, FireworksData, HoleFireworksData, Profile, Registration } from "./types";
-import { blobToBase64 } from "./modules";
 
 // API呼び出し用のURLを定義する
 const API_ENDPOINT: string = "https://vfml5unckb.execute-api.ap-northeast-1.amazonaws.com/dev/api/v1";
