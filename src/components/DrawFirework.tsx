@@ -45,7 +45,7 @@ export default function DrawFirework(){
         });
     }
 
-    function startDrawing(e: React.MouseEvent){
+    function startDrawing(x: number, y: number){
         if (!canvasContext.current) return;
         isDrawing.current = true;
         canvasContext.current.lineWidth = thickness ** 2;
@@ -58,14 +58,12 @@ export default function DrawFirework(){
             canvasContext.current.strokeStyle = "rgba(0,0,0,1)";
         }
         canvasContext.current.beginPath();
-        canvasContext.current.moveTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
-
-        draw(e);
+        canvasContext.current.moveTo(x, y);
     };
 
-    function draw(e: React.MouseEvent){
+    function draw(x: number, y: number){
         if (!isDrawing.current || !canvasContext.current) return;
-        canvasContext.current.lineTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+        canvasContext.current.lineTo(x, y);
         canvasContext.current.stroke();
     };
 
@@ -74,6 +72,36 @@ export default function DrawFirework(){
         isDrawing.current = false;
         canvasContext.current.closePath();
         getBlobByCanvas();
+    };
+
+    function handleMouseDown(e: React.MouseEvent){
+        startDrawing(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    };
+
+    function handleMouseMove(e: React.MouseEvent){
+        draw(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    };
+
+    function handleTouchStart(e: React.TouchEvent){
+        e.preventDefault();
+        const touch = e.touches[0];
+        const rect = previewCanvasRef.current?.getBoundingClientRect();
+        if (rect) {
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+            startDrawing(x, y);
+        }
+    };
+
+    function handleTouchMove(e: React.TouchEvent){
+        e.preventDefault();
+        const touch = e.touches[0];
+        const rect = previewCanvasRef.current?.getBoundingClientRect();
+        if (rect) {
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+            draw(x, y);
+        }
     };
 
     return (
@@ -99,10 +127,14 @@ export default function DrawFirework(){
                     margin: "0.5rem",
                     border: "1px black solid"
                 }}
-                onMouseDown={startDrawing}
-                onMouseMove={draw}
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
                 onMouseUp={stopDrawing}
                 onMouseLeave={stopDrawing}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={stopDrawing}
+                onTouchCancel={stopDrawing}
             />
             <div
                 style={{
