@@ -363,7 +363,7 @@ export function FireworksProvider({children}: {children: ReactNode}){
         const alpha: number = 150; // 初期表示花火の透明度
 
         // imageDataから花火の星を作成する
-        const newStars: Star[] = generateStars(imageData, launchAngle);
+        const newStars: Star[] = generateStars(imageData, fireworkType, launchAngle);
 
         // 花火を打ち上げる中心点を求める
         const { initialX, initialY } = getInitialPosition();
@@ -559,7 +559,7 @@ export function FireworksProvider({children}: {children: ReactNode}){
         }
 
         // imageDataから花火の星を作成する
-        const newStars: Star[] = generateStars(imageData, launchAngle);
+        const newStars: Star[] = generateStars(imageData, fireworkType, launchAngle);
         starsRef.current = newStars;
 
         // 花火を打ち上げる中心点を求める
@@ -575,11 +575,13 @@ export function FireworksProvider({children}: {children: ReactNode}){
         setStars(initializedStars);
 
         // 火花データを作成し、stateに保存する
-        if(!boothId) return;
-        const sparksColor: string | null = getBoothColor(boothId);
-        if(!sparksColor) return;
-        const newSparks: Spark[] = generateSparks(sparksType, sparksColor, initialX, initialY);
-        setSparks(newSparks);
+        if(fireworkType !== 0){
+            if(!boothId) return;
+            const sparksColor: string | null = getBoothColor(boothId);
+            if(!sparksColor) return;
+            const newSparks: Spark[] = generateSparks(sparksType, sparksColor, initialX, initialY);
+            setSparks(newSparks);
+        }
 
         // 花火アニメーションを開始
         const newFireworksAnimationFrameId: number = requestAnimationFrame(() => burstFireworks(initialX, initialY));
