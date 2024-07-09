@@ -44,7 +44,7 @@ export default function QRPage(){
                 }
             }
         }else if(qrText === sendUrl){
-
+            return "send-fireworks";
         }
         return null
     };
@@ -132,8 +132,8 @@ export default function QRPage(){
                             }}
                         >
                             <div style={{textAlign: "center", paddingTop: "2rem"}}>
-                                ({qrData === "send-fireworks" ? (
-                                    <div>今まで作った花火をプロジェクターに投影しますか？</div>
+                                {qrData === "send-fireworks" ? (
+                                    <div>今まで作った花火を<br/>プロジェクターに投影しますか？</div>
                                 ) : (
                                     <>
                                         <div>
@@ -143,7 +143,7 @@ export default function QRPage(){
                                             花火を作成しますか？
                                         </div>
                                     </>
-                                )})
+                                )}
                             </div>
                             <div
                                 style={{
