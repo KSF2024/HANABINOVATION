@@ -94,7 +94,9 @@ export default function QRPage(){
                         onError={handleError}
                         onScan={handleScan}
                         style={{width: "100%", height: "100vh"}}
-                        facingMode="environment"
+                        constraints={{
+                            facingMode: { exact: "environment" } // 外カメラを指定
+                        }}
                     />
                 </div>
                 <div 
