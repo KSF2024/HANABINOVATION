@@ -7,16 +7,20 @@ import { ICON_SIZE } from "../pages/PhotoPage";
 import { DataContext } from "../providers/DataProvider";
 import { getBoothColor } from "../utils/modules";
 
-export default function DrawFirework({ previewCanvasRef }: {
-    previewCanvasRef: React.RefObject<HTMLCanvasElement>;
-}){
+export default function DrawFirework(){
     const [ paintTool, setPaintTool ] = useState<number>(0); // どのペイントツールを使っているか(0: ペン, 1: 消しゴム)
     const [ thickness, setThickness ] = useState<number>(3); // ペン/消しゴムの太さ
     const [ color, setColor ] = useState<string>("#888888"); // ペンの色
 
-    const { boothId } = useContext(DataContext); // ブースID
+    const {
+        boothId,
+        fireworkDesign,
+        fireworkType,
+        setFireworkType
+    } = useContext(DataContext);
 
     const isDrawing = useRef<boolean>(false);
+    const previewCanvasRef = useRef<HTMLCanvasElement | null>(null); // ペイント用canvas要素のref
     const canvasContext = useRef<CanvasRenderingContext2D | null>(null);
 
     // ブースIDからペンの色を取得する
@@ -25,6 +29,18 @@ export default function DrawFirework({ previewCanvasRef }: {
         const newColor = getBoothColor(boothId);
         if(newColor) setColor(newColor);
     }, [boothId]);
+
+    useEffect(() => {
+        if(fireworkType !== 0) setFireworkType(0);
+    }, []);
+
+    function getBlobByCanvas(){ // canvasRefからBlobデータを取得する関数
+        const canvasElement: HTMLCanvasElement | null = previewCanvasRef.current;
+        if(!canvasElement) return;
+        canvasElement.toBlob((blob) => {
+            fireworkDesign.current = blob;
+        });
+    }
 
     function startDrawing(e: React.MouseEvent){
         if (!canvasContext.current) return;
@@ -54,6 +70,7 @@ export default function DrawFirework({ previewCanvasRef }: {
         if (!canvasContext.current) return;
         isDrawing.current = false;
         canvasContext.current.closePath();
+        getBlobByCanvas();
     };
 
     return (
@@ -70,7 +87,7 @@ export default function DrawFirework({ previewCanvasRef }: {
             <canvas
                 ref={(prev) => {
                     if(prev) canvasContext.current = prev.getContext("2d");
-                    return previewCanvasRef;
+                    previewCanvasRef.current = prev;
                 }}
                 className="bg-img-transparent"
                 width={getPrimaryCanvasSize()}

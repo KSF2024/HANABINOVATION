@@ -72,12 +72,11 @@ export function FireworksProvider({children}: {children: ReactNode}){
     // 花火撮影画面用に、画像データを初期化する関数
     function initializeImageSrc(): void{
         if(!boothId) return;
-        const newImageSrc: string | null = getImageSrc(boothId, fireworkType, fireworkDesign);
+        const newImageSrc: string | null = getImageSrc(boothId, fireworkType, fireworkDesign.current);
 
         if(!newImageSrc) return;
         setImageSrc(newImageSrc);
     }
-
 
     /* 花火(Star)用関数定義 */
     // 花火を爆発させるアニメーション
@@ -588,9 +587,11 @@ export function FireworksProvider({children}: {children: ReactNode}){
         isFinishedFireworkAnimation.current = false;
 
         // 火花アニメーションを開始
-        const newSparksAnimationFrameId: number = requestAnimationFrame(() => burstSparks(initialX, initialY));
-        setSparksAnimationFrameId(newSparksAnimationFrameId);
-        isFinishedSparksAnimation.current = false;
+        if(fireworkType !== 0){
+            const newSparksAnimationFrameId: number = requestAnimationFrame(() => burstSparks(initialX, initialY));
+            setSparksAnimationFrameId(newSparksAnimationFrameId);
+            isFinishedSparksAnimation.current = false;
+        }
     }
 
     /* 花火撮影機能用の処理 */
@@ -728,7 +729,7 @@ export function FireworksProvider({children}: {children: ReactNode}){
             if (!ctx) return;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             if(!imageData) return;
-            previewSparks(ctx);
+            if(fireworkType !== 0) previewSparks(ctx);
             previewFireworks(ctx, imageData);
         }
     }, [imageData, fireworkPhase, launchAngle]);
