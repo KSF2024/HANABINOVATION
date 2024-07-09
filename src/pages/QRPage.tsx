@@ -94,7 +94,7 @@ export default function QRPage(){
                         onError={handleError}
                         onScan={handleScan}
                         style={{width: "100%", height: "100vh"}}
-                        facingMode={"environment"}
+                        facingMode="environment"
                     />
                 </div>
                 <div 
