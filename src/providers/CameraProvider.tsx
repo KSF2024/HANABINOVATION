@@ -8,6 +8,7 @@ type CameraContext = {
     switchCameraFacing(isNotCapturing: boolean): Promise<void>;
     enableBothCamera: boolean;
     initCamera(): Promise<void>;
+    freeUpStream(stream: MediaStream | null | "current"): Promise<void>;
 };
 
 
@@ -18,6 +19,7 @@ const initialData: CameraContext = {
     switchCameraFacing: () => Promise.resolve(),
     enableBothCamera: false,
     initCamera: () => Promise.resolve(),
+    freeUpStream: () => Promise.resolve()
 };
 
 export const CameraContext = createContext<CameraContext>(initialData);
@@ -164,9 +166,16 @@ export function CameraProvider({children}: {children: ReactNode}){
     }
 
     // streamを停止する関数
-    async function freeUpStream(stream: MediaStream | null): Promise<void>{
+    async function freeUpStream(stream: MediaStream | null | "current"): Promise<void>{
         if(!stream) return;
-        await stream.getVideoTracks().forEach((camera) => {
+        let newStream: MediaStream
+        if(stream === "current"){
+            if(!currentStream) return;
+            newStream = currentStream;
+        }else{
+            newStream = stream;
+        }
+        await newStream.getVideoTracks().forEach((camera) => {
             camera.stop();
         });
     }
@@ -179,7 +188,8 @@ export function CameraProvider({children}: {children: ReactNode}){
                 cameraFacing,
                 switchCameraFacing,
                 enableBothCamera,
-                initCamera
+                initCamera,
+                freeUpStream
             }}
         >
             {children}

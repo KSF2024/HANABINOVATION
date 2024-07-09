@@ -60,7 +60,6 @@ export default function ButtonArea({theme}: {theme: Theme}){
         isPostedFirework
     } = useContext(DataContext);
 
-
     /* 関数定義 */
     // 撮影ボタンを押したときの処理
     function handleTakePhotoButton(){
