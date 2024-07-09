@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import FooterPage from "../components/FooterPage";
 import { BOOTH_ID_LIST, SCHOOL_DATA } from "../utils/config";
 import { useNavigate } from 'react-router-dom';
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 
 type QrData = { boothId: string, schoolName: string } | null;
 
@@ -68,23 +68,24 @@ export default function QRPage(){
 
 
     // 外カメラを取得する
-    const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
-    useEffect(() => {
-        navigator.mediaDevices.enumerateDevices().then(devices => {
-            // toast.info(JSON.stringify(devices));
-            const videoDevices = devices.filter(device => device.kind === 'videoinput');
-            let backCamera = videoDevices[0]; // デフォルトで最初のカメラ
+    // const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
+    // useEffect(() => {
+    //     navigator.mediaDevices.enumerateDevices().then(devices => {
+    //         // toast.info(JSON.stringify(devices));
+    //         const videoDevices = devices.filter(device => device.kind === 'videoinput');
+    //         let backCamera = videoDevices[0]; // デフォルトで最初のカメラ
 
-            for (let device of videoDevices) {
-                if (device.label.toLowerCase().includes('back') || device.label.toLowerCase().includes('rear')) {
-                    backCamera = device;
-                    break;
-                }
-            }
+    //         for (let device of videoDevices) {
+    //             if (device.label.toLowerCase().includes('back') || device.label.toLowerCase().includes('rear')) {
+    //                 backCamera = device;
+    //                 break;
+    //             }
+    //         }
 
-            setSelectedDeviceId(backCamera.deviceId);
-        });
-    }, []);
+    //         // toast.info(JSON.stringify(backCamera));
+    //         setSelectedDeviceId(backCamera.deviceId);
+    //     });
+    // }, []);
 
     return(
         <FooterPage>
@@ -116,11 +117,15 @@ export default function QRPage(){
                         onScan={handleScan}
                         style={{width: "100%", height: "100vh"}}
                         constraints={{
-                            // deviceId: selectedDeviceId || ""
-                            video: { deviceId: selectedDeviceId }
-                            // video: { deviceId: { exact: selectedDeviceId } }
+                            // deviceId: selectedDeviceId || "",
+                            // video: { deviceId: selectedDeviceId },
+                            // video: { deviceId: { exact: selectedDeviceId } },
+                            // facingMode: "environment" // これで外カメラを指定
+                            video: { facingMode: "environment" },
+                            // video: { facingMode: { exact: "environment" } },
                         } as any}
                         // facingMode="environment"
+                        // facingMode={"rear" as any}
                     />
                 </div>
                 <div 
