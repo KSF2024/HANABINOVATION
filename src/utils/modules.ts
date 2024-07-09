@@ -97,7 +97,7 @@ export function validateBoothId(boothId: string): boolean{
 }
 
 // 画像データのパスを取得する関数
-export function getImageSrc(boothId: string, fireworkType: 0 | 1 | 2 | 3, fireworkDesign: Blob | null): string | null{
+export function getImageSrc(boothId: string, fireworkType: 0 | 1 | 2 | 3, fireworkDesign: string | null): string | null{
     let result: string = "";
 
     // 例外処理を行う
@@ -107,7 +107,7 @@ export function getImageSrc(boothId: string, fireworkType: 0 | 1 | 2 | 3, firewo
     // 画像データへのパスを取得する
     if(fireworkType === 0){
         if(!fireworkDesign) return null;
-        result = URL.createObjectURL(fireworkDesign);
+        result = URL.createObjectURL(base64ToBlob(fireworkDesign));
     }else{
         const fireworkTypeIndex: 0 | 1 | 2 = (fireworkType - 1) as (0 | 1 | 2);
         result = SCHOOL_DATA[boothId].fireworksImages[fireworkTypeIndex];
@@ -160,4 +160,33 @@ export function playSound(soundSrc: string){
     audio.play().catch(error => {
         console.error('サウンドの再生に失敗しました:', error);
     });
+}
+
+// BlobからBase64に変換する関数
+export function blobToBase64(blob: Blob): Promise<string>{
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onloadend = () => {
+            if (reader.result) {
+                resolve(reader.result.toString());
+            } else {
+                reject(new Error("Failed to convert Blob to Base64"));
+            }
+        };
+        reader.onerror = () => {
+            reject(new Error("FileReader encountered an error"));
+        };
+    });
+}
+
+// Base64からBlobに変換する関数
+export function base64ToBlob(base64: string, contentType: string = "image/png"): Blob{
+    const byteCharacters = atob(base64.split(',')[1]);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    return new Blob([byteArray], { type: contentType });
 }

@@ -1,5 +1,5 @@
 import { Box, Button, Typography } from "@mui/material";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { DataContext } from "../providers/DataProvider";
 import PickUpSetUp from "../components/PickUpSetUp";
 import { useNavigate, useParams } from "react-router-dom";
@@ -14,8 +14,7 @@ export default function DesignPage(){
 
     // データを管理するためのcontext
     const {
-        isPostedFirework,
-        setFireworkType
+        isPostedFirework
     } = useContext(DataContext);
 
     // ブースIDを管理する

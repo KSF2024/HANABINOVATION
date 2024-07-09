@@ -5,7 +5,7 @@ import { IconButton, Slider } from "@mui/material";
 import ClearIcon from "./../images/eraser.png"
 import { ICON_SIZE } from "../pages/PhotoPage";
 import { DataContext } from "../providers/DataProvider";
-import { getBoothColor } from "../utils/modules";
+import { blobToBase64, getBoothColor } from "../utils/modules";
 
 export default function DrawFirework(){
     const [ paintTool, setPaintTool ] = useState<number>(0); // どのペイントツールを使っているか(0: ペン, 1: 消しゴム)
@@ -38,7 +38,10 @@ export default function DrawFirework(){
         const canvasElement: HTMLCanvasElement | null = previewCanvasRef.current;
         if(!canvasElement) return;
         canvasElement.toBlob((blob) => {
-            fireworkDesign.current = blob;
+            if(!blob) return;
+            blobToBase64(blob).then(base64 => {
+                fireworkDesign.current = base64;
+            });
         });
     }
 

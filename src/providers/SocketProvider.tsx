@@ -124,7 +124,7 @@ export function SocketProvider({children}: {children: ReactNode}){
         const boothId: string = data.boothId;
         const firework: FireworkData = data.fireworksData;
         const fireworkType: number = firework.fireworkType;
-        const fireworkDesign: Blob | null = firework.fireworkDesign || null;
+        const fireworkDesign: string | null = firework.fireworkDesign || null;
         const sparksType: number = firework.sparksType;
         const newFireworkData: FireworkTypeInfo = { boothId, fireworkType, fireworkDesign, sparksType };
 

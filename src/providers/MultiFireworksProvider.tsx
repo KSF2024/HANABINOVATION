@@ -11,7 +11,7 @@ import burstSE from "./../audio/打ち上げ花火2.mp3";
 // contextに渡すデータの型
 type MultiFireworksContent = {
     canvasRef: React.RefObject<HTMLCanvasElement>;
-    animateFirework(boothId: string | null, fireworkType: number, fireworkDesign: Blob | null, sparksType: number): Promise<void>;
+    animateFirework(boothId: string | null, fireworkType: number, fireworkDesign: string | null, sparksType: number): Promise<void>;
     pageMode: string | null;
     setPageMode: React.Dispatch<React.SetStateAction<string | null>>;
     pushFireworksData(data: FireworkTypeInfo): void;
@@ -102,7 +102,7 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
 
     /* 花火アニメーション用関数定義 */
     // 花火を打ち上げ->爆発->消滅させるアニメーションを実行する関数
-    async function animateFirework(boothId: string | null, fireworkType: number, fireworkDesign: Blob | null, sparksType: number, enableSound: number = 0){
+    async function animateFirework(boothId: string | null, fireworkType: number, fireworkDesign: string | null, sparksType: number, enableSound: number = 0){
         // 位置データを初期化する
         const {
             initialRiseX,
@@ -127,12 +127,12 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
 
         // 花火を爆発させる
         if(enableSound) playSound(burstSE);
-        await burstFirework(fireworkId, stars, sparks, initialBurstX, initialBurstY);
+        await burstFirework(fireworkId, fireworkType, stars, sparks, initialBurstX, initialBurstY);
 
         await sleep(100);
 
         // 花火を消滅させる
-        await fadeFirework(fireworkId);
+        await fadeFirework(fireworkId, fireworkType);
 
         // 花火データを消去する
         setStarsObj(prevStarsObj => {
@@ -274,11 +274,10 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
     }
 
     // 花火+火花を爆発させる関数
-    async function burstFirework(fireworkId: string, goalStars: Star[], initialSparks: Spark[], initialX: number, initialY: number){
-        await Promise.all([
-            burstStars(fireworkId, goalStars, initialX, initialY),
-            burstSparks(fireworkId, initialSparks, initialX, initialY)
-        ]);
+    async function burstFirework(fireworkId: string, fireworkType: number, goalStars: Star[], initialSparks: Spark[], initialX: number, initialY: number){
+        const funcs: Promise<void>[] = [burstStars(fireworkId, goalStars, initialX, initialY)];
+        if(fireworkType !== 0) funcs.push(burstSparks(fireworkId, initialSparks, initialX, initialY));
+        await Promise.all(funcs);
         return;
     }
 
@@ -475,11 +474,10 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
     }
 
     // 花火+火花を消滅させる関数
-    async function fadeFirework(fireworkId: string){
-        await Promise.all([
-            fadeStars(fireworkId),
-            fadeSparks(fireworkId)
-        ]);
+    async function fadeFirework(fireworkId: string, fireworkType: number){
+        const funcs: Promise<void>[] = [fadeStars(fireworkId)];
+        if(fireworkType !== 0) funcs.push(fadeSparks(fireworkId));
+        await Promise.all(funcs);
         return;
     }
 

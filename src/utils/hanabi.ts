@@ -215,7 +215,7 @@ export function drawSpark(ctx: CanvasRenderingContext2D, spark: Spark, alpha?: n
 export async function generateFirework(
     boothId: string | null,
     fireworkType: number,
-    fireworkDesign: Blob | null,
+    fireworkDesign: string | null,
     sparksType: number,
     initialX: number,
     initialY: number

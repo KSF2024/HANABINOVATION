@@ -14,7 +14,7 @@ type DataContent = {
     setFireworkType: React.Dispatch<React.SetStateAction<0 | 1 | 2 | 3>>;
     sparksType: 0 | 1 | 2;
     setSparksType: React.Dispatch<React.SetStateAction<0 | 1 | 2>>;
-    fireworkDesign: React.MutableRefObject<Blob | null>;
+    fireworkDesign: React.MutableRefObject<string | null>;
     isPostedFirework: boolean | null;
     setIsPostedFirework: React.Dispatch<React.SetStateAction<boolean | null>>;
     isApplied: boolean;
@@ -51,7 +51,7 @@ export function DataProvider({children}: {children: ReactNode}){
     const [boothId, setBoothId] = useState<string | null>(null); // 各ブースのID
     const [fireworkType, setFireworkType] = useState<0 | 1 | 2 | 3>(1);// 花火のセットアップの種類
     const [sparksType, setSparksType] = useState<0 | 1 | 2>(0); // 火花のセットアップの種類
-    const fireworkDesign = useRef<Blob | null>(null); // ユーザーが作成した花火のオリジナルデザイン
+    const fireworkDesign = useRef<string | null>(null); // ユーザーが作成した花火のオリジナルデザイン
 
     // データベースのデータを管理する
     const [ postedFireworksData, setPostedFireworksData ] = useState<FireworksData | null>(null);
