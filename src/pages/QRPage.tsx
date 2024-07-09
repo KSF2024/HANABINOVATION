@@ -93,7 +93,8 @@ export default function QRPage(){
                         delay={3000}
                         onError={handleError}
                         onScan={handleScan}
-                        style={{width: "100%", height: "100vh",}}
+                        style={{width: "100%", height: "100vh"}}
+                        facingMode={"environment"}
                     />
                 </div>
                 <div 
