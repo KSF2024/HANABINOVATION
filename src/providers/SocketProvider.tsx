@@ -122,7 +122,7 @@ export function SocketProvider({children}: {children: ReactNode}){
         if(pageMode !== "show-fireworks" && pageMode !== "simultaneously-raise") return;
         if(pageMode === "show-fireworks") console.log("show firework")
         const boothId: string = data.boothId;
-        const firework: FireworkData = data.fireworkData;
+        const firework: FireworkData = data.fireworksData;
         const fireworkType: number = firework.fireworkType;
         const fireworkDesign: Blob | null = firework.fireworkDesign || null;
         const sparksType: number = firework.sparksType;
