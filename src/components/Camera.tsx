@@ -5,13 +5,18 @@ import { CameraContext } from "../providers/CameraProvider";
 export default function Camera(){
     const {
         videoRef,
-        initCamera
+        initCamera,
+        freeUpStream
     } = useContext(CameraContext);
 
     /* useEffect等 */
     // 初回レンダリング時、カメラに接続する
     useEffect(() => {
         initCamera();
+
+        return () => {
+            freeUpStream("current");
+        };
     }, []);
 
     return (
