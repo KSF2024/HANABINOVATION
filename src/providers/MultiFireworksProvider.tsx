@@ -103,7 +103,6 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
     /* 花火アニメーション用関数定義 */
     // 花火を打ち上げ->爆発->消滅させるアニメーションを実行する関数
     async function animateFirework(boothId: string | null, fireworkType: number, fireworkDesign: string | null, sparksType: number, enableSound: number = 0){
-        if(boothId === "HF5W2T") console.log("data: ", {fireworkType, fireworkDesign, sparksType, enableSound})
         // 位置データを初期化する
         const {
             initialRiseX,
