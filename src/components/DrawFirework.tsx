@@ -12,7 +12,7 @@ export default function DrawFirework({ previewCanvasRef }: {
 }){
     const [ paintTool, setPaintTool ] = useState<number>(0); // どのペイントツールを使っているか(0: ペン, 1: 消しゴム)
     const [ thickness, setThickness ] = useState<number>(3); // ペン/消しゴムの太さ
-    const [ color, setColor ] = useState<string>("#888888"); // ペンの色
+    const [ _color, setColor ] = useState<string>("#888888"); // ペンの色
 
     const { boothId } = useContext(DataContext); // ブースID
 
