@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import FooterPage from "../components/FooterPage";
 import { BOOTH_ID_LIST, SCHOOL_DATA } from "../utils/config";
 import { useNavigate } from 'react-router-dom';
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 
 type QrData = { boothId: string, schoolName: string } | null;
 
