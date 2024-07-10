@@ -8,6 +8,8 @@ import "react-toastify/dist/ReactToastify.css";
 import LotteryRouter from "./components/LotteryRouter";
 import DesignPage from "./pages/DesignPage";
 import ErrorPage from "./pages/ErrorPage";
+import FireworksReceiver from "./pages/FireworksReceiver";
+import SubmitFireworkPage from "./pages/SubmitFireworkPage";
 
 export default function App(){
     return (
@@ -21,6 +23,8 @@ export default function App(){
                     <Route path="/map" element={<MapPage/>}/>
                     <Route path="/:boothId/scan-qr" element={<QRPage/>}/>
                     <Route path="/:boothId/enter-lottery" element={<LotteryRouter/>}/>
+                    <Route path="/receive-fireworks" element={<FireworksReceiver/>}/>
+                    <Route path="/send-fireworks" element={<SubmitFireworkPage/>}/>
                     <Route path="/*" element={<ErrorPage/>}/>
                 </Routes>
             </BrowserRouter>

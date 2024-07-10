@@ -1,22 +1,24 @@
 import { useContext, useEffect } from "react";
-import FooterPage from "../components/FooterPage";
 import NightSky from "../images/night_sky.png";
 import { MultiFireworksContext } from "../providers/MultiFireworksProvider";
 
-const footerHeight: number = 64;
-
-export default function FireworksDisplayPage(){
+export default function FireworksReceiver(){
     const {
         canvasRef,
         setPageMode
     } = useContext(MultiFireworksContext);
 
     useEffect(() => {
-        setPageMode("show-fireworks");
+        setPageMode("simultaneously-raise");
     }, []);
 
     return (
-        <FooterPage>
+        <div
+            style={{
+                width: "100%",
+                height: "100dvh"
+            }}
+        >
             <img
                 src={NightSky}
                 style={window.innerWidth > 960 ? {
@@ -32,7 +34,7 @@ export default function FireworksDisplayPage(){
             <canvas
                 ref={canvasRef}
                 width={window.innerWidth}
-                height={window.innerHeight - footerHeight}
+                height={window.innerHeight}
                 style={{
                     zIndex: 1000,
                     position: "absolute",
@@ -40,6 +42,6 @@ export default function FireworksDisplayPage(){
                     left: "0"
                 }}
             />
-        </FooterPage>
+        </div>
     )
 }

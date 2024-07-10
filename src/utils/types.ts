@@ -59,7 +59,20 @@ export type RisingStars = {
     goalPositions: Point
 }
 
+// 花火アニメーションを開始するために必要な花火の情報
+export type FireworkTypeInfo = {
+    boothId: string;
+    fireworkType: number;
+    fireworkDesign: string | null;
+    sparksType: number;
+}
+
 // データベースに登録された花火データの型
+export type HoleFireworksData = {
+    [userId: string]: FireworksData;
+}
+
+// データベースに登録された特定のユーザーが登録した花火データの型
 export type FireworksData = {
     [boothId: string]: FireworkData;
 }
@@ -68,7 +81,7 @@ export type FireworksData = {
 export type FireworkData = {
     createdAt?: number; // データが登録された日時
     fireworkType: number; // 花火のセットアップの種類(0の場合はオリジナルデザインを使用)
-    fireworkDesign?: Blob; // ユーザーが作成した花火のオリジナルデザイン
+    fireworkDesign?: string; // ユーザーが作成した花火のオリジナルデザイン
     sparksType: number; // 火花のセットアップの種類
 }
 

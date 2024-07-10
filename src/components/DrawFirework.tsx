@@ -1,27 +1,108 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { getPrimaryCanvasSize } from "./PickUpSetUp";
-import EditIcon from '@mui/icons-material/Edit';
+import EditIcon from "@mui/icons-material/Edit";
 import { IconButton, Slider } from "@mui/material";
 import ClearIcon from "./../images/eraser.png"
 import { ICON_SIZE } from "../pages/PhotoPage";
 import { DataContext } from "../providers/DataProvider";
-import { SCHOOL_DATA } from "../utils/config";
+import { blobToBase64, getBoothColor } from "../utils/modules";
 
-export default function DrawFirework({ previewCanvasRef }: {
-    previewCanvasRef: React.RefObject<HTMLCanvasElement>;
-}){
+export default function DrawFirework(){
     const [ paintTool, setPaintTool ] = useState<number>(0); // どのペイントツールを使っているか(0: ペン, 1: 消しゴム)
-    const [ boldness, setBoldness ] = useState<number>(3); // ペン/消しゴムの太さ
+    const [ thickness, setThickness ] = useState<number>(3); // ペン/消しゴムの太さ
     const [ color, setColor ] = useState<string>("#888888"); // ペンの色
 
-    const { boothId } = useContext(DataContext); // ブースID
+    const {
+        boothId,
+        fireworkDesign,
+        fireworkType,
+        setFireworkType
+    } = useContext(DataContext);
+
+    const isDrawing = useRef<boolean>(false);
+    const previewCanvasRef = useRef<HTMLCanvasElement | null>(null); // ペイント用canvas要素のref
+    const canvasContext = useRef<CanvasRenderingContext2D | null>(null);
 
     // ブースIDからペンの色を取得する
     useEffect(() => {
         if(!boothId) return;
-        const newColor: string = SCHOOL_DATA[boothId]?.color || "";
+        const newColor = getBoothColor(boothId);
         if(newColor) setColor(newColor);
     }, [boothId]);
+
+    useEffect(() => {
+        if(fireworkType !== 0) setFireworkType(0);
+    }, []);
+
+    function getBlobByCanvas(){ // canvasRefからBlobデータを取得する関数
+        const canvasElement: HTMLCanvasElement | null = previewCanvasRef.current;
+        if(!canvasElement) return;
+        canvasElement.toBlob((blob) => {
+            if(!blob) return;
+            blobToBase64(blob).then(base64 => {
+                fireworkDesign.current = base64;
+            });
+        });
+    }
+
+    function startDrawing(x: number, y: number){
+        if (!canvasContext.current) return;
+        isDrawing.current = true;
+        canvasContext.current.lineWidth = thickness ** 2;
+        canvasContext.current.lineCap = "round";
+        if (paintTool === 0) {
+            canvasContext.current.globalCompositeOperation = "source-over";
+            canvasContext.current.strokeStyle = color;
+        } else {
+            canvasContext.current.globalCompositeOperation = "destination-out";
+            canvasContext.current.strokeStyle = "rgba(0,0,0,1)";
+        }
+        canvasContext.current.beginPath();
+        canvasContext.current.moveTo(x, y);
+    };
+
+    function draw(x: number, y: number){
+        if (!isDrawing.current || !canvasContext.current) return;
+        canvasContext.current.lineTo(x, y);
+        canvasContext.current.stroke();
+    };
+
+    function stopDrawing(){
+        if (!canvasContext.current) return;
+        isDrawing.current = false;
+        canvasContext.current.closePath();
+        getBlobByCanvas();
+    };
+
+    function handleMouseDown(e: React.MouseEvent){
+        startDrawing(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    };
+
+    function handleMouseMove(e: React.MouseEvent){
+        draw(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    };
+
+    function handleTouchStart(e: React.TouchEvent){
+        e.preventDefault();
+        const touch = e.touches[0];
+        const rect = previewCanvasRef.current?.getBoundingClientRect();
+        if (rect) {
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+            startDrawing(x, y);
+        }
+    };
+
+    function handleTouchMove(e: React.TouchEvent){
+        e.preventDefault();
+        const touch = e.touches[0];
+        const rect = previewCanvasRef.current?.getBoundingClientRect();
+        if (rect) {
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+            draw(x, y);
+        }
+    };
 
     return (
         <div
@@ -31,10 +112,14 @@ export default function DrawFirework({ previewCanvasRef }: {
                 flexDirection: "column",
                 justifyContent: "space-evenly",
                 alignItems: "center",
+                userSelect: "none"
             }}
         >
             <canvas
-                ref={previewCanvasRef}
+                ref={(prev) => {
+                    if(prev) canvasContext.current = prev.getContext("2d");
+                    previewCanvasRef.current = prev;
+                }}
                 className="bg-img-transparent"
                 width={getPrimaryCanvasSize()}
                 height={getPrimaryCanvasSize()}
@@ -42,6 +127,14 @@ export default function DrawFirework({ previewCanvasRef }: {
                     margin: "0.5rem",
                     border: "1px black solid"
                 }}
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseUp={stopDrawing}
+                onMouseLeave={stopDrawing}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={stopDrawing}
+                onTouchCancel={stopDrawing}
             />
             <div
                 style={{
@@ -84,9 +177,9 @@ export default function DrawFirework({ previewCanvasRef }: {
                 ペンの太さ
                 <Slider
                     aria-label="bold"
-                    value={boldness}
+                    value={thickness}
                     onChange={(_event, value) => {
-                        if(typeof value === "number") setBoldness(value);
+                        if(typeof value === "number") setThickness(value);
                     }}
                     valueLabelDisplay="auto"
                     step={1}

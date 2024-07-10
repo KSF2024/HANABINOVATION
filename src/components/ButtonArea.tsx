@@ -14,8 +14,8 @@ import { DataContext } from "../providers/DataProvider";
 import { CaptureContext } from "../providers/CaptureProvider";
 import { ModalContext } from "../providers/ModalProvider";
 import { useNavigate } from "react-router-dom";
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import HomeIcon from '@mui/icons-material/Home';
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import HomeIcon from "@mui/icons-material/Home";
 
 // ボタン類のコンポーネント
 export default function ButtonArea({theme}: {theme: Theme}){
@@ -59,7 +59,6 @@ export default function ButtonArea({theme}: {theme: Theme}){
         boothId,
         isPostedFirework
     } = useContext(DataContext);
-
 
     /* 関数定義 */
     // 撮影ボタンを押したときの処理

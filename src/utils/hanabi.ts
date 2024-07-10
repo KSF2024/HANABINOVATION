@@ -1,7 +1,19 @@
-import { hexToRgba } from "./modules";
-import { Spark, Star } from "./types";
+import { SAMPLE_DATA } from "./config";
+import { getBoothColor, getImageData, getImageSrc, hexToRgba } from "./modules";
+import { Point, RisingStars, Spark, Star } from "./types";
 
-export function generateStars(imageData: ImageData, angle: number = 0, interval: number = 10, radius: number = 5): Star[]{
+export function generateStars(
+    imageData: ImageData,
+    fireworkType: number,
+    angle: number = 0,
+    interval: number = 10,
+    radius: number = 5
+): Star[]{
+    if(fireworkType === 0){
+        interval = 6;
+        radius = 3;
+    }
+
     const stars: Star[] = [];
     const data = imageData.data;
     const width: number = imageData.width;
@@ -58,11 +70,30 @@ function rotatePoint(x: number, y: number, width: number, height: number, angle:
 }
 
 // starデータからキャンバスに点を描画する関数
-export function drawStar(ctx: CanvasRenderingContext2D, star: Star, alpha?: number, scale: number = 1){
+export function drawStar(
+    ctx: CanvasRenderingContext2D,
+    star: Star,
+    alpha?: number,
+    option?: {
+        scale: number,
+        initialPosition?: Point
+    }
+){
     // スケーリングされた座標と半径
-    const scaledX: number = star.x * scale;
-    const scaledY: number = star.y * scale;
-    const scaledRadius: number = star.radius * scale;
+    const {
+        scaledX,
+        scaledY
+    } = (option && option.scale !==1) ? ((option.initialPosition) ? {
+        scaledX: star.x + (option.initialPosition.x - star.x) * option.scale,
+        scaledY: star.y + (option.initialPosition.y - star.y) * option.scale
+    } : {
+        scaledX: star.x * option.scale,
+        scaledY: star.y * option.scale
+    }) : {
+        scaledX: star.x,
+        scaledY: star.y
+    }
+    const scaledRadius: number = star.radius * (option?.scale || 1);
 
     // 色の設定
     const starAlpha: number = (alpha) ? Math.min(star.color.alpha, alpha): star.color.alpha;
@@ -184,4 +215,63 @@ export function drawSpark(ctx: CanvasRenderingContext2D, spark: Spark, alpha?: n
     ctx.arc(spark.x, spark.y, scaledRadius, 0, Math.PI * 2);
     ctx.fill();
     ctx.closePath();
+}
+
+// 花火と火花を生成する関数
+export async function generateFirework(
+    boothId: string | null,
+    fireworkType: number,
+    fireworkDesign: string | null,
+    sparksType: number,
+    initialX: number,
+    initialY: number
+): Promise<{
+    stars: Star[];
+    sparks: Spark[];
+} | null>{
+
+    // 花火データを作成する
+    const imageSrc: string | null = (boothId) ? getImageSrc(boothId, fireworkType as 0 | 1 | 2 | 3, fireworkDesign) : SAMPLE_DATA.imageSrc;
+
+    if(!imageSrc) return null;
+    const imageData: ImageData = (await getImageData(imageSrc)).imageData;
+
+    const stars: Star[] = generateStars(imageData, fireworkType);
+
+    // 火花データを作成する
+    const sparksColor: string | null = (boothId) ? (getBoothColor(boothId) || "#888888") : SAMPLE_DATA.color;
+    const sparks: Spark[] = generateSparks(sparksType, sparksColor, initialX, initialY);
+
+    return { stars, sparks };
+}
+
+// 打ち上げ用花火の星データを作成する関数
+export function generateRisingStars(
+    boothId: string | null,
+    initialRiseX: number,
+    initialRiseY: number,
+    initialBurstX: number,
+    initialBurstY: number,
+): RisingStars{
+    // 色データを取得する
+    const colorCode: string = (boothId) ? (getBoothColor(boothId) || "#888888") : SAMPLE_DATA.color;
+    const color = hexToRgba(colorCode, 255);
+
+    // 花火を打ち上げる目標点を求める
+    const goalPositions = { x: initialBurstX, y: initialBurstY };
+
+    // 花火を打ち上げる始点を求める
+    const { x, y } = { x: initialRiseX, y: initialRiseY };
+
+    // 打ち上げ用の花火の星を作成する
+    const capitalStar: Star = { color, x, y, radius: 5 };
+
+    return { capitalStar, afterImageStars: [], goalPositions };
+}
+
+// 花火の星データ(花火が爆発した後)から、アニメーション開始時の花火の星(中央に集合した状態)のデータを取得する関数
+export function initializeStars(stars: Star[], initialX: number, initialY: number): Star[]{
+    return stars.map((star) => {
+        return {...star, x: initialX, y: initialY}
+    });
 }

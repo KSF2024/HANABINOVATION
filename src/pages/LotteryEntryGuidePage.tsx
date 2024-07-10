@@ -1,5 +1,4 @@
 import { Box, Typography } from "@mui/material"
-import { LOTTERY_EVENTS } from "../utils/config"
 import FooterPage from "../components/FooterPage"
 import LotteryGuide from "../components/LotteryGuide"
 

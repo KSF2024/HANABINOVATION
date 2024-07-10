@@ -38,6 +38,9 @@ import pin_image_beauti from "./../images/マップピン/河原ビューティ.
 import pin_image_design from "./../images/マップピン/河原デザイン・アートマップピン.png";
 import pin_image_matsuyamadesigner from "./../images/マップピン/松山デザイナーマップピン.png";
 import pin_image_iryou_niihama from "./../images/マップピン/河原医療大学校新居浜校マップピン.png"
+import kawahara from "./../images/kawahara.png";
+import openCampus1 from "./../images/オープンキャンパス/20240720OC_line-300x195.jpg";
+import openCampus2 from "./../images/オープンキャンパス/20240727OC_line-300x195.jpg";
 
 type SchoolInfo = {
     schoolName: string; // 学校名
@@ -51,10 +54,17 @@ type SchoolInfo = {
     mapPin: string;
 }
 
-type OpencampusDate = {
-    url: string; //オープンキャンパスのurl
-    date: string; //オープンキャンパスの日付
-}[];
+export type OpenCampusInfo = {
+    url: string; // オープンキャンパスのurl
+    title: string; // イベント名
+    imageSrc: string; // イメージ画像のパス
+};
+
+// サンプル花火データ
+export const SAMPLE_DATA = {
+    color: "#FFFFFF",
+    imageSrc: kawahara
+}
 
 // 各学校の設定データ
 export const SCHOOL_DATA: { [boothId: string]: SchoolInfo } = {
@@ -148,7 +158,7 @@ export const SCHOOL_DATA: { [boothId: string]: SchoolInfo } = {
     },
     "HDE5W4": {
         schoolName: "松山デザイナー専門学校",
-        color: "#00FF00",
+        color: "#0000FF",
         fireworksImages: [image9_1, image9_2, image9_3],
         positionPinX: 5,
         positionPinY: 0,
@@ -173,47 +183,22 @@ export const SCHOOL_DATA: { [boothId: string]: SchoolInfo } = {
 // ブースIDのリスト
 export const BOOTH_ID_LIST: string[] = Object.keys(SCHOOL_DATA);
 
-// 正しいブースIDかどうかを確かめる関数
-export function validateBoothId(boothId: string): boolean{
-    return BOOTH_ID_LIST.includes(boothId);
-}
-
-// 画像データのパスを取得する関数
-export function getImageSrc(boothId: string, fireworkType: 0 | 1 | 2 | 3, fireworkDesign: Blob | null): string | null{
-    let result: string = "";
-
-    // 例外処理を行う
-    if(!boothId) return null;
-    if(!validateBoothId(boothId)) return null;
-
-    // 画像データへのパスを取得する
-    if(fireworkType === 0){
-        if(!fireworkDesign) return null;
-        result = URL.createObjectURL(fireworkDesign);
-    }else{
-        const fireworkTypeIndex: 0 | 1 | 2 = (fireworkType - 1) as (0 | 1 | 2);
-        result = SCHOOL_DATA[boothId].fireworksImages[fireworkTypeIndex];
-    }
-
-    return result;
-}
-
-// ブースIDを指定して、各専門学校のテーマカラーを取得する関数
-export function getBoothColor(boothId: string): string | null{
-    if(!validateBoothId(boothId)) return null;
-    return SCHOOL_DATA[boothId].color;
-}
-
 export const LOTTERY_EVENTS: string[] = [
     "7/13(土) 14:00～",
     "7/14(日) 14:00～"
 ]
 
-export const OPENCAMPUS_DATE: OpencampusDate[] = [
-    [
-        {url: "https://kbc.kawahara.ac.jp/oc/2024-06-15/", date: "6/15"},
-    ],
-    [
-        {url: "https://kbc.kawahara.ac.jp/oc/2024-06-22/", date: "6/22"}
-    ]
+export const OPEN_CAMPUS_DATE: OpenCampusInfo[] = [
+    {
+        url: "https://kbc.kawahara.ac.jp/oc_event/20240720/",
+        // title: "7/20(土)夏フェスオープンキャンパス",
+        title: "7/20(土)",
+        imageSrc: openCampus1
+    },
+    {
+        url: "https://kbc.kawahara.ac.jp/oc_event/20240720/",
+        // title: "7/27(土)夏フェスオープンキャンパス",
+        title: "7/27(土)",
+        imageSrc: openCampus2
+    }
 ];
