@@ -570,9 +570,8 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
     /* 花火大会用の関数定義 */
     // データベースから花火データを取得し、打ち上げる関数
     async function initializeFireworksData(){
-        // const msAgo: number = 60 * 60 * 1000; // 何ミリ秒前までのデータを取得するか(1時間前までのデータを取得する)
-        const msAgo: number | undefined = undefined; // 何ミリ秒前までのデータを取得するか(全データを取得する)
-        // TODO 全データ取得を1時間前のデータのみ取得に修正
+        const msAgo: number = 60 * 60 * 1000; // 何ミリ秒前までのデータを取得するか(1時間前までのデータを取得する)
+        // const msAgo: number | undefined = undefined; // 何ミリ秒前までのデータを取得するか(全データを取得する)
         const response = await getFireworks(msAgo);
         if(!response) return;
 
