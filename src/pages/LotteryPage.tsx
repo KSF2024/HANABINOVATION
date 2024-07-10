@@ -91,7 +91,7 @@ export default function LotteryPage({isRevising, setIsRevising}: {
                         <TextField
                             required
                             variant="standard"
-                            label="ユーザー名"
+                            label="氏名"
                             value={userName}
                             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                                 setUserName(event.target.value);
@@ -108,7 +108,7 @@ export default function LotteryPage({isRevising, setIsRevising}: {
                         />
                         <TextField
                             variant="standard"
-                            label="電話番号"
+                            label="電話番号(任意)"
                             type="tel"
                             value={phoneNumber}
                             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
@@ -117,7 +117,7 @@ export default function LotteryPage({isRevising, setIsRevising}: {
                         />
                         <TextField
                             variant="standard"
-                            label="年齢"
+                            label="年齢(任意)"
                             type="number"
                             value={old}
                             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
@@ -126,7 +126,7 @@ export default function LotteryPage({isRevising, setIsRevising}: {
                         />
                         <TextField
                             variant="standard"
-                            label="学校名"
+                            label="学校名(任意)"
                             value={schoolName}
                             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                                 setSchoolName(event.target.value);
@@ -134,7 +134,7 @@ export default function LotteryPage({isRevising, setIsRevising}: {
                         />
                         <TextField
                             variant="standard"
-                            label="学年"
+                            label="学年(任意)"
                             type="number"
                             value={grade}
                             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
