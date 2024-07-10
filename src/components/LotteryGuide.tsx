@@ -17,7 +17,7 @@ export default function LotteryGuide(){
                 抽選で豪華景品が当たる！
             </Typography>
             <Typography sx={{ fontSize: "1rem", fontWeight: "bold", overflow: "hidden", whiteSpace: "nowrap" }}>
-                「AirPods 1名、KINUJOヘアドライヤー 1名」
+                「AirPods 1名、KINUJOヘアアイロン 1名」
             </Typography>
             <Typography sx={{ fontSize: "0.7rem", fontWeight: "bold" }}>
                 ※景品について、当選者には後日メールで郵送のためのご連絡をさせていただきます。

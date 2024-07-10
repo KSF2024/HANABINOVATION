@@ -34,7 +34,7 @@ export default function LotteryConfirmationPage({setIsRevising}: {
                 >
                     <Grid container spacing={4}>
                         <Grid item xs={12}>
-                            <div>ユーザー名</div>
+                            <div>氏名</div>
                             <div>{registration?.userName || ""}</div>
                         </Grid>
 
