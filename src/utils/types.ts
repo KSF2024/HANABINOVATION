@@ -101,3 +101,20 @@ export type Registration = {
     receipt: string; // 受付番号
     userName: string; // ユーザー名
 }
+
+// 各学校の設定データ
+type WritingMode = 'horizontal-tb' | 'vertical-rl' | 'vertical-lr' | 'sideways-rl' | 'sideways-lr';
+export type SchoolInfo = {
+    schoolName: string; // 学校名
+    color: string; // 学校のテーマカラー(カラーコード)
+    fireworksImages: {0: string, 1: string, 2: string}; // 花火の画像
+    mapData: {
+        pinX: number; //マップのピン横軸 単位は%
+        pinY: number; //マップのピン縦軸 単位は%
+        schoolNameX: number; //表示される学校名の縦軸 単位は%
+        schoolNameY: number; //表示される学校名の横軸 単位は%
+        schoolNameWidth: number; //表示される学校名の文字サイズ 単位はvw
+        writingMode: WritingMode; // 表示する学校名の向き
+        pinImageSrc: string; // ピンの画像ファイルのパス
+    }
+}
