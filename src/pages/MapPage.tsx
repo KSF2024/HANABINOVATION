@@ -67,7 +67,7 @@ export default function MapPage(){
                             <img
                                 key={index} 
                                 src={
-                                        [""].includes(boothId) ? (
+                                        postedBoothIdList.includes(boothId) ? (
                                             createdHanabiPin
                                         ) : (
                                             `${schoolInfo.mapPin}`
