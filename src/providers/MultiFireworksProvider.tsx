@@ -50,6 +50,7 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
     // 花火大会用花火データ
     const [fireworksData, setFireworksData] = useState<FireworkTypeInfo[] | null>(null);
     const intervalRef = useRef<number | null>(null);
+    const isProjectingRef = useRef<boolean>(false); // プロジェクター投影の処理中かどうか
 
     /* その他関数定義 */
     // 花火の打ち上げ初期位置・爆発中心位置を求める関数
@@ -121,18 +122,25 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
         // 打ち上げ用の花火の星データを初期化する
         const risingStars: RisingStars = generateRisingStars(boothId, initialRiseX, initialRiseY, initialBurstX, initialBurstY);
 
+        const isProjecting: boolean = isProjectingRef.current; // プロジェクター投影の処理中
+
         // 花火を打ち上げる
-        if(enableSound === 2) playSound(raiseSE);
-        await raiseSparks(fireworkId, risingStars, initialRiseY);
+        if(!isProjecting || enableSound){
+            if(enableSound === 2) playSound(raiseSE);
+            await raiseSparks(fireworkId, risingStars, initialRiseY);
+        }
 
         // 花火を爆発させる
-        if(enableSound) playSound(burstSE);
-        await burstFirework(fireworkId, fireworkType, stars, sparks, initialBurstX, initialBurstY);
-
-        await sleep(100);
+        if(!isProjecting || enableSound){
+            if(enableSound) playSound(burstSE);
+            await burstFirework(fireworkId, fireworkType, stars, sparks, initialBurstX, initialBurstY);
+            await sleep(100);
+        }
 
         // 花火を消滅させる
-        await fadeFirework(fireworkId, fireworkType);
+        if(!isProjecting || enableSound){
+            await fadeFirework(fireworkId, fireworkType);
+        }
 
         // 花火データを消去する
         setStarsObj(prevStarsObj => {
@@ -616,11 +624,11 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
     }
 
     // intervalを一時中断し、別の処理を実行する関数
-    async function interruptInterval<T>(func: () => T, interval: number = 3000){
+    async function interruptInterval<T>(func: () => Promise<T>, interval: number = 3000){
         if(!intervalRef.current) return;
         clearInterval(intervalRef.current); // 既存のタイマーをクリア
         await sleep(1000);
-        func(); // 別の処理を実行する
+        await func(); // 別の処理を実行する
         await sleep(interval);
         // 打ち上げアニメーションのループを再開する
         startRandomInterval<void>(animateRandomFirework);
@@ -650,15 +658,20 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
 
     // 花火大会モードを一時中断し、受け取った花火データを一斉に打ち上げる関数
     async function interruptFireworks(array: FireworkTypeInfo[]){
+        isProjectingRef.current = true; // プロジェクター投影の処理中であることを記録する
+
         // 受け取った花火データを一斉に打ち上げる関数
-        function raiseSimultaneously(){
-            array.forEach((data, index) => {
-                animateFirework(data.boothId, data.fireworkType, data.fireworkDesign, data.sparksType, (index === 0) ? 2 : 1);
+        async function raiseSimultaneously(){
+            const promises: Promise<void>[] = array.map((data, index) => {
+                return animateFirework(data.boothId, data.fireworkType, data.fireworkDesign, data.sparksType, (index === 0) ? 2 : 1);
             });
+            await Promise.all(promises);
         }
 
         // 花火大会モードを一時中断し、受け取った花火データを一斉に打ち上げる
-        interruptInterval<void>(raiseSimultaneously);
+        await interruptInterval<void>(raiseSimultaneously);
+
+        isProjectingRef.current = false; // プロジェクター投影の処理が終わったことを記録する
     }
 
     /* useEffect等 */

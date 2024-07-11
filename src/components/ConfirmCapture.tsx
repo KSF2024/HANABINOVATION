@@ -19,7 +19,8 @@ export default function ConfirmCapture(){
         fireworkType,
         sparksType,
         fireworkDesign,
-        setIsPostedFirework
+        setIsPostedFirework,
+        setPostedFireworksData
     } = useContext(DataContext);
 
     // 撮影処理用のcontext
@@ -69,6 +70,12 @@ export default function ConfirmCapture(){
 
         // 花火データ送信のエラーハンドリングを行う
         if(response){
+            setPostedFireworksData((prev) => {
+                if(!prev) return null;
+                const newData = {...prev};
+                newData[boothId] = data;
+                return newData;
+            });
             return true;
         }else{
             const errorTexts: string[] = [

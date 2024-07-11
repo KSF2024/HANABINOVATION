@@ -16,6 +16,7 @@ export default function QRPage(){
     const [qrText, setQrText] = useState<string>("");
     const [qrData, setQrData] = useState<QrData | "send-fireworks">(null);
     const navigate = useNavigate();
+    const [ scanKey, setScanKey ] = useState<number>(0);
 
     const handleScan = (data: any) => {
         if (data) {
@@ -30,7 +31,7 @@ export default function QRPage(){
     function getQrData(qrText: string): QrData | "send-fireworks" {
         const checkPattern: RegExp = /^https:\/\/hanabinovation\.org\/[^\/]+\/create-firework\/$/;
         const checkUrl: boolean = checkPattern.test(qrText);
-        const sendUrl: string = "https://hanabinovation.org/send-fireworks/"
+        const sendUrl: string = "https://hanabinovation.org/send-fireworks/";
 
         if(checkUrl){
             const checkPatternBooth: RegExp = /^https:\/\/hanabinovation\.org\/([^\/]+)\/create-firework\/$/;
@@ -57,14 +58,13 @@ export default function QRPage(){
             video.style.width = "100%";
             video.style.height = "100%";
         }
-    }, []);
+    }, [qrData]);
 
     useEffect(() => {
         const gottenQrData: QrData | "send-fireworks" = getQrData(qrText);
-        if(gottenQrData) {
+        if(gottenQrData){
             setQrData(gottenQrData);
         }
-        
     }, [qrText]);
 
     return(
@@ -77,7 +77,8 @@ export default function QRPage(){
                     height: "100%",
                     textAlign: "center",
                     position: "relative",
-                    overflow: "hidden"
+                    overflow: "hidden",
+                    backgroundColor: "black"
                 }}
             >
                 <div 
@@ -90,10 +91,14 @@ export default function QRPage(){
                     }}
                 >
                     <QRScanner
-                        delay={300}
+                        key={scanKey}
+                        delay={3000}
                         onError={handleError}
                         onScan={handleScan}
-                        style={{width: "100%", height: "100vh",}}
+                        style={{ width: "100%", height: "100vh" }}
+                        constraints={{
+                            video: { facingMode: "environment" }
+                        } as any}
                     />
                 </div>
                 <div 
@@ -170,7 +175,11 @@ export default function QRPage(){
                                     はい
                                 </Button>
                                 <Button
-                                    onClick={() => {setQrData(null)}}
+                                    onClick={() => {
+                                        setQrData(null);
+                                        setScanKey(scanKey + 1);
+                                        setQrText("");
+                                    }}
                                     sx={{
                                         border: "0.1rem solid white",
                                         backgroundColor: "#098FF0",
