@@ -11,15 +11,20 @@ export default function MapPage(){
 
     const [ postedBoothIdList, setPostedBoothIdList ] = useState<string[]>([]);
 
-    const getPinStyle = ( pinX:number, pinY:number ): CSSProperties => ({
+    const getPinStyle = ( pinX:number, pinY:number, boothId:string ): CSSProperties => ({
         position: "absolute" as "absolute",
         top: `${pinY}vh`,
         left: `${pinX}vw`,
         transform: "translate(-50%, -50%)",
         width: "15vw",
         filter: "drop-shadow(5px 5px 0px rgba(0, 0, 0, 0.5))",
-        animation: postedBoothIdList? "none" :"floatUpDown 2s ease-in-out infinite",
-    })
+        animation: 
+            postedBoothIdList.includes(boothId) ? (
+                "none"
+            ) : (
+                "floatUpDown 2s ease-in-out infinite"
+            )
+    });
 
     const getAnimationStyle = () => { //ピンの上下移動を高さを指定する関数
         return `
@@ -74,7 +79,8 @@ export default function MapPage(){
                                 style={
                                     getPinStyle(
                                         schoolInfo.mapData.pinX,
-                                        schoolInfo.mapData.pinY
+                                        schoolInfo.mapData.pinY,
+                                        boothId
                                     )
                                 }
                             />
