@@ -1,32 +1,47 @@
-import { CSSProperties, useContext } from "react";
+import { CSSProperties, useContext, useEffect, useState } from "react";
 import FooterPage from "../components/FooterPage";
 import mapbooth from "../images/map_booth.png";
 import { SCHOOL_DATA } from "../utils/config";
 import { DataContext } from "../providers/DataProvider";
+import createdHanabiPin from "../images/マップピン/花火作成済みマップピン.png";
+import { FireworkData } from "../utils/types";
 
 export default function MapPage(){
 
-    const schoolEntries = Object.entries(SCHOOL_DATA)
-
     const { postedFireworksData } = useContext(DataContext);
 
-    const getPinStyle = ( positionPinX:number, positionPinY:number ): CSSProperties =>({
+    const [ postedBoothIdList, setPostedBoothIdList ] = useState<FireworkData | null>(null);
+
+    const getPinStyle = ( positionPinX:number, positionPinY:number ): CSSProperties => ({
         position: "absolute" as "absolute",
         top: `${positionPinY}vh`,
         left: `${positionPinX}vw`,
         transform: "translate(-50%, -50%)",
         width: "15vw",
         filter: "drop-shadow(5px 5px 0px rgba(0, 0, 0, 0.5))",
-        animation: 'floatUpDown 2s ease-in-out infinite',
+        animation: postedBoothIdList? "none" :"floatUpDown 2s ease-in-out infinite",
     })
+
+    const getAnimationStyle = () => { //ピンの上下移動を高さを指定する関数
+        return `
+        @keyframes floatUpDown {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-10px);
+        }
+        }`;
+    };
 
     useEffect(() => {
         if(!postedFireworksData) return;
         const postedBoothIdList: string[] = Object.keys(postedFireworksData);
-    }, [postedFireworksData ]);
+    }, [postedFireworksData]);
 
     return (
         <FooterPage>
+        <style>{getAnimationStyle()}</style>
             <div>
                 <div 
                     style={{
@@ -41,16 +56,22 @@ export default function MapPage(){
                 >
                     <img 
                         src={mapbooth}
-                        style={{width: "100%", height: "96vh"}}
+                        style={{width: "100%", height: "90vh"}}
                     >
                     </img>
                 </div>
                 <div>
-                    {schoolEntries.map(([schoolName,schoolInfo], index) => (
+                    {Object.entries(SCHOOL_DATA).map(([boothId, schoolInfo], index) => (
                         <div>
                             <img
                                 key={index} 
-                                src={`${schoolInfo.mapPin}`}
+                                src={
+                                        [""].includes(boothId) ? (
+                                            createdHanabiPin
+                                        ) : (
+                                            `${schoolInfo.mapPin}`
+                                        )
+                                    }
                                 style={
                                     getPinStyle(
                                         schoolInfo.positionPinX,
