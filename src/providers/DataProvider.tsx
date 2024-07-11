@@ -88,13 +88,6 @@ export function DataProvider({children}: {children: ReactNode}){
             if(fireworksData){
                 // 現在登録済みの花火データを保存する
                 setPostedFireworksData(fireworksData);
-
-                // 全てのブースを回ったかどうかを取得する
-                const boothIdList: string[] = Object.keys(fireworksData); // 回ったことのあるブース一覧
-                const newCanApply: boolean = BOOTH_ID_LIST.every((value) => { // 全てのブースを回ったかどうか
-                    boothIdList.includes(value);
-                })
-                setCanApply(newCanApply);
             }
 
             // 応募済みかどうかを取得する
@@ -105,6 +98,17 @@ export function DataProvider({children}: {children: ReactNode}){
             }
         })();
     }, [userId]);
+
+    // postedFireworksData(現在登録済みの花火のデータ)が取得出来たら、応募可能かどうか、応募済みかどうかを取得する
+    useEffect(() => {
+        if(!postedFireworksData) return;
+        // 全てのブースを回ったかどうかを取得する
+        const boothIdList: string[] = Object.keys(postedFireworksData); // 回ったことのあるブース一覧
+        const newCanApply: boolean = BOOTH_ID_LIST.every((value) => { // 全てのブースを回ったかどうか
+            boothIdList.includes(value);
+        })
+        setCanApply(newCanApply);
+    }, [postedFireworksData]);
 
     // userIdとboothIdと送信済み花火データが初期化出来たら、現在訪れているブースで花火を作成済みかどうかを取得する
     useEffect(() => {
