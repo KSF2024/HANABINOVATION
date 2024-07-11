@@ -108,7 +108,7 @@ export function DataProvider({children}: {children: ReactNode}){
         const newCanApply: boolean = BOOTH_ID_LIST.every((value) => { // 全てのブースを回ったかどうか
             boothIdList.includes(value);
         });
-        toast.info(JSON.stringify({userId, boothIdList}))
+        toast.info(JSON.stringify({userId, boothIdList, newCanApply}))
         setCanApply(newCanApply);
     }, [postedFireworksData]);
 
