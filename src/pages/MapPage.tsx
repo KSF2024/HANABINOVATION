@@ -61,7 +61,7 @@ export default function MapPage(){
                 >
                     <img 
                         src={mapBooth}
-                        style={{width: "100%", height: "90vh"}}
+                        style={{width: "100%", height: "90vh", zIndex: -1}}
                     >
                     </img>
                 </div>
