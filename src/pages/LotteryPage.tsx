@@ -47,6 +47,7 @@ export default function LotteryPage({isRevising, setIsRevising}: {
                     userName,
                     receipt: res.data.receipt || ""
                 });
+                setIsRevising(false);
             }else{
                 // 応募データの送信が失敗した際のエラーハンドリング
                 const errorTexts: string[] = [
