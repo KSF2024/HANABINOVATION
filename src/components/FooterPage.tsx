@@ -6,7 +6,8 @@ export default function FooterPage({ children }: {children: React.ReactNode}){
             style={{
                 height: "100dvh",
                 display: "flex",
-                flexDirection: "column"
+                flexDirection: "column",
+                zIndex: "100"
             }}
         >
             <div
