@@ -22,6 +22,7 @@ type DataContent = {
     canApply: boolean;
     registration: Registration | null;
     postedFireworksData: FireworksData | null;
+    setPostedFireworksData: React.Dispatch<React.SetStateAction<FireworksData | null>>;
 };
 
 /* Provider */
@@ -40,7 +41,8 @@ const initialData: DataContent = {
     setIsApplied: () => {},
     canApply: false,
     registration: null,
-    postedFireworksData: null
+    postedFireworksData: null,
+    setPostedFireworksData: () => {}
 };
 
 export const DataContext = createContext<DataContent>(initialData);
@@ -130,7 +132,8 @@ export function DataProvider({children}: {children: ReactNode}){
                 setIsApplied,
                 canApply,
                 registration,
-                postedFireworksData
+                postedFireworksData,
+                setPostedFireworksData
             }}
         >
             {children}
