@@ -13,7 +13,8 @@ export default function LotteryPage({isRevising, setIsRevising}: {
 }){
     const {
         userId,
-        setIsApplied
+        setIsApplied,
+        setRegistration
     } = useContext(DataContext);
 
     const [userName, setUserName] = useState("");
@@ -42,6 +43,10 @@ export default function LotteryPage({isRevising, setIsRevising}: {
                 // 応募データの送信が完了したら、案内を出して応募確認ページに遷移する
                 toast.info("抽選会への応募が完了しました！　抽選会の開催までお待ちください。");
                 setIsApplied(true);
+                setRegistration({
+                    userName,
+                    receipt: res.data.receipt || ""
+                });
             }else{
                 // 応募データの送信が失敗した際のエラーハンドリング
                 const errorTexts: string[] = [
