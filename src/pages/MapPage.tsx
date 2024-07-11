@@ -94,7 +94,7 @@ export default function MapPage(){
                                     left: `${schoolInfo.mapData.schoolNameX}vw`,
                                     width: `${schoolInfo.mapData.schoolNameWidth}vw`,
                                     fontSize: "3.5vw",
-                                    color: "#FFFFFF",
+                                    color: "#000000",
                                     writingMode: schoolInfo.mapData.writingMode,
                                 }}
                             >

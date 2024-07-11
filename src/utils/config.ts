@@ -63,7 +63,7 @@ export const SCHOOL_DATA: { [boothId: string]: SchoolInfo } = {
         fireworksImages: [image1_1, image1_2, image1_3],
         mapData: {
             pinX: 29,
-            pinY: 18,
+            pinY: 19,
             schoolNameX: 12,
             schoolNameY: 26,
             schoolNameWidth: 52,
@@ -106,8 +106,8 @@ export const SCHOOL_DATA: { [boothId: string]: SchoolInfo } = {
         mapData: {
             pinX: 80,
             pinY: 0,
-            schoolNameX: 87,
-            schoolNameY: 8,
+            schoolNameX: 86,
+            schoolNameY: 6,
             schoolNameWidth: 10,
             writingMode: "vertical-rl",
             pinImageSrc: pin_image_aipetto
@@ -134,8 +134,8 @@ export const SCHOOL_DATA: { [boothId: string]: SchoolInfo } = {
         mapData: {
             pinX: 22,
             pinY: 47,
-            schoolNameX: 12.5,
-            schoolNameY: 52.5,
+            schoolNameX: 12,
+            schoolNameY: 53,
             schoolNameWidth: 35,
             writingMode: "horizontal-tb",
             pinImageSrc: pin_image_iryouhukushi
@@ -146,11 +146,11 @@ export const SCHOOL_DATA: { [boothId: string]: SchoolInfo } = {
         color: "#FF00FF",
         fireworksImages: [image7_1, image7_2, image7_3],
         mapData: {
-            pinX: 5,
-            pinY: 0,
-            schoolNameX: 0,
-            schoolNameY: 0,
-            schoolNameWidth: 0,
+            pinX: 40,
+            pinY: 54,
+            schoolNameX: 32,
+            schoolNameY: 60,
+            schoolNameWidth: 38,
             writingMode: "horizontal-tb",
             pinImageSrc: pin_image_beauti
         }
@@ -160,12 +160,12 @@ export const SCHOOL_DATA: { [boothId: string]: SchoolInfo } = {
         color: "#FFFF00",
         fireworksImages: [image8_1, image8_2, image8_3],
         mapData: {
-            pinX: 5,
-            pinY: 0,
-            schoolNameX: 0,
-            schoolNameY: 0,
+            pinX: 82,
+            pinY: 40,
+            schoolNameX: 91,
+            schoolNameY: 48,
             schoolNameWidth: 0,
-            writingMode: "horizontal-tb",
+            writingMode: "vertical-rl",
             pinImageSrc: pin_image_design
         }
     },
@@ -174,11 +174,11 @@ export const SCHOOL_DATA: { [boothId: string]: SchoolInfo } = {
         color: "#0000FF",
         fireworksImages: [image9_1, image9_2, image9_3],
         mapData: {
-            pinX: 5,
-            pinY: 0,
-            schoolNameX: 0,
-            schoolNameY: 0,
-            schoolNameWidth: 0,
+            pinX: 8,
+            pinY: 56,
+            schoolNameX: 6,
+            schoolNameY: 60,
+            schoolNameWidth: 22,
             writingMode: "horizontal-tb",
             pinImageSrc: pin_image_matsuyamadesigner
         }
@@ -188,10 +188,10 @@ export const SCHOOL_DATA: { [boothId: string]: SchoolInfo } = {
         color: "#00FFAC",
         fireworksImages: [image10_1, image10_2, image10_3],
         mapData: {
-            pinX: 5,
-            pinY: 0,
+            pinX: 56,
+            pinY: 46,
             schoolNameX: 55,
-            schoolNameY: 50,
+            schoolNameY: 52,
             schoolNameWidth: 26,
             writingMode: "horizontal-tb",
             pinImageSrc: pin_image_iryou_niihama
