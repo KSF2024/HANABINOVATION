@@ -15,7 +15,6 @@ export default function MapPage(){
         position: "absolute" as "absolute",
         top: `${pinY}vh`,
         left: `${pinX}vw`,
-        transform: "translate(-50%, -50%)",
         width: "15vw",
         filter: "drop-shadow(5px 5px 0px rgba(0, 0, 0, 0.5))",
         animation: 
