@@ -108,7 +108,7 @@ export const SCHOOL_DATA: { [boothId: string]: SchoolInfo } = {
             pinY: 0,
             schoolNameX: 86,
             schoolNameY: 6,
-            schoolNameWidth: 10,
+            schoolNameWidth: 25,
             writingMode: "vertical-rl",
             pinImageSrc: pin_image_aipetto
         }

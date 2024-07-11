@@ -92,7 +92,11 @@ export default function MapPage(){
                                     alignItems: "center",
                                     top: `${schoolInfo.mapData.schoolNameY}vh`,
                                     left: `${schoolInfo.mapData.schoolNameX}vw`,
-                                    width: `${schoolInfo.mapData.schoolNameWidth}vw`,
+                                    ...(schoolInfo.mapData.writingMode.includes("vertical")) ? (
+                                        { height: `${schoolInfo.mapData.schoolNameWidth}vh` }
+                                    ) : (
+                                        { width: `${schoolInfo.mapData.schoolNameWidth}vw` }
+                                    ),
                                     fontSize: "3.5vw",
                                     color: "#000000",
                                     writingMode: schoolInfo.mapData.writingMode,
