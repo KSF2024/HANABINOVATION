@@ -62,9 +62,8 @@ export default function MapPage(){
                 </div>
                 <div>
                     {Object.entries(SCHOOL_DATA).map(([boothId, schoolInfo], index) => (
-                        <div>
+                        <div key={index}>
                             <img
-                                key={index} 
                                 src={
                                         postedBoothIdList.includes(boothId) ? (
                                             createdHanabiPin
