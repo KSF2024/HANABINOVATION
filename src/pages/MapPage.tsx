@@ -90,6 +90,7 @@ export default function MapPage(){
                                     display: "flex",
                                     justifyContent: "center",
                                     alignItems: "center",
+                                    userSelect: "none",
                                     top: `${schoolInfo.mapData.schoolNameY}vh`,
                                     left: `${schoolInfo.mapData.schoolNameX}vw`,
                                     ...(schoolInfo.mapData.writingMode.includes("vertical")) ? (
