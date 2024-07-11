@@ -106,9 +106,8 @@ export function DataProvider({children}: {children: ReactNode}){
         // 全てのブースを回ったかどうかを取得する
         const boothIdList: string[] = Object.keys(postedFireworksData); // 回ったことのあるブース一覧
         const newCanApply: boolean = BOOTH_ID_LIST.every((value) => { // 全てのブースを回ったかどうか
-            boothIdList.includes(value);
+            return boothIdList.includes(value);
         });
-        toast.info(JSON.stringify({userId, boothIdList, newCanApply}))
         setCanApply(newCanApply);
     }, [postedFireworksData]);
 
