@@ -23,8 +23,7 @@ export default function MapPage(){
                 "none"
             ) : (
                 "floatUpDown 2s ease-in-out infinite"
-            ),
-        zIndex: "2"
+            )
     });
 
     const getAnimationStyle = () => { //ピンの上下移動を高さを指定する関数
