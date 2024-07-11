@@ -41,18 +41,7 @@ import pin_image_iryou_niihama from "./../images/マップピン/河原医療大
 import kawahara from "./../images/kawahara.png";
 import openCampus1 from "./../images/オープンキャンパス/20240720OC_line-300x195.jpg";
 import openCampus2 from "./../images/オープンキャンパス/20240727OC_line-300x195.jpg";
-
-type SchoolInfo = {
-    schoolName: string; // 学校名
-    color: string; // 学校のテーマカラー(カラーコード)
-    fireworksImages: {0: string, 1: string, 2: string}; // 花火の画像
-    positionPinX: number; //マップのピン横軸 単位は%
-    positionPinY: number; //マップのピン縦軸 単位は%
-    schoolNameX: number; //表示される学校名の縦軸 単位は%
-    schoolNameY: number; //表示される学校名の横軸 単位は%
-    schoolNameWidth: number; //表示される学校名の文字サイズ 単位はvw
-    mapPin: string;
-}
+import { SchoolInfo } from "./types";
 
 export type OpenCampusInfo = {
     url: string; // オープンキャンパスのurl
@@ -72,111 +61,141 @@ export const SCHOOL_DATA: { [boothId: string]: SchoolInfo } = {
         schoolName: "河原電子ビジネス専門学校",
         color: "#00FFFF",
         fireworksImages: [image1_1, image1_2, image1_3],
-        positionPinX: 37,
-        positionPinY: 22,
-        schoolNameX: 12,
-        schoolNameY: 26,
-        schoolNameWidth: 52,
-        mapPin: pin_image_denshi
+        mapData: {
+            pinX: 29,
+            pinY: 18,
+            schoolNameX: 12,
+            schoolNameY: 26,
+            schoolNameWidth: 52,
+            writingMode: "horizontal-tb",
+            pinImageSrc: pin_image_denshi
+        }
     },
     "Y6XBJH": {
         schoolName: "河原外語観光・製菓専門学校",
         color: "#4800FF",
         fireworksImages: [image2_1, image2_2, image2_3],
-        positionPinX: 15,
-        positionPinY:2,
-        schoolNameX: 5,
-        schoolNameY: 5,
-        schoolNameWidth: 25,
-        mapPin: pin_image_gaigoseika
+        mapData: {
+            pinX: 7,
+            pinY: 2,
+            schoolNameX: 5,
+            schoolNameY: 5,
+            schoolNameWidth: 25,
+            writingMode: "horizontal-tb",
+            pinImageSrc: pin_image_gaigoseika
+        }
     },
     "7JDZVP": {
         schoolName: "大原簿記公務員専門学校 愛媛校",
         color: "#FF0000",
         fireworksImages: [image3_1, image3_2, image3_3],
-        positionPinX: 41,
-        positionPinY: 2,
-        schoolNameX: 35,
-        schoolNameY: 5,
-        schoolNameWidth: 26,
-        mapPin: pin_image_ooharaboki
+        mapData: {
+            pinX: 41,
+            pinY: 2,
+            schoolNameX: 35,
+            schoolNameY: 5,
+            schoolNameWidth: 26,
+            writingMode: "horizontal-tb",
+            pinImageSrc: pin_image_ooharaboki
+        }
     },
     "SHSQ4A": {
         schoolName: "河原アイペットワールド専門学校",
         color: "#FFA500",
         fireworksImages: [image4_1, image4_2, image4_3],
-        positionPinX: 80,
-        positionPinY: 6,
-        schoolNameX: 87,
-        schoolNameY: 8,
-        schoolNameWidth: 10,
-        mapPin: pin_image_aipetto
+        mapData: {
+            pinX: 80,
+            pinY: 0,
+            schoolNameX: 87,
+            schoolNameY: 8,
+            schoolNameWidth: 10,
+            writingMode: "vertical-rl",
+            pinImageSrc: pin_image_aipetto
+        }
     },
     "FZVSW0": {
         schoolName: "河原医療大学校",
         color: "#00FF00",
         fireworksImages: [image5_1, image5_2, image5_3],
-        positionPinX: 50,
-        positionPinY: 31.5,
-        schoolNameX: 25,
-        schoolNameY: 34,
-        schoolNameWidth: 26,
-        mapPin: pin_image_iryou
+        mapData: {
+            pinX: 50,
+            pinY: 31.5,
+            schoolNameX: 25,
+            schoolNameY: 34,
+            schoolNameWidth: 26,
+            writingMode: "horizontal-tb",
+            pinImageSrc: pin_image_iryou
+        }
     },
     "WA067Z": {
         schoolName: "河原医療福祉専門学校",
         color: "#CDFF00",
         fireworksImages: [image6_1, image6_2, image6_3],
-        positionPinX: 22,
-        positionPinY: 47,
-        schoolNameX: 12.5,
-        schoolNameY: 52.5,
-        schoolNameWidth: 35,
-        mapPin: pin_image_iryouhukushi
+        mapData: {
+            pinX: 22,
+            pinY: 47,
+            schoolNameX: 12.5,
+            schoolNameY: 52.5,
+            schoolNameWidth: 35,
+            writingMode: "horizontal-tb",
+            pinImageSrc: pin_image_iryouhukushi
+        }
     },
     "94VPFZ": {
         schoolName: "河原ビューティモード専門学校",
         color: "#FF00FF",
         fireworksImages: [image7_1, image7_2, image7_3],
-        positionPinX: 5,
-        positionPinY: 0,
-        schoolNameX: 0,
-        schoolNameY: 0,
-        schoolNameWidth: 0,
-        mapPin: pin_image_beauti
+        mapData: {
+            pinX: 5,
+            pinY: 0,
+            schoolNameX: 0,
+            schoolNameY: 0,
+            schoolNameWidth: 0,
+            writingMode: "horizontal-tb",
+            pinImageSrc: pin_image_beauti
+        }
     },
     "5HGS6W": {
         schoolName: "河原デザイン・アート専門学校",
         color: "#FFFF00",
         fireworksImages: [image8_1, image8_2, image8_3],
-        positionPinX: 5,
-        positionPinY: 0,
-        schoolNameX: 0,
-        schoolNameY: 0,
-        schoolNameWidth: 0,
-        mapPin: pin_image_design
+        mapData: {
+            pinX: 5,
+            pinY: 0,
+            schoolNameX: 0,
+            schoolNameY: 0,
+            schoolNameWidth: 0,
+            writingMode: "horizontal-tb",
+            pinImageSrc: pin_image_design
+        }
     },
     "HDE5W4": {
         schoolName: "松山デザイナー専門学校",
         color: "#0000FF",
         fireworksImages: [image9_1, image9_2, image9_3],
-        positionPinX: 5,
-        positionPinY: 0,
-        schoolNameX: 0,
-        schoolNameY: 0,
-        schoolNameWidth: 0,
-        mapPin: pin_image_matsuyamadesigner
+        mapData: {
+            pinX: 5,
+            pinY: 0,
+            schoolNameX: 0,
+            schoolNameY: 0,
+            schoolNameWidth: 0,
+            writingMode: "horizontal-tb",
+            pinImageSrc: pin_image_matsuyamadesigner
+        }
     },
     "Y9KFFH": {
         schoolName: "河原医療大学校 新居浜校",
         color: "#00FFAC",
         fireworksImages: [image10_1, image10_2, image10_3],
-        positionPinX: 5,
-        positionPinY: 0,
-        schoolNameX: 55,
-        schoolNameY: 50,
-        schoolNameWidth: 26,
-        mapPin: pin_image_iryou_niihama
+        mapData: {
+            pinX: 5,
+            pinY: 0,
+            schoolNameX: 55,
+            schoolNameY: 50,
+            schoolNameWidth: 26,
+            writingMode: "horizontal-tb",
+            pinImageSrc: pin_image_iryou_niihama
+        }
     }
 };
 

@@ -20,7 +20,7 @@ export default function App(){
                     <Route path="/:boothId/create-firework" element={<DesignPage/>}/>
                     <Route path="/:boothId/capture-firework" element={<PhotoPage/>}/>
                     <Route path="/:boothId/show-fireworks" element={<FireworksDisplayPage/>}/>
-                    <Route path="/map" element={<MapPage/>}/>
+                    <Route path="/:boothId/map" element={<MapPage/>}/>
                     <Route path="/:boothId/scan-qr" element={<QRPage/>}/>
                     <Route path="/:boothId/enter-lottery" element={<LotteryRouter/>}/>
                     <Route path="/receive-fireworks" element={<FireworksReceiver/>}/>
