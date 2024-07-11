@@ -3,6 +3,7 @@ import { ulid } from "ulidx";
 import { FireworksData, Registration } from "../utils/types";
 import { getFireworksByUserId, getRegistration } from "../utils/apiClient";
 import { BOOTH_ID_LIST } from "../utils/config";
+import { toast } from "react-toastify";
 
 /* 型定義 */
 // contextに渡すデータの型
@@ -106,7 +107,8 @@ export function DataProvider({children}: {children: ReactNode}){
         const boothIdList: string[] = Object.keys(postedFireworksData); // 回ったことのあるブース一覧
         const newCanApply: boolean = BOOTH_ID_LIST.every((value) => { // 全てのブースを回ったかどうか
             boothIdList.includes(value);
-        })
+        });
+        toast.info(JSON.stringify({userId, boothIdList}))
         setCanApply(newCanApply);
     }, [postedFireworksData]);
 
