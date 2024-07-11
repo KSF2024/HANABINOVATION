@@ -1,10 +1,9 @@
 import { CSSProperties, useContext, useEffect, useState } from "react";
 import FooterPage from "../components/FooterPage";
-import mapbooth from "../images/map_booth.png";
+import mapBooth from "../images/map_booth.png";
 import { SCHOOL_DATA } from "../utils/config";
 import { DataContext } from "../providers/DataProvider";
 import createdHanabiPin from "../images/マップピン/花火作成済みマップピン.png";
-import { FireworkData } from "../utils/types";
 
 export default function MapPage(){
 
@@ -12,10 +11,10 @@ export default function MapPage(){
 
     const [ postedBoothIdList, setPostedBoothIdList ] = useState<string[]>([]);
 
-    const getPinStyle = ( positionPinX:number, positionPinY:number ): CSSProperties => ({
+    const getPinStyle = ( pinX:number, pinY:number ): CSSProperties => ({
         position: "absolute" as "absolute",
-        top: `${positionPinY}vh`,
-        left: `${positionPinX}vw`,
+        top: `${pinY}vh`,
+        left: `${pinX}vw`,
         transform: "translate(-50%, -50%)",
         width: "15vw",
         filter: "drop-shadow(5px 5px 0px rgba(0, 0, 0, 0.5))",
@@ -56,7 +55,7 @@ export default function MapPage(){
                     }}
                 >
                     <img 
-                        src={mapbooth}
+                        src={mapBooth}
                         style={{width: "100%", height: "90vh"}}
                     >
                     </img>
@@ -70,13 +69,13 @@ export default function MapPage(){
                                         postedBoothIdList.includes(boothId) ? (
                                             createdHanabiPin
                                         ) : (
-                                            `${schoolInfo.mapPin}`
+                                            `${schoolInfo.mapData.pinImageSrc}`
                                         )
                                     }
                                 style={
                                     getPinStyle(
-                                        schoolInfo.positionPinX,
-                                        schoolInfo.positionPinY
+                                        schoolInfo.mapData.pinX,
+                                        schoolInfo.mapData.pinY
                                     )
                                 }
                             />
@@ -86,11 +85,12 @@ export default function MapPage(){
                                     display: "flex",
                                     justifyContent: "center",
                                     alignItems: "center",
-                                    top: `${schoolInfo.schoolNameY}vh`,
-                                    left: `${schoolInfo.schoolNameX}vw`,
-                                    width: `${schoolInfo.schoolNameWidth}vw`,
+                                    top: `${schoolInfo.mapData.schoolNameY}vh`,
+                                    left: `${schoolInfo.mapData.schoolNameX}vw`,
+                                    width: `${schoolInfo.mapData.schoolNameWidth}vw`,
                                     fontSize: "3.5vw",
-                                    color: "#FFFFFF"
+                                    color: "#FFFFFF",
+                                    writingMode: schoolInfo.mapData.writingMode,
                                 }}
                             >
                                 {schoolInfo.schoolName}
