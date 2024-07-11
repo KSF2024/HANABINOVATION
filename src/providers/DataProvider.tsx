@@ -3,7 +3,6 @@ import { ulid } from "ulidx";
 import { FireworksData, Registration } from "../utils/types";
 import { getFireworksByUserId, getRegistration } from "../utils/apiClient";
 import { BOOTH_ID_LIST } from "../utils/config";
-import { toast } from "react-toastify";
 
 /* 型定義 */
 // contextに渡すデータの型
