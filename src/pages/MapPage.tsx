@@ -10,7 +10,7 @@ export default function MapPage(){
 
     const { postedFireworksData } = useContext(DataContext);
 
-    const [ postedBoothIdList, setPostedBoothIdList ] = useState<FireworkData | null>(null);
+    const [ postedBoothIdList, setPostedBoothIdList ] = useState<string[]>([]);
 
     const getPinStyle = ( positionPinX:number, positionPinY:number ): CSSProperties => ({
         position: "absolute" as "absolute",
@@ -36,7 +36,8 @@ export default function MapPage(){
 
     useEffect(() => {
         if(!postedFireworksData) return;
-        const postedBoothIdList: string[] = Object.keys(postedFireworksData);
+        const newPostedBoothIdList: string[] = Object.keys(postedFireworksData);
+        setPostedBoothIdList(newPostedBoothIdList);
     }, [postedFireworksData]);
 
     return (
