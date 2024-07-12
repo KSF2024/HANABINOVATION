@@ -615,7 +615,7 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
     }
 
     // intervalを一時中断し、別の処理を実行する関数
-    async function interruptInterval<T>(func: () => T, interval: number = 3000){
+    async function interruptInterval<T>(func: () => Promise<T>, interval: number = 3000){
         if(!intervalRef.current) return;
         clearInterval(intervalRef.current); // 既存のタイマーをクリア
         await sleep(1000);
@@ -650,16 +650,15 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
     // 花火大会モードを一時中断し、受け取った花火データを一斉に打ち上げる関数
     async function interruptFireworks(array: FireworkTypeInfo[]){
         // 受け取った花火データを一斉に打ち上げる関数
-        function raiseSimultaneously(){
-            array.forEach((data, index) => {
-                animateFirework(data.boothId, data.fireworkType, data.fireworkDesign, data.sparksType, (index === 0) ? 2 : 1);
+        async function raiseSimultaneously(){
+            const promises: Promise<void>[] = array.map((data, index) => {
+                return animateFirework(data.boothId, data.fireworkType, data.fireworkDesign, data.sparksType, (index === 0) ? 2 : 1);
             });
+            await Promise.all(promises);
         }
 
         // 花火大会モードを一時中断し、受け取った花火データを一斉に打ち上げる
         await interruptInterval<void>(raiseSimultaneously);
-
-        isProjectingRef.current = false; // プロジェクター投影の処理が終わったことを記録する
     }
 
     /* useEffect等 */
