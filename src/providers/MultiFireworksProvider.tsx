@@ -128,7 +128,6 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
         // 花火を爆発させる
         if(enableSound) playSound(burstSE);
         await burstFirework(fireworkId, fireworkType, stars, sparks, initialBurstX, initialBurstY);
-
         await sleep(100);
 
         // 花火を消滅させる
@@ -620,7 +619,7 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
         if(!intervalRef.current) return;
         clearInterval(intervalRef.current); // 既存のタイマーをクリア
         await sleep(1000);
-        func(); // 別の処理を実行する
+        await func(); // 別の処理を実行する
         await sleep(interval);
         // 打ち上げアニメーションのループを再開する
         startRandomInterval<void>(animateRandomFirework);
@@ -658,7 +657,9 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
         }
 
         // 花火大会モードを一時中断し、受け取った花火データを一斉に打ち上げる
-        interruptInterval<void>(raiseSimultaneously);
+        await interruptInterval<void>(raiseSimultaneously);
+
+        isProjectingRef.current = false; // プロジェクター投影の処理が終わったことを記録する
     }
 
     /* useEffect等 */
