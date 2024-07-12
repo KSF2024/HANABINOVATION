@@ -50,7 +50,6 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
     // 花火大会用花火データ
     const [fireworksData, setFireworksData] = useState<FireworkTypeInfo[] | null>(null);
     const intervalRef = useRef<number | null>(null);
-    const isProjectingRef = useRef<boolean>(false); // プロジェクター投影の処理中かどうか
 
     /* その他関数定義 */
     // 花火の打ち上げ初期位置・爆発中心位置を求める関数
@@ -122,25 +121,17 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
         // 打ち上げ用の花火の星データを初期化する
         const risingStars: RisingStars = generateRisingStars(boothId, initialRiseX, initialRiseY, initialBurstX, initialBurstY);
 
-        const isProjecting: boolean = isProjectingRef.current; // プロジェクター投影の処理中
-
         // 花火を打ち上げる
-        if(!isProjecting || enableSound){
-            if(enableSound === 2) playSound(raiseSE);
-            await raiseSparks(fireworkId, risingStars, initialRiseY);
-        }
+        if(enableSound === 2) playSound(raiseSE);
+        await raiseSparks(fireworkId, risingStars, initialRiseY);
 
         // 花火を爆発させる
-        if(!isProjecting || enableSound){
-            if(enableSound) playSound(burstSE);
-            await burstFirework(fireworkId, fireworkType, stars, sparks, initialBurstX, initialBurstY);
-            await sleep(100);
-        }
+        if(enableSound) playSound(burstSE);
+        await burstFirework(fireworkId, fireworkType, stars, sparks, initialBurstX, initialBurstY);
+        await sleep(100);
 
         // 花火を消滅させる
-        if(!isProjecting || enableSound){
-            await fadeFirework(fireworkId, fireworkType);
-        }
+        await fadeFirework(fireworkId, fireworkType);
 
         // 花火データを消去する
         setStarsObj(prevStarsObj => {
@@ -658,8 +649,6 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
 
     // 花火大会モードを一時中断し、受け取った花火データを一斉に打ち上げる関数
     async function interruptFireworks(array: FireworkTypeInfo[]){
-        isProjectingRef.current = true; // プロジェクター投影の処理中であることを記録する
-
         // 受け取った花火データを一斉に打ち上げる関数
         async function raiseSimultaneously(){
             const promises: Promise<void>[] = array.map((data, index) => {
@@ -670,8 +659,6 @@ export function MultiFireworksProvider({children}: {children: ReactNode}){
 
         // 花火大会モードを一時中断し、受け取った花火データを一斉に打ち上げる
         await interruptInterval<void>(raiseSimultaneously);
-
-        isProjectingRef.current = false; // プロジェクター投影の処理が終わったことを記録する
     }
 
     /* useEffect等 */
