@@ -5,14 +5,12 @@ import { FireworksContext } from "../providers/FireworkProvider";
 import { CameraContext } from "../providers/CameraProvider";
 import { ModalContext } from "../providers/ModalProvider";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 import { DataContext } from "../providers/DataProvider";
 import { postFirework } from "../utils/apiClient";
 import { FireworkData } from "../utils/types";
 import { createDivElements } from "../utils/elementGenerator";
 
 export default function ConfirmCapture(){
-    const navigate = useNavigate();
     const {
         userId,
         boothId,
