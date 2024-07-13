@@ -18,9 +18,13 @@ export default function LotteryGuide(){
             </Typography>
             <Typography sx={{ fontSize: "1rem", fontWeight: "bold", overflow: "hidden", whiteSpace: "nowrap" }}>
                 「AirPods 1名、KINUJOヘアアイロン 1名」
+                <br/>
+                「JILL ハンドクリーム & リップバーム セット 2名」
             </Typography>
             <Typography sx={{ fontSize: "0.7rem", fontWeight: "bold" }}>
-                ※景品について、当選者には後日メールで郵送のためのご連絡をさせていただきます。
+                ※景品について、当選者には学園祭終了後、メールで郵送のためのご連絡をさせていただきます。
+                <br/>
+                当選メール送付開始：2024/07/14(日) 16:00～
             </Typography>
 
 

@@ -3,7 +3,6 @@ import { ulid } from "ulidx";
 import { FireworksData, Registration } from "../utils/types";
 import { getFireworksByUserId, getRegistration } from "../utils/apiClient";
 import { BOOTH_ID_LIST } from "../utils/config";
-import { toast } from "react-toastify";
 
 /* 型定義 */
 // contextに渡すデータの型
@@ -22,6 +21,7 @@ type DataContent = {
     setIsApplied: React.Dispatch<React.SetStateAction<boolean>>;
     canApply: boolean;
     registration: Registration | null;
+    setRegistration: React.Dispatch<React.SetStateAction<Registration | null>>;
     postedFireworksData: FireworksData | null;
     setPostedFireworksData: React.Dispatch<React.SetStateAction<FireworksData | null>>;
 };
@@ -42,6 +42,7 @@ const initialData: DataContent = {
     setIsApplied: () => {},
     canApply: false,
     registration: null,
+    setRegistration: () => {},
     postedFireworksData: null,
     setPostedFireworksData: () => {}
 };
@@ -106,9 +107,8 @@ export function DataProvider({children}: {children: ReactNode}){
         // 全てのブースを回ったかどうかを取得する
         const boothIdList: string[] = Object.keys(postedFireworksData); // 回ったことのあるブース一覧
         const newCanApply: boolean = BOOTH_ID_LIST.every((value) => { // 全てのブースを回ったかどうか
-            boothIdList.includes(value);
+            return boothIdList.includes(value);
         });
-        toast.info(JSON.stringify({userId, boothIdList}))
         setCanApply(newCanApply);
     }, [postedFireworksData]);
 
@@ -138,6 +138,7 @@ export function DataProvider({children}: {children: ReactNode}){
                 setIsApplied,
                 canApply,
                 registration,
+                setRegistration,
                 postedFireworksData,
                 setPostedFireworksData
             }}
