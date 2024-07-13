@@ -24,17 +24,20 @@ export default function LotteryEntryGuidePage(){
                             alignItems: "center"
                         }}
                 >
-                    <Typography>抽選会に応募するには、</Typography>
-                    <Typography>すべてのスタンプを</Typography>
-                    <Typography>集める必要があります。</Typography>
-
-                    <Typography sx={{paddingTop: "1rem"}}>
-                        すべてのブースの花火を作成したのち、
+                    <Typography>
+                        抽選会に応募するには、<br/>
+                        すべてのスタンプを<br/>
+                        集める必要があります。
                     </Typography>
-                    <Typography>またお越しください。</Typography>
 
                     <Typography sx={{paddingTop: "1rem"}}>
-                        花火が未作成のブースは、マップ機能から確認できます。
+                        すべてのブースの花火を作成したのち、<br/>
+                        またお越しください。
+                    </Typography>
+
+                    <Typography sx={{paddingTop: "1rem"}}>
+                        花火が未作成のブースは、マップ機能から確認できます。<br/>
+                        花火の登録状況に不具合が生じた場合、画面の更新をお試しください。
                     </Typography>
                 </Box>
                 <LotteryGuide/>
