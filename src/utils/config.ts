@@ -90,8 +90,8 @@ export const SCHOOL_DATA: { [boothId: string]: SchoolInfo } = {
         color: "#FF0000",
         fireworksImages: [image3_1, image3_2, image3_3],
         mapData: {
-            pinX: 20,
-            pinY: 4,
+            pinX: 40,
+            pinY: 5,
             schoolNameX: 35,
             schoolNameY: 5,
             schoolNameWidth: 26,
