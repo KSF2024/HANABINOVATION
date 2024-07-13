@@ -140,7 +140,7 @@ export default function ButtonArea({theme}: {theme: Theme}){
                     color="primary"
                     onClick={() =>{
                         if(isTakingPhoto.current) return; // 撮影ボタンの処理中なら、処理をやめる
-                        navigate(`/${boothId}/show-fireworks/`);
+                        location.href = `../${boothId}/show-fireworks/`;
                     }}
                 >
                     <HomeIcon
