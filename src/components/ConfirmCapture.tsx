@@ -114,7 +114,7 @@ export default function ConfirmCapture(){
             createDivElements(toastTexts, () => {
                 isTakingPhoto.current = false; // 撮影ボタンの処理が終わったことを記録する
                 setFireworkPhase(0); // 花火を半透明の初期表示状態に戻す
-                navigate(`/${boothId}/show-fireworks`)
+                location.href = `../${boothId}/show-fireworks/`;
             }),
             {autoClose: false}
         );
