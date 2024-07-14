@@ -38,7 +38,7 @@ export default function LotteryGuide(){
                 あなたが作った花火をプロジェクターで投影できます！
             </Typography>
             <Typography sx={{fontSize: "1rem", fontWeight: "bold"}}>
-                さらに！&emsp;応募者の中から先着60名の方にお菓子を配布中！
+                さらに！&emsp;アプリを使ってくれた方の中から、先着で60名の方にお菓子を配布中！
             </Typography>
         </Box>
     );
