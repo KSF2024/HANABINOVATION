@@ -2,10 +2,10 @@ import axios, { AxiosResponse } from "axios";
 import { FireworkData, FireworksData, HoleFireworksData, Profile, Registration } from "./types";
 
 // API呼び出し用のURLを定義する
-// const API_ENDPOINT: string = "https://vfml5unckb.execute-api.ap-northeast-1.amazonaws.com/dev/api/v1";
-// export const WS_ENDPOINT: string = "wss://pcg2x1k5lj.execute-api.ap-northeast-1.amazonaws.com/dev/";
-const API_ENDPOINT: string = "https://hanabinovation.org/api/v1";
-export const WS_ENDPOINT: string = "wss://hanabinovation.org/api/v1/websocket";
+const API_ENDPOINT: string = "https://y0auxgt8w2.execute-api.ap-northeast-1.amazonaws.com/dev/api/v1";
+export const WS_ENDPOINT: string = "wss://nq4c1tx7x9.execute-api.ap-northeast-1.amazonaws.com/dev/";
+// const API_ENDPOINT: string = "https://hanabinovation.org/api/v1";
+// export const WS_ENDPOINT: string = "wss://hanabinovation.org/api/v1/websocket";
 
 // 全ユーザーの花火データを取得する関数
 export async function getFireworks(msAgo?: number): Promise<HoleFireworksData | null>{
