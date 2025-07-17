@@ -10,11 +10,12 @@ export const WS_ENDPOINT: string = "wss://pcg2x1k5lj.execute-api.ap-northeast-1.
 // 全ユーザーの花火データを取得する関数
 export async function getFireworks(msAgo?: number): Promise<HoleFireworksData | null>{
     let result: HoleFireworksData | null = null;
+    return null;
 
     // 指定のミリ秒前に作成されたデータのみを取得する
     let query: string = "";
     if(msAgo !== undefined){
-        const createdAfter = new Date(Date.now() - msAgo).toISOString(); // ISO8601形式の日時データ
+        const createdAfter = new Date(Date.now() - (msAgo || 0)).toISOString(); // ISO8601形式の日時データ
         query = `?createdAfter=${createdAfter}`;
     }
 
@@ -41,6 +42,7 @@ export async function getFireworks(msAgo?: number): Promise<HoleFireworksData | 
 export async function getFireworksByUserId(userId: string): Promise<FireworksData | null>{
     let result: FireworksData | null = null;
     const url: string = `${API_ENDPOINT}/fireworks/${userId}`;
+    return null;
 
     try {
         const response = await axios.get<FireworksData>(url);
@@ -64,6 +66,7 @@ export async function getFireworksByUserId(userId: string): Promise<FireworksDat
 
 // 花火データを登録する関数
 export async function postFirework(userId: string, boothId: string, fireworkData: FireworkData): Promise<AxiosResponse | null>{
+    return {} as AxiosResponse;
     const fireworksData: FireworkData = {
         fireworkType: fireworkData.fireworkType,
         sparksType: fireworkData.sparksType
@@ -104,6 +107,7 @@ export async function postProfile(profile: Profile): Promise<AxiosResponse | nul
 export async function getRegistration(userId: string): Promise<Registration | null>{
     let result: Registration | null = null;
     const url: string = `${API_ENDPOINT}/profiles/${userId}`;
+    return null;
 
     try {
         const response = await axios.get<Registration>(url);
